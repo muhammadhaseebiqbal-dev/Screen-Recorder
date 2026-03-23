@@ -1,10 +1,6 @@
 <div align="center">
   <img src="app/logo.png" alt="ScreenRecorder Logo" width="128" />
   <h1>ScreenRecorder</h1>
-  <a href="https://apt.izzysoft.de/fdroid/index/apk/com.haseeb.recorder">
-    <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="60">
-  </a>
-  <br><br>
   <p><b>A pristine Android screen recorder with a floating OneUI-style control pill.</b></p>
   <br>
   <img src="app/Quick%20panel.jpg" alt="Quick Settings Panel Preview" width="300" style="border-radius: 12px;"/>

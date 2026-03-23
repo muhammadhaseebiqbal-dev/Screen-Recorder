@@ -1,6 +1,7 @@
 A lightweight, native Android screen recording application built with Kotlin. It leverages Android's `MediaProjection` API and provides a beautiful, non-intrusive floating pill overlay inspired by Samsung's One UI 8.5 design language, allowing quick toggles for the microphone and internal device audio without ever interrupting your workflow.
 
 Features:
+
 • Native Performance: Built entirely in Kotlin for maximum efficiency.
 • One UI Aesthetic: Features a frosted-glass, draggable floating control pill.
 • Quick Settings Tile: Start and stop recordings instantly from your status bar.
