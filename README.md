@@ -3,7 +3,12 @@
   <h1>ScreenRecorder</h1>
   <p><b>A pristine Android screen recorder with a floating OneUI-style control pill.</b></p>
   <br>
-  <img src="app/Quick%20panel.jpg" alt="Quick Settings Panel Preview" width="300" style="border-radius: 12px;"/>
+  <p float="left" align="center">
+    <img src="app/screenshots/Quick%20panel.jpg" alt="Quick Panel" width="200" style="border-radius: 12px; margin: 4px;" />
+    <img src="app/screenshots/Apps.jpg" alt="App Icon" width="200" style="border-radius: 12px; margin: 4px;" />
+    <img src="app/screenshots/Screenshot_20260323_160141_One%20UI%20Home.jpg" alt="Recording Pill Active" width="200" style="border-radius: 12px; margin: 4px;" />
+    <img src="app/screenshots/Screenshot_20260323_160154_One%20UI%20Home.jpg" alt="Recording Complete" width="200" style="border-radius: 12px; margin: 4px;" />
+  </p>
 </div>
 
 <br>
