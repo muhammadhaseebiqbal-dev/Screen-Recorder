@@ -26,9 +26,9 @@ A lightweight, native Android screen recording application built with Kotlin. It
 ## 🛠️ Build Requirements
 
 - Android Studio
-- Android SDK 34 (Target Sandbox)
+- Android SDK 36 (Target Sandbox)
 - Minimum SDK 26 (Android 8.0)
-- Gradle 8.5 / Java 21
+- Gradle 9.1.0 / Java 17
 
 ## 📜 License
 
