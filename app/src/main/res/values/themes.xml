@@ -1,5 +1,64 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.ScreenRecorder" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Customize your theme here. -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- App theme -->
+    <style
+        name="Theme.ScreenRecorder"
+        parent="Theme.Material3.DynamicColors.DayNight.NoActionBar">
+
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorPrimaryContainer">@color/colorPrimaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/colorOnPrimaryContainer</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="colorSecondaryContainer">@color/colorSecondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/colorOnSecondaryContainer</item>
+        <item name="colorTertiary">@color/colorTertiary</item>
+        <item name="colorOnTertiary">@color/colorOnTertiary</item>
+        <item name="colorTertiaryContainer">@color/colorTertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/colorOnTertiaryContainer</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="colorOnError">@color/colorOnError</item>
+        <item name="colorErrorContainer">@color/colorErrorContainer</item>
+        <item name="colorOnErrorContainer">@color/colorOnErrorContainer</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorOnBackground">@color/colorOnBackground</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="colorOnSurface">@color/colorOnSurface</item>
+        <item name="colorSurfaceVariant">@color/colorSurfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/colorOnSurfaceVariant</item>
+        <item name="colorOutline">@color/colorOutline</item>
+        <item name="colorOutlineVariant">@color/colorOutlineVariant</item>
+        <item name="colorSurfaceInverse">@color/colorInverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/colorInverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/colorInversePrimary</item>
+        <item name="colorPrimaryFixed">@color/colorPrimaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/colorOnPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/colorPrimaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/colorOnPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/colorSecondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/colorOnSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/colorSecondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/colorOnSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/colorTertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/colorOnTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/colorTertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/colorOnTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/colorSurfaceDim</item>
+        <item name="colorSurfaceBright">@color/colorSurfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/colorSurfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/colorSurfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/colorSurfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/colorSurfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/colorSurfaceContainerHighest</item>
     </style>
+
 </resources>
