@@ -23,3 +23,6 @@ app/gradlew.bat
 *.ap_
 *.aab
 *.dex
+
+.acside/
+gradle-daemon-jvm.properties
