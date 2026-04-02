@@ -30,7 +30,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:contentDescription="@null"
-            android:src="@android:drawable/ic_menu_search"
+            android:src="@drawable/ic_search"
             app:layout_constraintBottom_toBottomOf="@id/mainTitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/mainTitle"
