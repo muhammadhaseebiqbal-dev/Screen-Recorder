@@ -275,8 +275,12 @@ class MainActivity : AppCompatActivity() {
     private fun renameVideo(video: VideoFile) {
         val input = EditText(this).apply {
             setText(video.name.removeSuffix(".mp4"))
-            setTextColor(0xFFF2F2F7.toInt())
-            setHintTextColor(0xFF8A8A8E.toInt())
+            // Resolve theme-aware text color (black in light, white in dark)
+            val typedValue = android.util.TypedValue()
+            context.theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+            setTextColor(ContextCompat.getColor(context, typedValue.resourceId))
+            context.theme.resolveAttribute(android.R.attr.textColorSecondary, typedValue, true)
+            setHintTextColor(ContextCompat.getColor(context, typedValue.resourceId))
             setPadding(48, 32, 48, 32)
             background = null
         }
@@ -291,10 +295,24 @@ class MainActivity : AppCompatActivity() {
                     put(MediaStore.Video.Media.DISPLAY_NAME, finalName)
                 }
                 try {
-                    contentResolver.update(video.uri, values, null, null)
-                    loadVideos()
+                    val updated = contentResolver.update(video.uri, values, null, null)
+                    if (updated > 0) {
+                        loadVideos()
+                    } else {
+                        Toast.makeText(this, "Rename failed", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (securityException: SecurityException) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        val recoverableSecurityException = securityException as?
+                            android.app.RecoverableSecurityException
+                        recoverableSecurityException?.userAction?.actionIntent?.intentSender?.let { sender ->
+                            startIntentSenderForResult(sender, 1001, null, 0, 0, 0)
+                        } ?: Toast.makeText(this, "Rename failed — permission denied", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Rename failed", Toast.LENGTH_SHORT).show()
+                    }
                 } catch (e: Exception) {
-                    Toast.makeText(this, "Rename failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Rename failed: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancel", null)

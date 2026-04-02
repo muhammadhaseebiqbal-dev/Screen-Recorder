@@ -177,28 +177,12 @@ class ScreenRecordService : Service() {
     private fun pauseRecording() {
         if (!isRecording || isPaused) return
         isPaused = true
-        // Stop audio sources
-        try { micRecord?.stop() } catch (_: Exception) {}
-        try { sysRecord?.stop() } catch (_: Exception) {}
-        // Release virtual display to stop feeding video frames
-        virtualDisplay?.release()
-        virtualDisplay = null
-        Log.d(TAG, "Recording paused")
+        Log.d(TAG, "Recording paused — data will be discarded until resumed")
     }
 
     private fun resumeRecording() {
         if (!isRecording || !isPaused) return
         isPaused = false
-        // Resume audio sources
-        try { micRecord?.startRecording() } catch (_: Exception) {}
-        try { sysRecord?.startRecording() } catch (_: Exception) {}
-        // Recreate virtual display to resume video frames
-        virtualDisplay = mediaProjection?.createVirtualDisplay(
-            "ScreenRecorder",
-            screenWidth, screenHeight, screenDensity,
-            android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
-            inputSurface, null, null
-        )
         Log.d(TAG, "Recording resumed")
     }
 
@@ -369,9 +353,12 @@ class ScreenRecordService : Service() {
         val hasSys = sysRecord != null
 
         while (!stopRequested) {
-            // ── Read from each active source ─────────────────────────
+            // Always read from sources to prevent buffer overrun
             val micSamples = if (hasMic) micRecord!!.read(micBuf, 0, frameSamples) else 0
             val sysSamples = if (hasSys) sysRecord!!.read(sysBuf, 0, frameSamples) else 0
+
+            // When paused, discard the audio data
+            if (isPaused) continue
 
             val validSamples = maxOf(micSamples, sysSamples, 0)
             if (validSamples <= 0) continue
@@ -420,6 +407,7 @@ class ScreenRecordService : Service() {
         val encoder = videoEncoder ?: return
 
         while (!stopRequested) {
+            // Always drain to prevent encoder backup (VirtualDisplay keeps sending frames)
             drainEncoderOutput(encoder, bufferInfo, isAudio = false)
             // Small sleep to avoid busy-looping
             try { Thread.sleep(5) } catch (_: InterruptedException) {}
@@ -463,7 +451,7 @@ class ScreenRecordService : Service() {
                         encoder.releaseOutputBuffer(outputIndex, false)
                     } else {
                         synchronized(this) {
-                            if (muxerStarted && bufferInfo.size > 0) {
+                            if (muxerStarted && bufferInfo.size > 0 && !isPaused) {
                                 outputBuf.position(bufferInfo.offset)
                                 outputBuf.limit(bufferInfo.offset + bufferInfo.size)
                                 val trackIdx = if (isAudio) audioTrackIndex else videoTrackIndex
