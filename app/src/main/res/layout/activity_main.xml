@@ -28,9 +28,15 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_search"
+            android:id="@+id/btnSettings"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_settings"
+            android:padding="2dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/settings_icon_description"
             app:tint="#8A8A8E"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/mainTitle"

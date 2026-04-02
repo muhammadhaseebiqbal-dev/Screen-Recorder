@@ -5,15 +5,14 @@ import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
-import android.util.Size
 import android.view.View
 import android.widget.EditText
+import android.widget.Switch
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -25,6 +24,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_PERMISSIONS = 2001
+        const val PREFS_NAME = "screen_recorder_prefs"
+        const val PREF_MIC_ENABLED = "pref_mic_enabled_by_default"
+        const val PREF_INTERNAL_AUDIO_ENABLED = "pref_internal_audio_enabled_by_default"
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -50,6 +52,11 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Settings icon opens the audio defaults dialog
+        binding.btnSettings.setOnClickListener {
+            showSettingsDialog()
+        }
+
         // Request overlay permission
         if (!Settings.canDrawOverlays(this)) {
             startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -57,6 +64,31 @@ class MainActivity : AppCompatActivity() {
         }
 
         requestPerms()
+    }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    private fun showSettingsDialog() {
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_settings, null)
+        val switchMic = dialogView.findViewById<Switch>(R.id.switchMicDefault)
+        val switchAudio = dialogView.findViewById<Switch>(R.id.switchAudioDefault)
+
+        switchMic.isChecked = prefs.getBoolean(PREF_MIC_ENABLED, true)
+        switchAudio.isChecked = prefs.getBoolean(PREF_INTERNAL_AUDIO_ENABLED, true)
+
+        AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            .setTitle(R.string.settings_dialog_title)
+            .setView(dialogView)
+            .setPositiveButton(R.string.settings_save) { _, _ ->
+                prefs.edit()
+                    .putBoolean(PREF_MIC_ENABLED, switchMic.isChecked)
+                    .putBoolean(PREF_INTERNAL_AUDIO_ENABLED, switchAudio.isChecked)
+                    .apply()
+                Toast.makeText(this, R.string.settings_saved_toast, Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton(R.string.settings_cancel, null)
+            .show()
     }
 
     override fun onResume() {

@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Screen Recorder</string>
+    <string name="settings_icon_description">Settings</string>
+    <string name="settings_dialog_title">Recording Defaults</string>
+    <string name="settings_save">Save</string>
+    <string name="settings_cancel">Cancel</string>
+    <string name="settings_saved_toast">Settings saved</string>
+    <string name="settings_mic_title">Microphone</string>
+    <string name="settings_mic_description">Enable microphone by default when recording starts</string>
+    <string name="settings_audio_title">Internal Audio</string>
+    <string name="settings_audio_description">Enable device audio by default when recording starts</string>
 </resources>

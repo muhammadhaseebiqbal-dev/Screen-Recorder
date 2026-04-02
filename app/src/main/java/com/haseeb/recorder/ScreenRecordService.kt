@@ -107,6 +107,11 @@ class ScreenRecordService : Service() {
                     intent.getParcelableExtra(EXTRA_DATA)
                 }
                 if (data != null) {
+                    // Initialise audio defaults from user preferences before each recording
+                    val prefs = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE)
+                    isMicEnabled = prefs.getBoolean(MainActivity.PREF_MIC_ENABLED, true)
+                    isInternalAudioEnabled = prefs.getBoolean(MainActivity.PREF_INTERNAL_AUDIO_ENABLED, true)
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         startForeground(NOTIFICATION_ID, buildRecordingNotification(),
                             ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION)
