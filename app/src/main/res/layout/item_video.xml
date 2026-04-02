@@ -97,14 +97,13 @@
                  app:layout_constraintTop_toBottomOf="@id/titleText"
                  android:id="@+id/dateSizeText" />
 
-            <ImageButton
-                 android:layout_height="32dp"
-                 android:layout_width="32dp"
+            <com.google.android.material.button.MaterialButton
+                 android:layout_height="wrap_content"
+                 android:layout_width="wrap_content"
                  android:contentDescription="More options"
-                 android:src="@drawable/ic_more"
-                 android:background="?android:attr/selectableItemBackgroundBorderless"
+                 app:icon="@drawable/ic_more"
+                 style="@style/Widget.Material3Expressive.Button.IconButton.Standard"
                  app:layout_constraintTop_toTopOf="parent"
-                 app:tint="?attr/colorOnSurfaceVariant"
                  app:layout_constraintEnd_toEndOf="parent"
                  app:layout_constraintBottom_toBottomOf="parent"
                  android:id="@+id/btnMenu" />
