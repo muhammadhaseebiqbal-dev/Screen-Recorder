@@ -2,18 +2,13 @@
   <img src="app/logo.png" alt="ScreenRecorder Logo" width="128" />
   <h1>ScreenRecorder</h1>
   
-  <a href="https://apt.izzysoft.de/fdroid/index/apk/com.haseeb.recorder">
-    <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="60">
-  </a>
-  &nbsp;
-  <a href="https://github.com/muhammadhaseebiqbal-dev/Screen-Recorder/releases">
-    <img src="https://img.shields.io/badge/GitHub-Releases-24292e?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Releases" height="60">
-  </a>
-  &nbsp;
-  <a href="obtainium://add/https://github.com/muhammadhaseebiqbal-dev/Screen-Recorder">
-    <img src="https://img.shields.io/badge/Get_it_on-Obtainium-297ACC?style=for-the-badge&logo=android&logoColor=white" alt="Obtainium" height="60">
-  </a>
-  <br><br>
+  <p>
+    <a href="https://apt.izzysoft.de/fdroid/index/apk/com.haseeb.recorder"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="28" style="vertical-align: middle;"></a>
+    &nbsp;
+    <a href="https://github.com/muhammadhaseebiqbal-dev/Screen-Recorder/releases"><img src="https://img.shields.io/badge/GitHub-Releases-24292e?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Releases" style="vertical-align: middle;" /></a>
+    &nbsp;
+    <a href="obtainium://add/https://github.com/muhammadhaseebiqbal-dev/Screen-Recorder"><img src="https://img.shields.io/badge/Get_it_on-Obtainium-297ACC?style=for-the-badge&logo=android&logoColor=white" alt="Obtainium" style="vertical-align: middle;" /></a>
+  </p>
 
   <p><b>A pristine Android screen recorder with a floating OneUI-style control pill.</b></p>
   <br>
