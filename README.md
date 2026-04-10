@@ -3,10 +3,12 @@
   <h1>ScreenRecorder</h1>
   
   <p>
-    <a href="https://apt.izzysoft.de/fdroid/index/apk/com.haseeb.recorder"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="28" style="vertical-align: middle;"></a>
-    &nbsp;
+    <a href="https://apt.izzysoft.de/fdroid/index/apk/com.haseeb.recorder">
+      <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" height="60" style="vertical-align: middle;">
+    </a>
+    <br><br>
     <a href="https://github.com/muhammadhaseebiqbal-dev/Screen-Recorder/releases"><img src="https://img.shields.io/badge/GitHub-Releases-24292e?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Releases" style="vertical-align: middle;" /></a>
-    &nbsp;
+    &nbsp;&nbsp;
     <a href="obtainium://add/https://github.com/muhammadhaseebiqbal-dev/Screen-Recorder"><img src="https://img.shields.io/badge/Get_it_on-Obtainium-297ACC?style=for-the-badge&logo=android&logoColor=white" alt="Obtainium" style="vertical-align: middle;" /></a>
   </p>
 
