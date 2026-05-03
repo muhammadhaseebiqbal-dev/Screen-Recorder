@@ -1,0 +1,12 @@
+v3.0:
+- Pause & Resume recording from the floating overlay pill
+- Dual audio: Mic only, System audio only, or both simultaneously
+- Real-time PCM software mixer for combined audio capture
+- Studio-grade audio quality: 48kHz / 320kbps AAC
+- Visual 3-second live countdown before recording
+- New Material You adaptive icon with monochrome support
+- About screen with app logo and contributor credits
+- Tab-based video categorization (All / Recents)
+- Scoped Storage support (MediaStore) for broader device compatibility
+- Both audio sources OFF by default for quick silent recordings
+- Bug fixes for Android 14+ FGS permission crashes
