@@ -1,1 +1,0 @@
-A pristine OneUI-style screen recorder with mic and internal audio toggles.

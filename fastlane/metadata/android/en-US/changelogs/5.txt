@@ -1,2 +1,0 @@
-• Redesigned app structure matching Samsung's One UI 8.5 aesthetics.
-• Added a true pitch-black theme and updated control pill icons.
