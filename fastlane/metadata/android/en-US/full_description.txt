@@ -1,0 +1,16 @@
+A lightweight and modern Android screen recording app built with Kotlin using the MediaProjection API.  
+It delivers smooth performance, clean visuals, and a refined Material 3 Expressive experience with a minimal system footprint.
+
+Features:
+• 🎥 Record your screen in the highest resolution supported by your device  
+• ⏸ Pause and ▶️ resume recordings instantly without losing progress  
+• 🟢 Floating control pill with quick access to Pause, Resume, and Stop  
+• ⏳ Smooth 3-second on-screen countdown before recording starts  
+• ⚡ Start and control recording directly from the Quick Settings tile  
+• 🎨 Designed بالكامل with Material 3 Expressive UI for a modern look  
+• 📱 Clean and minimal interface focused on usability  
+• 🧩 Lightweight and efficient with low memory usage  
+• 🗂 Automatically saves recordings to DCIM/ScreenRecorder  
+• 📦 Uses MediaStore API for modern storage compatibility  
+• 🎬 Stable and smooth recording performance across devices  
+• 🔊 High-quality audio capture with optimized encoding

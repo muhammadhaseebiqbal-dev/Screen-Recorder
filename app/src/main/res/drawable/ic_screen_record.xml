@@ -1,0 +1,41 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Corner brackets -->
+    <path
+        android:pathData="M6,4L4,4C2.9,4 2,4.9 2,6L2,8"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M2,18L2,20C2,21.1 2.9,22 4,22L6,22"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M18,4L20,4C21.1,4 22,4.9 22,6L22,8"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+    <path
+        android:pathData="M22,18L22,20C22,21.1 21.1,22 20,22L18,22"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeColor="#FF000000"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"/>
+
+    <!-- Camera body with play triangle -->
+    <path
+        android:pathData="M15,10.5L15,9.5C15,8.67 14.33,8 13.5,8L6.5,8C5.67,8 5,8.67 5,9.5L5,14.5C5,15.33 5.67,16 6.5,16L13.5,16C14.33,16 15,15.33 15,14.5L15,13.5L19,16.5L19,7.5L15,10.5Z"
+        android:fillColor="#FF000000"/>
+</vector>

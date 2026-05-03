@@ -1,0 +1,83 @@
+<resources>
+
+    <string name="app_name">Screen Recorder</string>
+
+    <string name="AboutActivity_title">About</string>
+
+    <string name="MainActivity_title">Recordings</string>
+    <string name="MainActivity_record_start">Record</string>
+    <string name="MainActivity_record_stop">Stop</string>
+    <string name="MainActivity_start_recording">Record</string>
+    <string name="MainActivity_desc_audio">Toggle System Audio</string>
+    <string name="MainActivity_desc_mic">Toggle Microphone</string>
+    <string name="MainActivity_desc_info">About App</string>
+    <string name="MainActivity_empty_text">No recordings yet</string>
+    <string name="MainActivity_empty_subtext">Start your first recording</string>
+
+    <string name="ItemVideo_desc_menu">More options</string>
+    <string name="ItemVideo_desc_thumbnail">Video thumbnail</string>
+    <string name="ItemVideo_menu_delete">Delete</string>
+    <string name="ItemVideo_menu_rename">Rename</string>
+    <string name="ItemVideo_menu_share">Share</string>
+
+    <string name="VideoAdapter_btn_cancel">Cancel</string>
+    <string name="VideoAdapter_btn_delete">Delete</string>
+    <string name="VideoAdapter_btn_rename">Rename</string>
+    <string name="VideoAdapter_dialog_delete_title">Delete Recording</string>
+    <string name="VideoAdapter_dialog_delete_msg">Are you sure you want to delete this video?</string>
+    <string name="VideoAdapter_dialog_rename_title">Rename Recording</string>
+    <string name="VideoAdapter_chooser_share">Share Video via</string>
+    <string name="VideoAdapter_toast_delete_failed">Failed to delete</string>
+    <string name="VideoAdapter_toast_rename_failed">Failed to rename</string>
+    <string name="VideoAdapter_toast_no_player">No video player found</string>
+
+    <string name="MediaProjectionPermissionActivity_permission_denied">Permission denied</string>
+    <string name="MediaProjectionPermissionActivity_log_init_failed">Initialization failed</string>
+    <string name="MediaProjectionPermissionActivity_log_proj_failed">Media projection request failed</string>
+    <string name="MediaProjectionPermissionActivity_log_service_failed">Service start failed</string>
+
+    <string name="ScreenRecordService_notif_title">Screen Recording</string>
+    <string name="ScreenRecordService_notif_text">Recording in progress...</string>
+    <string name="ScreenRecordService_notif_btn_stop">Stop</string>
+    <string name="ScreenRecordService_notif_done_title">Recording Saved</string>
+    <string name="ScreenRecordService_notif_done_btn_app">Open App</string>
+    <string name="ScreenRecordService_toast_saved">Recording saved successfully</string>
+    <string name="ScreenRecordService_toast_failed">Start recording failed</string>
+    <string name="ScreenRecordService_virtual_display_name">Screen Recorder</string>
+
+    <string name="ScreenRecordTileService_tile_start">Record</string>
+    <string name="ScreenRecordTileService_tile_stop">Stop Recording</string>
+
+    <string name="dialog_edit_text_rename_title">Title</string>
+
+    <string name="ConfigManager_quality_max_with_label">Max (%1$s)</string>
+
+    <string name="settings_title">Recording Settings</string>
+    <string name="settings_audio_header">Audio</string>
+    <string name="settings_video_header">Video</string>
+    <string name="settings_advanced_header">Advanced</string>
+    <string name="settings_about_header">Information</string>
+
+    <string name="settings_mic_title">Microphone</string>
+    <string name="settings_mic_summary">Record audio from your mic</string>
+    <string name="settings_system_audio_title">System Audio</string>
+    <string name="settings_system_audio_summary">Record internal device sound</string>
+
+    <string name="settings_quality_title">Video Quality</string>
+    <string name="settings_quality_summary">Choose the resolution for your recording</string>
+    <string name="settings_quality_max">Maximum</string>
+    <string name="settings_quality_4k">4K</string>
+    <string name="settings_quality_2k">2K</string>
+    <string name="settings_quality_1080p">1080p</string>
+    <string name="settings_quality_720p">720p</string>
+    <string name="settings_quality_480p">480p</string>
+    <string name="settings_quality_360p">360p</string>
+    <string name="settings_quality_240p">240p</string>
+
+    <string name="settings_show_touches_title">Show Touches</string>
+    <string name="settings_show_touches_summary">Display visual touch feedback during recording</string>
+
+    <string name="settings_about_app_title">About App</string>
+    <string name="settings_about_app_summary">Version, licenses and developer info</string>
+
+</resources>
