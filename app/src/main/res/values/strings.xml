@@ -7,7 +7,6 @@
     <string name="MainActivity_title">Recordings</string>
     <string name="MainActivity_record_start">Record</string>
     <string name="MainActivity_record_stop">Stop</string>
-    <string name="MainActivity_start_recording">Record</string>
     <string name="MainActivity_desc_audio">Toggle System Audio</string>
     <string name="MainActivity_desc_mic">Toggle Microphone</string>
     <string name="MainActivity_desc_info">About App</string>
@@ -55,6 +54,7 @@
     <string name="settings_title">Recording Settings</string>
     <string name="settings_audio_header">Audio</string>
     <string name="settings_video_header">Video</string>
+    <string name="settings_appearance_header">Appearance</string>
     <string name="settings_advanced_header">Advanced</string>
     <string name="settings_about_header">Information</string>
 
@@ -73,6 +73,15 @@
     <string name="settings_quality_480p">480p</string>
     <string name="settings_quality_360p">360p</string>
     <string name="settings_quality_240p">240p</string>
+
+    <string name="settings_dynamic_colors_title">Dynamic Colors</string>
+    <string name="settings_dynamic_colors_summary">Apply colors based on your wallpaper</string>
+
+    <string name="settings_theme_title">App Theme</string>
+    <string name="settings_theme_summary">Choose your preferred appearance</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
 
     <string name="settings_show_touches_title">Show Touches</string>
     <string name="settings_show_touches_summary">Display visual touch feedback during recording</string>

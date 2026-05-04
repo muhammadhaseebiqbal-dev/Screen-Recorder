@@ -2,18 +2,21 @@ package com.haseeb.recorder
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatDelegate
 import kotlin.math.min
 
 /*
- * Central configuration manager for all recording settings.
- * Handles dynamic resolution calculation based on the device's actual aspect ratio.
+ * Central configuration manager for all recording and appearance settings.
+ * Handles dynamic resolution calculation and theme preference storage.
  */
 class ConfigManager(private val context: Context) {
 
-    private val prefs: SharedPreferences = context.getSharedPreferences("recorder_prefs", Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("recorder_prefs", Context.MODE_PRIVATE)
 
     companion object {
         private const val KEY_MIC_ENABLED = "mic_enabled"
@@ -22,6 +25,8 @@ class ConfigManager(private val context: Context) {
         private const val KEY_VIDEO_FPS = "video_fps"
         private const val KEY_USE_HEVC = "use_hevc"
         private const val KEY_SHOW_TOUCHES = "show_touches"
+        private const val KEY_THEME_MODE = "theme_mode"
+        private const val KEY_DYNAMIC_COLORS = "dynamic_colors_enabled"
 
         const val QUALITY_MAX = "max"
         const val QUALITY_4K = "4k"
@@ -31,6 +36,10 @@ class ConfigManager(private val context: Context) {
         const val QUALITY_480P = "480p"
         const val QUALITY_360P = "360p"
         const val QUALITY_240P = "240p"
+
+        const val THEME_SYSTEM = "system"
+        const val THEME_LIGHT = "light"
+        const val THEME_DARK = "dark"
     }
 
     var isMicEnabled: Boolean
@@ -57,6 +66,23 @@ class ConfigManager(private val context: Context) {
         get() = prefs.getBoolean(KEY_SHOW_TOUCHES, false)
         set(value) = prefs.edit().putBoolean(KEY_SHOW_TOUCHES, value).apply()
 
+    var themeMode: String
+        get() = prefs.getString(KEY_THEME_MODE, THEME_SYSTEM) ?: THEME_SYSTEM
+        set(value) = prefs.edit().putString(KEY_THEME_MODE, value).apply()
+
+    var isDynamicColorsEnabled: Boolean
+        get() = prefs.getBoolean(KEY_DYNAMIC_COLORS, true)
+        set(value) = prefs.edit().putBoolean(KEY_DYNAMIC_COLORS, value).apply()
+
+    /*
+     * Converts the saved theme string to the AppCompatDelegate integer constant.
+     */
+    fun getThemeModeValue(): Int = when (themeMode) {
+        THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
+        THEME_DARK -> AppCompatDelegate.MODE_NIGHT_YES
+        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+    }
+
     /*
      * Retrieves the physical screen dimensions of the device.
      * Ensures dimensions are even numbers to prevent encoder crashes.
@@ -66,15 +92,16 @@ class ConfigManager(private val context: Context) {
         val bounds: Rect = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             wm.currentWindowMetrics.bounds
         } else {
+            @Suppress("DEPRECATION")
             val display = wm.defaultDisplay
-            val outRect = Rect()
-            display.getRealSize(android.graphics.Point(outRect.right, outRect.bottom))
-            outRect
+            val point = Point()
+            @Suppress("DEPRECATION")
+            display.getRealSize(point)
+            Rect(0, 0, point.x, point.y)
         }
 
         var w = bounds.width()
         var h = bounds.height()
-
         if (w % 2 != 0) w--
         if (h % 2 != 0) h--
 
@@ -83,7 +110,6 @@ class ConfigManager(private val context: Context) {
 
     /*
      * Calculates the target resolution by maintaining the device's original aspect ratio.
-     * Prevents black borders while lowering the recording quality and file size.
      */
     fun getScaledResolution(): Pair<Int, Int> {
         val maxRes = getMaxSupportedResolution()
@@ -98,22 +124,15 @@ class ConfigManager(private val context: Context) {
             QUALITY_480P -> 480
             QUALITY_360P -> 360
             QUALITY_240P -> 240
-            else -> return maxRes // MAX quality returns original resolution
+            else -> return maxRes
         }
 
         val physicalShortSide = min(physicalWidth, physicalHeight)
-        
-        // If selected quality is larger than physical screen, return physical screen
-        if (targetShortSide >= physicalShortSide) {
-            return maxRes
-        }
+        if (targetShortSide >= physicalShortSide) return maxRes
 
         val scaleRatio = targetShortSide.toFloat() / physicalShortSide.toFloat()
-
         var newWidth = (physicalWidth * scaleRatio).toInt()
         var newHeight = (physicalHeight * scaleRatio).toInt()
-
-        // Encoders require even dimensions
         if (newWidth % 2 != 0) newWidth--
         if (newHeight % 2 != 0) newHeight--
 
@@ -126,20 +145,19 @@ class ConfigManager(private val context: Context) {
     fun getOptimalVideoBitrate(): Int {
         val res = getScaledResolution()
         val pixels = res.first * res.second
-        
         return when {
-            pixels >= 3840 * 2160 -> 24_000_000 // 4K
-            pixels >= 2560 * 1440 -> 16_000_000 // 2K
-            pixels >= 1920 * 1080 -> 10_000_000 // 1080p
-            pixels >= 1280 * 720 -> 5_000_000   // 720p
-            pixels >= 854 * 480 -> 2_500_000    // 480p
-            pixels >= 640 * 360 -> 1_500_000    // 360p
-            else -> 1_000_000                   // 240p or lower
+            pixels >= 3840 * 2160 -> 24_000_000
+            pixels >= 2560 * 1440 -> 16_000_000
+            pixels >= 1920 * 1080 -> 10_000_000
+            pixels >= 1280 * 720 -> 5_000_000
+            pixels >= 854 * 480 -> 2_500_000
+            pixels >= 640 * 360 -> 1_500_000
+            else -> 1_000_000
         }
     }
 
     /*
-     * Returns a human-readable label for the Maximum quality option dynamically.
+     * Returns a human-readable label for the Maximum quality option.
      */
     fun getMaxQualityLabel(): String {
         val maxRes = getMaxSupportedResolution()
@@ -157,13 +175,11 @@ class ConfigManager(private val context: Context) {
     }
 
     /*
-     * Dynamically generates the list of supported quality options for the current device.
-     * Ensures options larger than the device's physical screen are excluded.
+     * Returns the list of quality options supported by the current device screen.
      */
     fun getAvailableQualityOptions(): List<String> {
         val minSide = min(getMaxSupportedResolution().first, getMaxSupportedResolution().second)
         val list = mutableListOf(QUALITY_MAX)
-
         if (minSide > 2160) list.add(QUALITY_4K)
         if (minSide > 1440) list.add(QUALITY_2K)
         if (minSide > 1080) list.add(QUALITY_1080P)
@@ -171,7 +187,6 @@ class ConfigManager(private val context: Context) {
         if (minSide > 480) list.add(QUALITY_480P)
         if (minSide > 360) list.add(QUALITY_360P)
         list.add(QUALITY_240P)
-
         return list
     }
 }

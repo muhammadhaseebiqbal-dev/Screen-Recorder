@@ -5,371 +5,501 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="8dp">
+            android:text="@string/settings_title"
+            android:textStyle="bold"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="8dp" />
 
-            <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_title"
-                android:textStyle="bold"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                android:paddingHorizontal="24dp"
-                android:paddingBottom="8dp" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/settings_audio_header"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
-                android:textColor="?attr/colorPrimary"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp" />
+                android:orientation="vertical"
+                android:paddingBottom="8dp">
 
-            <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewFilledStyle"
-                android:id="@+id/cardMic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.First">
-
-                <RelativeLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:text="@string/settings_appearance_header"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:paddingHorizontal="24dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp" />
 
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/switchMic"
-                        android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/cardDynamicColors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.First">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:clickable="false"
-                        android:focusable="false"
-                        app:thumbIcon="@drawable/ic_mic" />
+                        android:padding="16dp">
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchDynamicColors"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:clickable="false"
+                            android:focusable="false"
+                            app:thumbIcon="@drawable/ic_dynamic_theme" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toStartOf="@id/switchDynamicColors"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_dynamic_colors_title"
+                                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_dynamic_colors_summary"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/cardThemeMode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="2dp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Last">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toStartOf="@id/switchMic"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="16dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_mic_title"
+                            android:layout_marginHorizontal="16dp"
+                            android:text="@string/settings_theme_title"
                             android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_mic_summary"
+                            android:layout_marginHorizontal="16dp"
+                            android:text="@string/settings_theme_summary"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-                    </LinearLayout>
-                </RelativeLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewFilledStyle"
-                android:id="@+id/cardSystemAudio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="2dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Last">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp">
-
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/switchSystemAudio"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:clickable="false"
-                        android:focusable="false"
-                        app:thumbIcon="@drawable/ic_audio" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toStartOf="@id/switchSystemAudio"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="16dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_system_audio_title"
-                            android:textAppearance="?attr/textAppearanceTitleMedium" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_system_audio_summary"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
-                    </LinearLayout>
-                </RelativeLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_video_header"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
-                android:textColor="?attr/colorPrimary"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="24dp"
-                android:paddingBottom="8dp" />
-
-            <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewFilledStyle"
-                android:id="@+id/cardQuality"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Single">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:text="@string/settings_quality_title"
-                        android:textAppearance="?attr/textAppearanceTitleMedium" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="16dp"
-                        android:text="@string/settings_quality_summary"
-                        android:textAppearance="?attr/textAppearanceBodyMedium"
-                        android:textColor="?attr/colorOnSurfaceVariant"
-                        android:layout_marginBottom="16dp" />
-
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:paddingHorizontal="16dp"
-                        android:scrollbars="none">
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginBottom="16dp" />
 
                         <com.google.android.material.button.MaterialButtonToggleGroup
-                            android:id="@+id/buttonGroup"
+                            android:id="@+id/buttonGroupTheme"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="16dp"
                             app:singleSelection="true"
                             app:selectionRequired="true">
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnQualityMax"
+                                android:id="@+id/btnThemeSystem"
                                 style="?attr/materialButtonOutlinedStyle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/settings_quality_max" />
+                                android:text="@string/settings_theme_system" />
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnQuality4K"
+                                android:id="@+id/btnThemeLight"
                                 style="?attr/materialButtonOutlinedStyle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/settings_quality_4k" />
+                                android:text="@string/settings_theme_light" />
 
                             <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnQuality2K"
+                                android:id="@+id/btnThemeDark"
                                 style="?attr/materialButtonOutlinedStyle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/settings_quality_2k" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnQuality1080"
-                                style="?attr/materialButtonOutlinedStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/settings_quality_1080p" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnQuality720"
-                                style="?attr/materialButtonOutlinedStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/settings_quality_720p" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnQuality480"
-                                style="?attr/materialButtonOutlinedStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/settings_quality_480p" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnQuality360"
-                                style="?attr/materialButtonOutlinedStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/settings_quality_360p" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/btnQuality240"
-                                style="?attr/materialButtonOutlinedStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/settings_quality_240p" />
+                                android:text="@string/settings_theme_dark" />
 
                         </com.google.android.material.button.MaterialButtonToggleGroup>
-                    </HorizontalScrollView>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_advanced_header"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
-                android:textColor="?attr/colorPrimary"
-                android:paddingHorizontal="24dp"
-                android:visibility="gone"
-                android:paddingTop="24dp"
-                android:paddingBottom="8dp" />
-
-            <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewFilledStyle"
-                android:id="@+id/cardShowTouches"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" 
-                android:visibility="gone"
-                android:layout_marginHorizontal="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Single">
-
-                <RelativeLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp">
+                    android:text="@string/settings_audio_header"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:paddingHorizontal="24dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="8dp" />
 
-                    <com.google.android.material.materialswitch.MaterialSwitch
-                        android:id="@+id/switchShowTouches"
-                        android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/cardMic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.First">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:clickable="false"
-                        android:focusable="false"
-                        app:thumbIcon="@drawable/ic_touch" />
+                        android:padding="16dp">
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchMic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:clickable="false"
+                            android:focusable="false"
+                            app:thumbIcon="@drawable/ic_mic" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toStartOf="@id/switchMic"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_mic_title"
+                                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_mic_summary"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/cardSystemAudio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="2dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Last">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchSystemAudio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:clickable="false"
+                            android:focusable="false"
+                            app:thumbIcon="@drawable/ic_audio" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toStartOf="@id/switchSystemAudio"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_system_audio_title"
+                                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_system_audio_summary"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_video_header"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:paddingHorizontal="24dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="8dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/cardQuality"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Single">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toStartOf="@id/switchShowTouches"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="16dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_show_touches_title"
+                            android:layout_marginHorizontal="16dp"
+                            android:text="@string/settings_quality_title"
                             android:textAppearance="?attr/textAppearanceTitleMedium" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_show_touches_summary"
+                            android:layout_marginHorizontal="16dp"
+                            android:text="@string/settings_quality_summary"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:layout_marginBottom="16dp" />
+
+                        <HorizontalScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingHorizontal="16dp"
+                            android:scrollbars="none">
+
+                            <com.google.android.material.button.MaterialButtonToggleGroup
+                                android:id="@+id/buttonGroup"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:singleSelection="true"
+                                app:selectionRequired="true">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnQualityMax"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_quality_max" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnQuality4K"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_quality_4k" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnQuality2K"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_quality_2k" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnQuality1080"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_quality_1080p" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnQuality720"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_quality_720p" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnQuality480"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_quality_480p" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnQuality360"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_quality_360p" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnQuality240"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/settings_quality_240p" />
+
+                            </com.google.android.material.button.MaterialButtonToggleGroup>
+                        </HorizontalScrollView>
                     </LinearLayout>
-                </RelativeLayout>
-            </com.google.android.material.card.MaterialCardView>
+                </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/settings_about_header"
-                android:textAppearance="?attr/textAppearanceLabelLarge"
-                android:textColor="?attr/colorPrimary"
-                android:paddingHorizontal="24dp"
-                android:paddingTop="24dp"
-                android:paddingBottom="8dp" />
-
-            <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewFilledStyle"
-                android:id="@+id/btnAbout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Single">
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:text="@string/settings_advanced_header"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:paddingHorizontal="24dp"
+                    android:visibility="gone"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="8dp" />
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_info"
-                        app:tint="?attr/colorPrimary" />
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/cardShowTouches"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_marginHorizontal="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Single">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchShowTouches"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:clickable="false"
+                            android:focusable="false"
+                            app:thumbIcon="@drawable/ic_touch" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toStartOf="@id/switchShowTouches"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_show_touches_title"
+                                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_show_touches_summary"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_about_header"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:paddingHorizontal="24dp"
+                    android:paddingTop="24dp"
+                    android:paddingBottom="8dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/btnAbout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Single">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="16dp">
+                        android:padding="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/settings_about_app_title"
-                            android:textAppearance="?attr/textAppearanceTitleMedium" />
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_info"
+                            app:tint="?attr/colorPrimary" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_about_app_summary"
-                            android:textAppearance="?attr/textAppearanceBodyMedium"
-                            android:textColor="?attr/colorOnSurfaceVariant" />
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_about_app_title"
+                                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/settings_about_app_summary"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                </com.google.android.material.card.MaterialCardView>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
