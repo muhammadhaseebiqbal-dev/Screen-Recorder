@@ -12,6 +12,9 @@
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
         <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
 
+        <item name="enableEdgeToEdge">true</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
         <item name="colorPrimaryContainer">@color/colorPrimaryContainer</item>

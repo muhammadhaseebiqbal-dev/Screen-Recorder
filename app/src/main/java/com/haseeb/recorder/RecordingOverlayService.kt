@@ -5,8 +5,6 @@ import android.app.Service
 import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.*
-import android.transition.AutoTransition
-import android.transition.TransitionManager
 import android.view.*
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
@@ -14,6 +12,10 @@ import androidx.appcompat.view.ContextThemeWrapper
 import com.haseeb.recorder.databinding.LayoutRecordingOverlayBinding
 import kotlin.math.abs
 
+/*
+ * Foreground overlay service that displays a floating recording control panel.
+ * Supports drag, expand/collapse, pause/resume, and animated entry.
+ */
 class RecordingOverlayService : Service() {
 
     private var windowManager: WindowManager? = null
@@ -31,14 +33,12 @@ class RecordingOverlayService : Service() {
     private val collapseRunnable = Runnable { collapseOverlay() }
 
     /*
-     * Binds the service to an intent.
-     * Returns null as this service operates independently without binding to an activity.
+     * Returns null since this service does not support binding.
      */
     override fun onBind(intent: Intent?): IBinder? = null
 
     /*
-     * Initializes the service, retrieves the window manager system service.
-     * Calculates initial screen boundaries and triggers the creation of the overlay interface.
+     * Initializes the window manager, reads screen dimensions, and builds the overlay.
      */
     override fun onCreate() {
         super.onCreate()
@@ -49,8 +49,7 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Retrieves the current screen width and height using the modern WindowMetrics API.
-     * Provides fallback values to prevent crashes if metrics are unavailable.
+     * Reads the current screen width and height from the window manager.
      */
     private fun updateScreenBounds() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -61,8 +60,8 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Inflates the overlay layout with the defined application theme.
-     * Initializes all UI components, sets layout parameters, applies drag logic, and adds the view to the window manager.
+     * Inflates the overlay layout, configures all components, and adds the view
+     * to the window manager with a smooth entry animation.
      */
     private fun createOverlay() {
         val themedContext = ContextThemeWrapper(this, R.style.Theme_ScreenRecorder)
@@ -84,18 +83,26 @@ class RecordingOverlayService : Service() {
             e.printStackTrace()
         }
 
+        /*
+         * Entry animation: fade in with subtle scale and upward slide.
+         * Kept short and snappy to avoid any perceived lag on launch.
+         */
         view.alpha = 0f
-        view.scaleX = 0.7f
-        view.scaleY = 0.7f
-        view.animate().alpha(0.9f).scaleX(1f).scaleY(1f)
-            .setDuration(400)
-            .setInterpolator(OvershootInterpolator())
+        view.scaleX = 0.88f
+        view.scaleY = 0.88f
+        view.translationY = -18f
+        view.animate()
+            .alpha(0.95f)
+            .scaleX(1f)
+            .scaleY(1f)
+            .translationY(0f)
+            .setDuration(220)
+            .setInterpolator(DecelerateInterpolator(2f))
             .start()
     }
 
     /*
-     * Configures the WindowManager layout parameters for the floating overlay.
-     * Makes the overlay float above other apps and sets its initial placement.
+     * Configures the WindowManager layout parameters for the floating overlay window.
      */
     private fun setupLayoutParams() {
         params = WindowManager.LayoutParams(
@@ -111,8 +118,8 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Implements the touch listener for the main floating view to enable dragging.
-     * Distinguishes between dragging and clicking to prevent accidental expansions after a drag.
+     * Attaches a touch listener that separates drag gestures from tap gestures.
+     * Drag moves the window; tap expands the overlay if it is collapsed.
      */
     private fun applyDragLogic(view: View) {
         val touchSlop = ViewConfiguration.get(this).scaledTouchSlop
@@ -133,7 +140,6 @@ class RecordingOverlayService : Service() {
                 MotionEvent.ACTION_MOVE -> {
                     val dx = (event.rawX - touchX).toInt()
                     val dy = (event.rawY - touchY).toInt()
-                    
                     if (abs(dx) > touchSlop || abs(dy) > touchSlop) {
                         isDragging = true
                         params.x = (initialX + dx).coerceIn(0, screenWidth - view.width)
@@ -155,59 +161,75 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Collapses the overlay to hide the control buttons and show only the timer.
-     * Syncs layout bounds transition with a custom X-axis animation to prevent visual jitter.
+     * Collapses the overlay in two sequential phases to prevent animation jitter.
+     * Phase 1: fades out the control buttons.
+     * Phase 2: slides the window to the right screen edge after layout has settled.
      */
     private fun collapseOverlay() {
         if (!isExpanded || binding == null) return
-        
-        updateScreenBounds()
-        
-        val transition = AutoTransition().apply { 
-            duration = 300 
-            interpolator = DecelerateInterpolator()
-        }
-        TransitionManager.beginDelayedTransition(binding!!.rootCard, transition)
-        
-        binding!!.controlsContainer.visibility = View.GONE
         isExpanded = false
+        updateScreenBounds()
 
-        val targetX = screenWidth - 140 
-        animateWindowPositionX(params.x, targetX)
+        binding!!.controlsContainer.animate()
+            .alpha(0f)
+            .setDuration(160)
+            .setInterpolator(DecelerateInterpolator())
+            .withEndAction {
+                binding?.controlsContainer?.visibility = View.GONE
+                binding?.controlsContainer?.alpha = 1f
+
+                /*
+                 * Start the X slide after the layout has fully collapsed so that
+                 * both animations do not run at the same time, which causes jitter.
+                 */
+                binding?.root?.post {
+                    val cardWidth = binding?.rootCard?.width ?: 120
+                    val targetX = (screenWidth - cardWidth - 12).coerceAtLeast(0)
+                    animateWindowPositionX(params.x, targetX)
+                }
+            }
+            .start()
     }
 
     /*
-     * Expands the overlay to show all recording controls.
-     * Animates the expansion smoothly while moving the window away from the screen edge.
+     * Expands the overlay in two sequential phases.
+     * Phase 1: slides the window away from the screen edge.
+     * Phase 2: fades in the control buttons after the slide begins.
      */
     private fun expandOverlay() {
         if (isExpanded || binding == null) return
-        
-        updateScreenBounds()
-        
-        val transition = AutoTransition().apply { 
-            duration = 300 
-            interpolator = DecelerateInterpolator()
-        }
-        TransitionManager.beginDelayedTransition(binding!!.rootCard, transition)
-        
-        binding!!.controlsContainer.visibility = View.VISIBLE
         isExpanded = true
-        
-        val targetX = (params.x - 200).coerceAtLeast(0)
+        updateScreenBounds()
+
+        val targetX = (params.x - 220).coerceAtLeast(12)
         animateWindowPositionX(params.x, targetX)
+
+        /*
+         * Delay the fade-in slightly so it overlaps the tail end of the slide,
+         * giving a smooth staggered feel without sequential lag.
+         */
+        binding!!.root.postDelayed({
+            binding?.controlsContainer?.alpha = 0f
+            binding?.controlsContainer?.visibility = View.VISIBLE
+            binding?.controlsContainer?.animate()
+                ?.alpha(1f)
+                ?.setDuration(200)
+                ?.setInterpolator(DecelerateInterpolator(2f))
+                ?.start()
+        }, 80)
+
         startCollapseTimer()
     }
 
     /*
-     * Animates the X coordinate of the floating window across the screen over time.
-     * Ensures the window moves at the exact same pace as the width transition to eliminate UI glitches.
+     * Animates the window X position smoothly using a ValueAnimator.
+     * Cancels any in-progress X animation before starting a new one.
      */
     private fun animateWindowPositionX(startX: Int, endX: Int) {
         windowXAnimator?.cancel()
         windowXAnimator = ValueAnimator.ofInt(startX, endX).apply {
-            duration = 300
-            interpolator = DecelerateInterpolator()
+            duration = 220
+            interpolator = DecelerateInterpolator(2f)
             addUpdateListener { animation ->
                 params.x = animation.animatedValue as Int
                 updateViewLayoutSafe()
@@ -217,8 +239,8 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Safely updates the view layout inside the WindowManager.
-     * Uses a try-catch block to prevent application crashes in edge cases or custom Android OS environments.
+     * Safely updates the window layout and swallows any exception that may
+     * occur in edge cases such as the view being detached or the token being invalid.
      */
     private fun updateViewLayoutSafe() {
         try {
@@ -231,8 +253,8 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Triggers the collapse runnable to execute after a delay of three seconds.
-     * Removes any existing callbacks to prevent multiple timers from running simultaneously.
+     * Posts the collapse runnable after a 3-second delay.
+     * Removes any previously scheduled callbacks to avoid duplicate timers.
      */
     private fun startCollapseTimer() {
         collapseHandler.removeCallbacks(collapseRunnable)
@@ -240,13 +262,12 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Resets the active collapse timer.
-     * Called whenever the user interacts with the floating window to keep it expanded.
+     * Resets the collapse timer whenever the user interacts with the overlay.
      */
     private fun resetCollapseTimer() = startCollapseTimer()
 
     /*
-     * Initializes and starts the chronometer to display recording duration.
+     * Initializes and starts the chronometer to track recording duration.
      */
     private fun setupTimer() {
         binding?.timer?.apply {
@@ -256,34 +277,35 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Configures the infinite blinking animation for the recording indicator dot.
+     * Creates and starts the infinite alpha blink animation for the recording dot.
      */
     private fun setupBlinkingDot() {
-        redDotAnimator = ValueAnimator.ofFloat(1f, 0.3f).apply {
-            duration = 900
+        redDotAnimator = ValueAnimator.ofFloat(1f, 0.25f).apply {
+            duration = 850
             repeatMode = ValueAnimator.REVERSE
             repeatCount = ValueAnimator.INFINITE
+            interpolator = DecelerateInterpolator()
             addUpdateListener { binding?.redDot?.alpha = it.animatedValue as Float }
             start()
         }
     }
 
     /*
-     * Binds standard click listeners to the pause and stop buttons.
+     * Attaches click listeners to the pause and stop control buttons.
      */
     private fun setupButtons() {
-        binding?.btnPause?.setOnClickListener { 
+        binding?.btnPause?.setOnClickListener {
             resetCollapseTimer()
-            handlePauseResume() 
+            handlePauseResume()
         }
-        binding?.btnStop?.setOnClickListener { 
-            sendAction(ScreenRecordService.ACTION_STOP) 
+        binding?.btnStop?.setOnClickListener {
+            sendAction(ScreenRecordService.ACTION_STOP)
         }
     }
 
     /*
-     * Handles the logic for pausing and resuming the screen recording.
-     * Updates the chronometer base time and swaps the play and pause icons accordingly.
+     * Toggles between pause and resume states.
+     * Adjusts the chronometer base and swaps the button icon accordingly.
      */
     private fun handlePauseResume() {
         val timer = binding?.timer ?: return
@@ -304,14 +326,14 @@ class RecordingOverlayService : Service() {
     }
 
     /*
-     * Sends an action intent to the main screen recording service to perform tasks.
+     * Sends a control action intent to the ScreenRecordService.
      */
     private fun sendAction(action: String) {
         startService(Intent(this, ScreenRecordService::class.java).apply { this.action = action })
     }
 
     /*
-     * Cleans up all ongoing operations, handlers, animations, and removes the view upon service destruction.
+     * Releases all resources, cancels animations, and removes the overlay view from the window.
      */
     override fun onDestroy() {
         super.onDestroy()
@@ -319,8 +341,8 @@ class RecordingOverlayService : Service() {
         redDotAnimator?.cancel()
         windowXAnimator?.cancel()
         binding?.root?.let {
-            try { 
-                windowManager?.removeView(it) 
+            try {
+                windowManager?.removeView(it)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

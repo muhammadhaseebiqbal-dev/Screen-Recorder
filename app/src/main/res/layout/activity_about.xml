@@ -3,11 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
+        android:id="@+id/appBarLayout"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
@@ -41,9 +40,7 @@
         android:id="@+id/recyclerView"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:paddingBottom="100dp"
+        android:paddingHorizontal="16dp"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 

@@ -22,9 +22,15 @@ class AboutActivity : AppCompatActivity() {
      * Initializes About screen and binds recycler data.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        binding.root.applyTopInsets()
+        binding.appBarLayout.applySystemBarInsets()
+        binding.recyclerView.applyBottomInsets()
+        
+        super.onCreate(savedInstanceState)
 
         binding.toolbar.setNavigationOnClickListener { finish() }
 

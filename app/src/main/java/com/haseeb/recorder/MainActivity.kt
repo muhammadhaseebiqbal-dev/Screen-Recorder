@@ -11,6 +11,8 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.View
+import android.view.ViewGroup
+
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -19,10 +21,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.haseeb.recorder.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 
-/**
- * Main activity for the Screen Recorder application.
- * Manages video list loading, dynamic permission handling for all Android versions,
- * and background service synchronization.
+/*
+ * Main activity of the Screen Recorder app.
+ * Manages permissions, video list display, recording controls,
+ * and edge-to-edge window insets.
  */
 class MainActivity : AppCompatActivity() {
 
@@ -34,10 +36,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var configManager: ConfigManager
     private lateinit var adapter: VideoAdapter
 
-    /**
-     * Receives recording state updates from the ScreenRecordService.
-     * Ensures the UI FAB and text stay synced with the actual recording status.
-     */
     private val recordingStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ScreenRecordService.ACTION_STATE_CHANGED) {
@@ -46,10 +44,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Observes changes in the MediaStore Video database.
-     * Automatically triggers [loadVideos] when a new recording is saved or deleted.
-     */
     private val videoObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
         override fun onChange(selfChange: Boolean) {
             super.onChange(selfChange)
@@ -57,54 +51,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Entry point of the activity. Sets up UI, initializes managers,
-     * registers receivers, and triggers the initial permission health check.
+    /*
+     * Sets up edge-to-edge drawing, binds the layout, initializes all components,
+     * applies window insets, and triggers the permission check flow.
      */
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        
+        binding.root.applyTopInsets()
+        binding.appBarLayout.applySystemBarInsets()
+        binding.nestedScrollView.applyBottomInsets()
+        binding.fabRecord.applyBottomMargin()
+        
         initializeComponents()
         setupRecyclerView()
         setupClickListeners()
         registerSystemObservers()
-        
-        // Critical: Check all permissions immediately on launch
         performFullPermissionCheck()
     }
 
-    /**
-     * Initializes core managers and support components.
+    /*
+     * Initializes ConfigManager and sets the support action bar.
      */
     private fun initializeComponents() {
         configManager = ConfigManager(this)
         setSupportActionBar(binding.toolbar)
     }
 
-    /**
-     * Registers receivers for service state changes and MediaStore content updates.
-     * Includes compatibility checks for Android 13+ (Tiramisu) receiver flags.
-     */
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    private fun registerSystemObservers() {
-        contentResolver.registerContentObserver(
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-            true,
-            videoObserver
-        )
-
-        val filter = IntentFilter(ScreenRecordService.ACTION_STATE_CHANGED)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(recordingStateReceiver, filter, Context.RECEIVER_EXPORTED)
-        } else {
-            registerReceiver(recordingStateReceiver, filter)
-        }
-    }
-
-    /**
-     * Sets up the RecyclerView for displaying recorded videos.
+    /*
+     * Sets up the RecyclerView with a LinearLayoutManager and the video adapter.
      */
     private fun setupRecyclerView() {
         adapter = VideoAdapter()
@@ -112,8 +90,8 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.adapter = adapter
     }
 
-    /**
-     * Sets up click listeners with tactile haptic feedback.
+    /*
+     * Attaches click listeners to the record FAB and settings button.
      */
     private fun setupClickListeners() {
         binding.fabRecord.setOnClickListener {
@@ -122,31 +100,28 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnSettings.setOnClickListener {
-            it.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             SettingsBottomSheet.newInstance().show(supportFragmentManager, "SettingsBottomSheet")
         }
     }
 
-    /**
-     * Orchestrates the verification of all required permissions:
-     * Runtime (Camera/Mic/Storage), Overlay, and System Write Settings.
+    /*
+     * Starts the sequential permission validation flow.
+     * Only loads videos if all permissions are already granted.
      */
     private fun performFullPermissionCheck() {
         if (!checkAndRequestRuntimePermissions()) return
         if (!checkOverlayPermission()) return
         if (!checkWriteSettingsPermission()) return
-        
-        // If all clear, load the data
         loadVideos()
     }
 
-    /**
-     * Checks for standard runtime permissions based on the device Android version.
-     * Handles the shift from Storage to Media permissions in newer Android APIs.
+    /*
+     * Checks and requests runtime permissions adapted for the current Android version.
      */
     private fun checkAndRequestRuntimePermissions(): Boolean {
         val permissions = mutableListOf(Manifest.permission.RECORD_AUDIO)
-        
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             permissions.add(Manifest.permission.POST_NOTIFICATIONS)
             permissions.add(Manifest.permission.READ_MEDIA_VIDEO)
@@ -155,8 +130,8 @@ class MainActivity : AppCompatActivity() {
             permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
 
-        val missing = permissions.filter { 
-            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED 
+        val missing = permissions.filter {
+            ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
 
         return if (missing.isNotEmpty()) {
@@ -167,54 +142,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Validates if the app can draw over other apps (Overlay).
-     * Redirects to system settings if permission is missing.
+    /*
+     * Checks overlay permission and opens the system settings page if not granted.
      */
     private fun checkOverlayPermission(): Boolean {
         return if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
-            )
-            startActivity(intent)
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
             false
-        } else {
-            true
-        }
+        } else true
     }
 
-    /**
-     * Validates if the app can modify system settings.
-     * This is crucial for advanced recorder features that might toggle system states.
+    /*
+     * Checks write settings permission and opens the system settings page if not granted.
      */
     private fun checkWriteSettingsPermission(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!Settings.System.canWrite(this)) {
-                val intent = Intent(
-                    Settings.ACTION_MANAGE_WRITE_SETTINGS,
-                    Uri.parse("package:$packageName")
-                )
-                startActivity(intent)
-                false
-            } else {
-                true
-            }
-        } else {
-            true
-        }
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(this)) {
+            startActivity(Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:$packageName")))
+            false
+        } else true
     }
 
-    /**
-     * Handles logic for starting or stopping a recording session.
-     * Acts as a gateway to the MediaProjection permission activity.
+    /*
+     * Starts or stops recording based on the current service state.
      */
     private fun handleRecordAction() {
         if (ScreenRecordService.isRecording) {
-            val stopIntent = Intent(this, ScreenRecordService::class.java).apply {
+            startService(Intent(this, ScreenRecordService::class.java).apply {
                 action = ScreenRecordService.ACTION_STOP
-            }
-            startService(stopIntent)
+            })
         } else {
             val intent = Intent(this, MediaProjectionPermissionActivity::class.java).apply {
                 putExtra("RECORD_MIC", configManager.isMicEnabled)
@@ -224,20 +179,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Syncs the Floating Action Button (FAB) UI state with the service.
+    /*
+     * Updates the FAB icon and label to match the current recording state.
      */
     private fun syncRecordingUi() {
         val isRecording = ScreenRecordService.isRecording
         binding.fabRecord.apply {
+            // setImageResource(if (isRecording) R.drawable.ic_stop else R.drawable.ic_screen_record)
             setIconResource(if (isRecording) R.drawable.ic_stop else R.drawable.ic_screen_record)
-            text = if (isRecording) "Stop" else getString(R.string.MainActivity_start_recording)
+            text = if (isRecording) getString(R.string.MainActivity_record_stop) else getString(R.string.MainActivity_record_start)
         }
     }
 
-    /**
-     * Asynchronously loads screen recording files from MediaStore.
-     * Filters files based on naming conventions to ensure only app-related videos appear.
+    /*
+     * Loads screen recordings from MediaStore on a background thread.
+     * Updates the adapter and toggles the empty view on the main thread.
+     * If the list is empty, the FAB is shown explicitly in case it was
+     * hidden by the scroll behavior and has no content to trigger a re-show.
      */
     @SuppressLint("Range")
     private fun loadVideos() {
@@ -248,12 +206,11 @@ class MainActivity : AppCompatActivity() {
                 MediaStore.Video.Media.DISPLAY_NAME,
                 MediaStore.Video.Media.DURATION,
                 MediaStore.Video.Media.SIZE,
-                MediaStore.Video.Media.DATE_ADDED,
-                MediaStore.Video.Media.DATA
+                MediaStore.Video.Media.DATE_ADDED
             )
 
-            val selection = "${MediaStore.Video.Media.DISPLAY_NAME} LIKE ? OR ${MediaStore.Video.Media.DATA} LIKE ?"
-            val selectionArgs = arrayOf("ScreenRecord_%.mp4", "%ScreenRecorder%")
+            val selection = "${MediaStore.Video.Media.DISPLAY_NAME} LIKE ?"
+            val selectionArgs = arrayOf("ScreenRecord_%.mp4")
 
             contentResolver.query(
                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
@@ -278,40 +235,43 @@ class MainActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 adapter.submitList(videos)
-                binding.emptyView.visibility = if (videos.isEmpty()) View.VISIBLE else View.GONE
-                binding.recyclerView.visibility = if (videos.isEmpty()) View.GONE else View.VISIBLE
+                val isEmpty = videos.isEmpty()
+                binding.emptyView.visibility = if (isEmpty) View.VISIBLE else View.GONE
+                binding.recyclerView.visibility = if (isEmpty) View.GONE else View.VISIBLE
             }
         }
     }
 
-    /**
-     * Refreshes recording state and checks permissions every time user returns to the app.
+    /*
+     * Registers the MediaStore content observer and the recording state broadcast receiver.
+     */
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    private fun registerSystemObservers() {
+        contentResolver.registerContentObserver(
+            MediaStore.Video.Media.EXTERNAL_CONTENT_URI, true, videoObserver
+        )
+        val filter = IntentFilter(ScreenRecordService.ACTION_STATE_CHANGED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(recordingStateReceiver, filter, Context.RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(recordingStateReceiver, filter)
+        }
+    }
+
+    /*
+     * Syncs the FAB state whenever the activity comes to the foreground.
      */
     override fun onResume() {
         super.onResume()
         syncRecordingUi()
-        performFullPermissionCheck()
     }
 
-    /**
-     * Clean up resources to prevent memory leaks.
+    /*
+     * Unregisters the content observer and broadcast receiver to prevent memory leaks.
      */
     override fun onDestroy() {
         super.onDestroy()
         contentResolver.unregisterContentObserver(videoObserver)
         unregisterReceiver(recordingStateReceiver)
-    }
-
-    /**
-     * Callback handler for runtime permission requests.
-     */
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_PERMISSIONS_CODE) {
-            val allGranted = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
-            if (allGranted) {
-                performFullPermissionCheck()
-            }
-        }
     }
 }
