@@ -1,28 +1,34 @@
-*.iml
+# Gradle files
 .gradle/
-local.properties
-/.idea/
-.DS_Store
 build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Log/OS Files
+*.log
+
+# Android Studio generated files and folders
 captures/
 .externalNativeBuild/
 .cxx/
-
-# Kotlin
-*.class
-
-# App modules
-app/build/
-app/.idea/
-app/local.properties
-app/gradlew
-app/gradlew.bat
-
-# User-specific generated files
-*.apk
-*.ap_
 *.aab
-*.dex
+*.apk
+output-metadata.json
+
+# IntelliJ
+*.iml
+.idea/
+misc.xml
+deploymentTargetDropDown.xml
+render.experimental.xml
+
+# Android Profiling
+*.hprof
 
 .acside/
+
 gradle-daemon-jvm.properties
+workspace.json
+.kotlin/
+app/release
