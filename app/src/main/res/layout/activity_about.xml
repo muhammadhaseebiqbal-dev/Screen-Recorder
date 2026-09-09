@@ -18,7 +18,7 @@
             android:fitsSystemWindows="true"
             style="@style/Widget.Material3.CollapsingToolbar.Large"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:title="@string/AboutActivity_title"
+            app:title="@string/activity_about_title"
             android:background="?attr/colorSurface"
             app:contentScrim="?attr/colorSurface"
             app:statusBarScrim="?attr/colorSurface"

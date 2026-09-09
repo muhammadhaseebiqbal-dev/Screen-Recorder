@@ -17,7 +17,7 @@
             android:fitsSystemWindows="true"
             style="@style/Widget.Material3.CollapsingToolbar.Large"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:title="@string/MainActivity_title"
+            app:title="@string/activity_main_title"
             android:background="?attr/colorSurface"
             app:contentScrim="?attr/colorSurface"
             app:statusBarScrim="?attr/colorSurface"
@@ -39,12 +39,12 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSettings"
-                    style="@style/Widget.Material3Expressive.Button.IconButton.Tonal"
+                    style="@style/MaterialButtonIconTonal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="8dp"
-                    android:contentDescription="@string/settings_title"
+                    android:contentDescription="@string/activity_main_desc_settings"
                     app:icon="@drawable/ic_settings" />
 
             </LinearLayout>
@@ -85,14 +85,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/MainActivity_empty_text"
+                    android:text="@string/activity_main_empty_text"
                     android:textAppearance="?attr/textAppearanceHeadlineSmall"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/MainActivity_empty_subtext"
+                    android:text="@string/activity_main_empty_subtext"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:layout_marginTop="8dp"
                     android:textColor="?attr/colorOnSurfaceVariant" />
@@ -110,7 +110,7 @@
         android:layout_margin="16dp"
         android:layout_gravity="bottom|end"
         app:icon="@drawable/ic_screen_record"
-        android:text="@string/MainActivity_record_start"
+        android:text="@string/activity_main_record_start"
         app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

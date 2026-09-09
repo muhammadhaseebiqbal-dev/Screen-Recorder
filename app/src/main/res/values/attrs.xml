@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Core Roles -->
     <attr
         name="colorPrimary"
         format="color" />
@@ -41,7 +40,6 @@
         name="colorOnTertiaryContainer"
         format="color" />
 
-    <!-- Neutral Surfaces -->
     <attr
         name="colorSurface"
         format="color" />
@@ -58,7 +56,6 @@
         name="colorSurfaceTint"
         format="color" />
 
-    <!-- Background -->
     <attr
         name="colorBackground"
         format="color" />
@@ -66,7 +63,6 @@
         name="colorOnBackground"
         format="color" />
 
-    <!-- Error Colors -->
     <attr
         name="colorError"
         format="color" />
@@ -80,7 +76,6 @@
         name="colorOnErrorContainer"
         format="color" />
 
-    <!-- Outline -->
     <attr
         name="colorOutline"
         format="color" />
@@ -88,7 +83,6 @@
         name="colorOutlineVariant"
         format="color" />
 
-    <!-- Inverse Roles -->
     <attr
         name="colorInverseSurface"
         format="color" />
@@ -99,7 +93,6 @@
         name="colorInversePrimary"
         format="color" />
 
-    <!-- Surface Elevation Levels -->
     <attr
         name="colorSurfaceDim"
         format="color" />
@@ -122,7 +115,6 @@
         name="colorSurfaceContainerHighest"
         format="color" />
 
-    <!-- Fixed Roles -->
     <attr
         name="colorPrimaryFixed"
         format="color" />

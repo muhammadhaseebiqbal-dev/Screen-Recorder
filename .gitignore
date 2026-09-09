@@ -32,3 +32,5 @@ gradle-daemon-jvm.properties
 workspace.json
 .kotlin/
 app/release
+recorder.code-workspace
+CHANGELOG.md

@@ -2,24 +2,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
 
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
+    <uses-permission android:name="moe.shizuku.manager.permission.API_V23" />
+
+    <queries>
+        <package android:name="moe.shizuku.privileged.api" />
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -32,36 +32,56 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScreenRecorder">
 
+        <provider
+            android:name="rikka.shizuku.ShizukuProvider"
+            android:authorities="${applicationId}.shizuku"
+            android:multiprocess="false"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL" />
+
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <activity
-            android:name=".AboutActivity"
+            android:name=".ui.activity.AboutActivity"
             android:exported="false" />
 
         <activity
-            android:name=".MediaProjectionPermissionActivity"
+            android:name=".ui.activity.MediaProjectionPermissionActivity"
             android:exported="false"
             android:excludeFromRecents="true"
             android:theme="@style/Theme.ScreenRecorder.Transparent" />
 
         <service
-            android:name=".ScreenRecordService"
+            android:name=".recording.ScreenRecordService"
             android:exported="false"
             android:foregroundServiceType="mediaProjection|microphone" />
 
         <service
-            android:name=".RecordingOverlayService"
+            android:name=".overlay.RecordingOverlayService"
             android:exported="false" />
 
         <service
-            android:name=".ScreenRecordTileService"
+            android:name=".camera.CameraOverlayService"
+            android:exported="false" />
+
+        <service
+            android:name=".draw.DrawOverlayService"
+            android:exported="false" />
+
+        <service
+            android:name=".recording.ScreenRecordTileService"
             android:exported="true"
             android:icon="@drawable/ic_screen_record"
             android:label="@string/ScreenRecordTileService_tile_start"

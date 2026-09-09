@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace = "com.haseeb.recorder"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.haseeb.recorder"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 6
         versionName = "4.0"
     }
@@ -45,9 +45,12 @@ android {
 
 dependencies {
     implementation("androidx.activity:activity-ktx:1.13.0")
-    implementation("androidx.appcompat:appcompat:1.8.0-alpha01")
+    implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.14.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.2")
     implementation("androidx.recyclerview:recyclerview:1.4.0")
-    implementation("com.github.bumptech.glide:glide:5.0.7")
+    implementation("com.github.bumptech.glide:glide:5.0.9")
+    implementation("androidx.documentfile:documentfile:1.1.0")
+    implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:provider:13.1.5")
 }

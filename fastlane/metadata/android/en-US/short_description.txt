@@ -1,1 +1,0 @@
-A lightweight Material 3 screen recorder with pause, resume, and high-quality capture.

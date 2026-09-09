@@ -3,14 +3,14 @@
 
     <item
         android:id="@+id/action_rename"
-        android:title="@string/ItemVideo_menu_rename" />
+        android:title="@string/video_options_menu_rename" />
 
     <item
         android:id="@+id/action_share"
-        android:title="@string/ItemVideo_menu_share" />
+        android:title="@string/video_options_menu_share" />
 
     <item
         android:id="@+id/action_delete"
-        android:title="@string/ItemVideo_menu_delete" />
+        android:title="@string/video_options_menu_delete" />
 
 </menu>

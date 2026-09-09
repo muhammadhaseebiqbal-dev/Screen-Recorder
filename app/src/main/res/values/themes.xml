@@ -73,4 +73,64 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
+    <style
+        name="MaterialButtonPrimary"
+        parent="@style/Widget.Material3Expressive.Button">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonSecondary"
+        parent="@style/Widget.Material3Expressive.Button.TextButton">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonSecondaryOutline"
+        parent="@style/Widget.Material3Expressive.Button.OutlinedButton">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonTonal"
+        parent="@style/Widget.Material3Expressive.Button.TonalButton">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonElevated"
+        parent="@style/Widget.Material3Expressive.Button.ElevatedButton">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonIcon"
+        parent="@style/Widget.Material3Expressive.Button.IconButton">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonIconFilled"
+        parent="@style/Widget.Material3Expressive.Button.IconButton.Filled">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonIconOutlined"
+        parent="@style/Widget.Material3Expressive.Button.IconButton.Outlined">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonIconStandard"
+        parent="@style/Widget.Material3Expressive.Button.IconButton.Standard">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style
+        name="MaterialButtonIconTonal"
+        parent="@style/Widget.Material3Expressive.Button.IconButton.Tonal">
+        <item name="textAllCaps">false</item>
+    </style>
+
 </resources>

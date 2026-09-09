@@ -2,8 +2,84 @@
 
     <string name="app_name">Screen Recorder</string>
 
+    <string name="activity_about_title">About</string>
+    
     <string name="AboutActivity_title">About</string>
+    <string name="AboutActivity_desc_avatar">Profile picture</string>
+    <string name="AboutActivity_desc_coffee">Buy me a coffee</string>
+    <string name="AboutActivity_desc_github">GitHub profile</string>
+    <string name="AboutActivity_desc_telegram">Telegram profile</string>
+    <string name="AboutActivity_desc_email">Email profile</string>
+    <string name="AboutActivity_desc_update">Check for updates</string>
+    <string name="AboutActivity_version_format">Version %1$s</string>
+    <string name="AboutActivity_app_title">Screen Recorder</string>
+    <string name="AboutActivity_app_description">An open-source screen recorder designed for clarity, performance, and complete user privacy on Android.</string>
+    <string name="AboutActivity_tag_open_source">Open Source</string>
+    <string name="AboutActivity_tag_community">Community</string>
+    <string name="AboutActivity_tag_m3">M3 Expressive</string>
+    <string name="AboutActivity_cat_maintainer">Maintainer</string>
+    <string name="AboutActivity_cat_maintainer_sub">Project lead and creator</string>
+    <string name="AboutActivity_maintainer_name">Haseeb Iqbal</string>
+    <string name="AboutActivity_maintainer_role">Lead Developer &amp; Maintainer</string>
+    <string name="AboutActivity_maintainer_desc">Creator and active maintainer of Screen Recorder.</string>
+    <string name="AboutActivity_maintainer_tag_lead">Lead Dev</string>
+    <string name="AboutActivity_maintainer_tag_creator">Creator</string>
+    <string name="AboutActivity_cat_contributors">Contributors</string>
+    <string name="AboutActivity_cat_contributors_sub">Developers who helped shape the app</string>
+    <string name="AboutActivity_contributor_ameer_name">Ameer Muawiya</string>
+    <string name="AboutActivity_contributor_ameer_role">Principal Architect &amp; Lead Contributor</string>
+    <string name="AboutActivity_contributor_ameer_desc">Architected the core settings framework, advanced recording overlays, Material 3 design system, and overall UX evolution.</string>
+    <string name="AboutActivity_contributor_tag_architect">Core Architect</string>
+    <string name="AboutActivity_contributor_tag_lead_contributor">Lead Contributor</string>
+    <string name="AboutActivity_contributor_tag_ui">UI/UX Specialist</string>
+    <string name="AboutActivity_contributor_tag_system">System Design</string>
+    <string name="AboutActivity_cat_source">Source Code</string>
+    <string name="AboutActivity_cat_source_sub">View the project repository on GitHub</string>
+    <string name="AboutActivity_cat_libraries">Open Source Libraries</string>
+    <string name="AboutActivity_cat_libraries_sub">Built with trusted open-source components</string>
+    <string name="AboutActivity_source_title">Screen Recorder Repository</string>
+    <string name="AboutActivity_update_title">Check for Updates</string>
+    <string name="AboutActivity_update_checking">Checking for updates...</string>
+    <string name="AboutActivity_update_latest">You are using the latest version</string>
+    <string name="AboutActivity_update_available">Update available: %1$s</string>
+    <string name="AboutActivity_update_error">Failed to check for updates</string>
+    <string name="AboutActivity_dialog_update_title">Update Available</string>
+    <string name="AboutActivity_dialog_update_notes_header">What\'s New</string>
+    <string name="AboutActivity_dialog_update_no_notes">No release notes provided for this version.</string>
+    <string name="AboutActivity_dialog_update_msg">Version %1$s is available on GitHub.\n\nRelease notes:\n%2$s</string>
+    <string name="AboutActivity_dialog_update_btn_download">Download</string>
+    <string name="AboutActivity_dialog_update_btn_cancel">Cancel</string>
+    <string name="AboutActivity_lib_material" translatable="false">Material Components 3</string>
+    <string name="AboutActivity_lib_material_desc" translatable="false">Apache License 2.0, The Android Open Source Project.</string>
+    <string name="AboutActivity_lib_jetpack" translatable="false">AndroidX Jetpack &amp; KTX</string>
+    <string name="AboutActivity_lib_jetpack_desc" translatable="false">Apache License 2.0, The Android Open Source Project.</string>
+    <string name="AboutActivity_lib_coroutines" translatable="false">Kotlin Coroutines</string>
+    <string name="AboutActivity_lib_coroutines_desc" translatable="false">Apache License 2.0, JetBrains s.r.o.</string>
+    <string name="AboutActivity_lib_shizuku" translatable="false">Rikka Shizuku</string>
+    <string name="AboutActivity_lib_shizuku_desc" translatable="false">Apache License 2.0, Rikka.</string>
+    <string name="AboutActivity_lib_glide" translatable="false">Glide</string>
+    <string name="AboutActivity_lib_glide_desc" translatable="false">Apache License 2.0 &amp; BSD 2-Clause, Google, Inc.</string>
+    <string name="AboutActivity_lib_documentfile" translatable="false">AndroidX DocumentFile</string>
+    <string name="AboutActivity_lib_documentfile_desc" translatable="false">Apache License 2.0, The Android Open Source Project.</string>
+    
+    
+    <string name="item_about_desc_avatar">Profile picture</string>
+    <string name="item_about_desc_coffee">Buy me a coffee</string>
+    <string name="item_about_desc_github">GitHub profile</string>
+    <string name="item_about_desc_telegram">Telegram profile</string>
+    <string name="item_about_desc_email">Email profile</string>
+    <string name="item_about_desc_update">Check for updates</string>
 
+    <string name="activity_main_title">Recordings</string>
+    <string name="activity_main_desc_settings">Settings</string>
+    <string name="activity_main_desc_audio">Toggle System Audio</string>
+    <string name="activity_main_desc_mic">Toggle Microphone</string>
+    <string name="activity_main_desc_info">About App</string>
+    <string name="activity_main_empty_text">No recordings yet</string>
+    <string name="activity_main_empty_subtext">Start your first recording</string>
+    <string name="activity_main_record_start">Record</string>
+    
+    
     <string name="MainActivity_title">Recordings</string>
     <string name="MainActivity_record_start">Record</string>
     <string name="MainActivity_record_stop">Stop</string>
@@ -13,12 +89,251 @@
     <string name="MainActivity_empty_text">No recordings yet</string>
     <string name="MainActivity_empty_subtext">Start your first recording</string>
 
-    <string name="ItemVideo_desc_menu">More options</string>
-    <string name="ItemVideo_desc_thumbnail">Video thumbnail</string>
-    <string name="ItemVideo_menu_delete">Delete</string>
-    <string name="ItemVideo_menu_rename">Rename</string>
-    <string name="ItemVideo_menu_share">Share</string>
+    <string name="activity_countdown_initial_number">3</string>
 
+    <string name="MediaProjectionPermissionActivity_permission_denied">Permission denied</string>
+    <string name="MediaProjectionPermissionActivity_log_init_failed">Initialization failed</string>
+    <string name="MediaProjectionPermissionActivity_log_proj_failed">Media projection request failed</string>
+    <string name="MediaProjectionPermissionActivity_log_service_failed">Service start failed</string>
+
+    <string name="sheet_settings_title">Recording Settings</string>
+    <string name="sheet_settings_audio_header">Audio</string>
+    <string name="sheet_settings_video_header">Video</string>
+    <string name="sheet_settings_countdown_header">Countdown</string>
+    <string name="sheet_settings_overlay_header">Controls</string>
+    <string name="sheet_settings_appearance_header">Appearance</string>
+    <string name="sheet_settings_advanced_header">Advanced</string>
+    <string name="sheet_settings_about_header">Information</string>
+    <string name="sheet_settings_storage_header">Storage</string>
+    <string name="sheet_settings_storage_location_title">Save Location</string>
+    <string name="sheet_settings_storage_default">Default (DCIM/ScreenRecorder)</string>
+    <string name="sheet_settings_storage_change">Change</string>
+    <string name="sheet_settings_storage_reset">Reset to Default</string>
+    <string name="sheet_settings_countdown_title">Countdown Timer</string>
+    <string name="sheet_settings_countdown_summary">Delay before recording begins</string>
+    <string name="sheet_settings_countdown_off">Off</string>
+    <string name="sheet_settings_countdown_3s">3s</string>
+    <string name="sheet_settings_countdown_5s">5s</string>
+    <string name="sheet_settings_countdown_10s">10s</string>
+    <string name="sheet_settings_recording_overlay_title">Floating Recording Bar</string>
+    <string name="sheet_settings_recording_overlay_summary">Show on-screen overlay with recording timer and quick controls</string>
+    <string name="sheet_settings_overlay_style_title">Overlay Layout Style</string>
+    <string name="sheet_settings_overlay_style_summary">Select horizontal linear bar or circular radial bubble layout</string>
+    <string name="sheet_settings_overlay_style_horizontal">Horizontal</string>
+    <string name="sheet_settings_overlay_style_radial">Radial</string>
+    <string name="sheet_settings_overlay_show_pause_title">Pause Button</string>
+    <string name="sheet_settings_overlay_show_pause_summary">Show pause and resume button</string>
+    <string name="sheet_settings_overlay_show_stop_title">Stop Button</string>
+    <string name="sheet_settings_overlay_show_stop_summary">Show stop and save button</string>
+    <string name="sheet_settings_overlay_show_mute_title">Mute Button</string>
+    <string name="sheet_settings_overlay_show_mute_summary">Show microphone mute toggle button</string>
+    <string name="sheet_settings_overlay_show_camera_title">Camera Button</string>
+    <string name="sheet_settings_overlay_show_camera_summary">Show floating camera preview toggle button</string>
+    <string name="sheet_settings_overlay_show_draw_title">Draw Tool Button</string>
+    <string name="sheet_settings_overlay_show_draw_summary">Show on-screen drawing tools toggle button</string>
+    <string name="sheet_settings_fps_title">Frame Rate (FPS)</string>
+    <string name="sheet_settings_fps_summary">Select frame rate for screen recording</string>
+    <string name="sheet_settings_fps_120">120 FPS</string>
+    <string name="sheet_settings_fps_90">90 FPS</string>
+    <string name="sheet_settings_fps_60">60 FPS</string>
+    <string name="sheet_settings_fps_30">30 FPS</string>
+    <string name="sheet_settings_fps_24">24 FPS</string>
+    <string name="sheet_settings_fps_15">15 FPS</string>
+    <string name="sheet_settings_bitrate_title">Video Bitrate</string>
+    <string name="sheet_settings_bitrate_summary">Select custom bitrate or optimal max rate</string>
+    <string name="sheet_settings_bitrate_auto">Auto</string>
+    <string name="sheet_settings_bitrate_24m">24 Mbps</string>
+    <string name="sheet_settings_bitrate_16m">16 Mbps</string>
+    <string name="sheet_settings_bitrate_12m">12 Mbps</string>
+    <string name="sheet_settings_bitrate_8m">8 Mbps</string>
+    <string name="sheet_settings_bitrate_5m">5 Mbps</string>
+    <string name="sheet_settings_bitrate_2m">2 Mbps</string>
+    <string name="sheet_settings_bitrate_1m">1 Mbps</string>
+    <string name="sheet_settings_encoder_title">Video Encoder</string>
+    <string name="sheet_settings_encoder_summary">Choose video compression format</string>
+    <string name="sheet_settings_encoder_h264">H.264 (AVC)</string>
+    <string name="sheet_settings_encoder_hevc">H.265 (HEVC)</string>
+    <string name="sheet_settings_orientation_title">Orientation</string>
+    <string name="sheet_settings_orientation_summary">Set recording screen orientation</string>
+    <string name="sheet_settings_orientation_auto">Auto</string>
+    <string name="sheet_settings_orientation_portrait">Portrait</string>
+    <string name="sheet_settings_orientation_landscape">Landscape</string>
+    <string name="sheet_settings_mic_title">Microphone</string>
+    <string name="sheet_settings_mic_summary">Record audio from your mic</string>
+    <string name="sheet_settings_system_audio_title">System Audio</string>
+    <string name="sheet_settings_system_audio_summary">Record internal device sound</string>
+    <string name="sheet_settings_quality_title">Video Quality</string>
+    <string name="sheet_settings_quality_summary">Choose the resolution for your recording</string>
+    <string name="sheet_settings_quality_max">Maximum</string>
+    <string name="sheet_settings_quality_4k">4K</string>
+    <string name="sheet_settings_quality_2k">2K</string>
+    <string name="sheet_settings_quality_1080p">1080p</string>
+    <string name="sheet_settings_quality_720p">720p</string>
+    <string name="sheet_settings_quality_480p">480p</string>
+    <string name="sheet_settings_quality_360p">360p</string>
+    <string name="sheet_settings_quality_240p">240p</string>
+    <string name="sheet_settings_dynamic_colors_title">Dynamic Colors</string>
+    <string name="sheet_settings_dynamic_colors_summary">Apply colors based on your wallpaper</string>
+    <string name="sheet_settings_theme_title">App Theme</string>
+    <string name="sheet_settings_theme_summary">Choose your preferred appearance</string>
+    <string name="sheet_settings_theme_system">System</string>
+    <string name="sheet_settings_theme_light">Light</string>
+    <string name="sheet_settings_theme_dark">Dark</string>
+    <string name="sheet_settings_lockscreen_header">Lock Screen</string>
+    <string name="sheet_settings_pause_on_screen_off_title">Pause on Screen Off</string>
+    <string name="sheet_settings_pause_on_screen_off_summary">Automatically pause recording when screen turns off and resume when turned back on</string>
+    <string name="sheet_settings_shizuku_header">Shizuku Features</string>
+    <string name="sheet_settings_shizuku_status_title">Shizuku Status</string>
+    <string name="sheet_settings_shizuku_status_unavailable">Service Not Running or Not Installed</string>
+    <string name="sheet_settings_shizuku_show_touches_title">Auto Show Touches</string>
+    <string name="sheet_settings_shizuku_show_touches_summary">Show system visual touch pointer automatically during recording</string>
+    <string name="sheet_settings_shizuku_direct_recording_title">Direct One-Click Recording</string>
+    <string name="sheet_settings_shizuku_direct_recording_summary">Skip projection confirmation dialog using privileged service</string>
+    <string name="sheet_settings_shizuku_immersive_title">Hide Status &amp; Navigation Bars</string>
+    <string name="sheet_settings_shizuku_immersive_summary">Record clean fullscreen video without top and bottom system bars</string>
+    <string name="sheet_settings_shizuku_enhanced_audio_title">Enhanced Internal Audio</string>
+    <string name="sheet_settings_shizuku_enhanced_audio_summary">Bypass capture restrictions to record internal game/app sound</string>
+    <string name="sheet_settings_language_title">App Language</string>
+    <string name="sheet_settings_language_summary">Choose your preferred language</string>
+    <string name="sheet_settings_about_app_title">About App</string>
+    <string name="sheet_settings_about_app_summary">Version, licenses and developer info</string>
+    
+    
+    <string name="SettingsBottomSheet_bitrate_auto_val">Auto (%1$d Mbps)</string>
+    <string name="SettingsBottomSheet_pause_on_screen_off_summary_enabled">Recording pauses when screen turns off and resumes when turned on</string>
+    <string name="SettingsBottomSheet_pause_on_screen_off_summary_disabled">Recording continues uninterrupted in background (captures black screen while locked)</string>
+    <string name="SettingsBottomSheet_overlay_radial_min_hint">Radial style requires at least 3 active buttons</string>
+    <string name="SettingsBottomSheet_overlay_style_summary">Select horizontal linear bar or circular radial bubble layout</string>
+    <string name="SettingsBottomSheet_shizuku_status_granted">Active &amp; Authorized</string>
+    <string name="SettingsBottomSheet_shizuku_status_waiting">Service Available - Tap to Authorize</string>
+    <string name="SettingsBottomSheet_shizuku_status_unavailable">Service Not Running or Not Installed</string>
+    <string name="SettingsBottomSheet_language_dialog_title">Select Language</string>
+    <string name="SettingsBottomSheet_language_system">System Language</string>
+    <string name="SettingsBottomSheet_language_btn_ok">OK</string>
+    <string name="SettingsBottomSheet_language_btn_cancel">Cancel</string>
+
+    <string name="overlay_camera_desc_switch">Switch camera</string>
+    <string name="overlay_camera_desc_close">Close camera preview</string>
+    <string name="overlay_camera_desc_resize">Resize camera preview</string>
+    
+    
+    <string name="CameraOverlay_desc_switch">Switch camera</string>
+    <string name="CameraOverlay_desc_close">Close camera preview</string>
+    <string name="CameraOverlay_desc_resize">Resize camera preview</string>
+
+    <string name="overlay_draw_toolbar_title">Drawing Tools</string>
+    <string name="overlay_draw_toolbar_desc_drag_handle">Drag drawing toolbar</string>
+    <string name="overlay_draw_toolbar_desc_pen">Pen tool</string>
+    <string name="overlay_draw_toolbar_desc_arrow">Arrow tool</string>
+    <string name="overlay_draw_toolbar_desc_rectangle">Rectangle tool</string>
+    <string name="overlay_draw_toolbar_desc_circle">Circle tool</string>
+    <string name="overlay_draw_toolbar_desc_eraser">Eraser</string>
+    <string name="overlay_draw_toolbar_desc_color">Choose color</string>
+    <string name="overlay_draw_toolbar_desc_size">Stroke width</string>
+    <string name="overlay_draw_toolbar_desc_undo">Undo drawing</string>
+    <string name="overlay_draw_toolbar_desc_redo">Redo drawing</string>
+    <string name="overlay_draw_toolbar_desc_clear">Clear all drawings</string>
+    <string name="overlay_draw_toolbar_desc_touch_mode">Toggle touch through screen interaction</string>
+    <string name="overlay_draw_toolbar_desc_close">Close drawing tools</string>
+    
+    
+    <string name="DrawOverlay_title">Drawing Tools</string>
+    <string name="DrawOverlay_desc_drag_handle">Drag drawing toolbar</string>
+    <string name="DrawOverlay_desc_undo">Undo drawing</string>
+    <string name="DrawOverlay_desc_redo">Redo drawing</string>
+    <string name="DrawOverlay_desc_touch_mode">Toggle touch through screen interaction</string>
+    <string name="DrawOverlay_desc_clear">Clear all drawings</string>
+    <string name="DrawOverlay_desc_close">Close drawing tools</string>
+    <string name="DrawOverlay_desc_pen">Pen tool</string>
+    <string name="DrawOverlay_desc_arrow">Arrow tool</string>
+    <string name="DrawOverlay_desc_rectangle">Rectangle tool</string>
+    <string name="DrawOverlay_desc_circle">Circle tool</string>
+    <string name="DrawOverlay_desc_eraser">Eraser</string>
+    <string name="DrawOverlay_desc_size">Stroke width</string>
+
+    <string name="overlay_recording_desc_pause">Pause recording</string>
+    <string name="overlay_recording_desc_mute">Mute microphone</string>
+    <string name="overlay_recording_desc_camera_off">Turn off camera preview</string>
+    <string name="overlay_recording_desc_draw_off">Turn off drawing tools</string>
+    <string name="overlay_recording_desc_stop">Stop recording</string>
+
+    <string name="overlay_recording_radial_desc_pause">Pause recording</string>
+    <string name="overlay_recording_radial_desc_mute">Mute microphone</string>
+    <string name="overlay_recording_radial_desc_camera_off">Turn off camera preview</string>
+    <string name="overlay_recording_radial_desc_draw_off">Turn off drawing tools</string>
+    <string name="overlay_recording_radial_desc_stop">Stop recording</string>
+
+    <string name="HorizontalOverlayWindow_desc_pause">Pause recording</string>
+    <string name="HorizontalOverlayWindow_desc_resume">Resume recording</string>
+    <string name="HorizontalOverlayWindow_desc_mute">Mute microphone</string>
+    <string name="HorizontalOverlayWindow_desc_unmute">Unmute microphone</string>
+    <string name="HorizontalOverlayWindow_desc_camera_on">Turn on camera preview</string>
+    <string name="HorizontalOverlayWindow_desc_camera_off">Turn off camera preview</string>
+    <string name="HorizontalOverlayWindow_desc_draw_on">Turn on drawing tools</string>
+    <string name="HorizontalOverlayWindow_desc_draw_off">Turn off drawing tools</string>
+    <string name="HorizontalOverlayWindow_desc_stop">Stop recording</string>
+
+    <string name="RadialOverlayWindow_desc_pause">Pause recording</string>
+    <string name="RadialOverlayWindow_desc_resume">Resume recording</string>
+    <string name="RadialOverlayWindow_desc_mute">Mute microphone</string>
+    <string name="RadialOverlayWindow_desc_unmute">Unmute microphone</string>
+    <string name="RadialOverlayWindow_desc_camera_on">Turn on camera preview</string>
+    <string name="RadialOverlayWindow_desc_camera_off">Turn off camera preview</string>
+    <string name="RadialOverlayWindow_desc_draw_on">Turn on drawing tools</string>
+    <string name="RadialOverlayWindow_desc_draw_off">Turn off drawing tools</string>
+    <string name="RadialOverlayWindow_desc_stop">Stop recording</string>
+
+    <string name="RecordingOverlay_desc_pause">Pause recording</string>
+    <string name="RecordingOverlay_desc_mute">Mute microphone</string>
+    <string name="RecordingOverlay_desc_camera_off">Turn off camera preview</string>
+    <string name="RecordingOverlay_desc_draw_off">Turn off drawing tools</string>
+    <string name="RecordingOverlay_desc_stop">Stop recording</string>
+    <string name="RecordingOverlayService_desc_pause">Pause recording</string>
+    <string name="RecordingOverlayService_desc_resume">Resume recording</string>
+    <string name="RecordingOverlayService_desc_mute">Mute microphone</string>
+    <string name="RecordingOverlayService_desc_unmute">Unmute microphone</string>
+    <string name="RecordingOverlayService_desc_camera_on">Turn off camera preview</string>
+    <string name="RecordingOverlayService_desc_camera_off">Turn on camera preview</string>
+    <string name="RecordingOverlayService_desc_draw_on">Turn off drawing tools</string>
+    <string name="RecordingOverlayService_desc_draw_off">Turn on drawing tools</string>
+    <string name="RecordingOverlayService_desc_stop">Stop recording</string>
+
+    <string name="ScreenRecordService_notif_title">Screen Recording</string>
+    <string name="ScreenRecordService_notif_text">Recording in progress...</string>
+    <string name="ScreenRecordService_notif_text_paused">Recording paused</string>
+    <string name="ScreenRecordService_notif_text_paused_format">Recording paused (%1$s)</string>
+    <string name="ScreenRecordService_notif_btn_stop">Stop</string>
+    <string name="ScreenRecordService_notif_btn_pause">Pause</string>
+    <string name="ScreenRecordService_notif_btn_resume">Resume</string>
+    <string name="ScreenRecordService_notif_btn_mute">Mute</string>
+    <string name="ScreenRecordService_notif_btn_unmute">Unmute</string>
+    <string name="ScreenRecordService_notif_btn_draw_on">Draw</string>
+    <string name="ScreenRecordService_notif_btn_draw_off">Draw Off</string>
+    <string name="ScreenRecordService_notif_btn_camera_on">Camera</string>
+    <string name="ScreenRecordService_notif_btn_camera_off">Camera Off</string>
+    <string name="ScreenRecordService_notif_done_title">Recording Saved</string>
+    <string name="ScreenRecordService_notif_done_btn_app">Open App</string>
+    <string name="ScreenRecordService_toast_saved">Recording saved successfully</string>
+    <string name="ScreenRecordService_toast_failed">Start recording failed</string>
+    <string name="ScreenRecordService_virtual_display_name">Screen Recorder</string>
+
+    <string name="ScreenRecordTileService_tile_start">Screen Record</string>
+    <string name="ScreenRecordTileService_tile_stop">Stop Recording</string>
+
+    <string name="item_video_desc_thumbnail">Video thumbnail</string>
+    <string name="item_video_desc_menu">More options</string>
+    <string name="ItemVideo_desc_thumbnail">Video thumbnail</string>
+    <string name="ItemVideo_desc_menu">More options</string>
+    
+    
+    <string name="video_options_menu_delete">Delete</string>
+    <string name="video_options_menu_rename">Rename</string>
+    <string name="video_options_menu_share">Share</string>
+    
+    
+    <string name="dialog_edit_text_rename_title">Title</string>
+    
+    
     <string name="VideoAdapter_btn_cancel">Cancel</string>
     <string name="VideoAdapter_btn_delete">Delete</string>
     <string name="VideoAdapter_btn_rename">Rename</string>
@@ -30,63 +345,10 @@
     <string name="VideoAdapter_toast_rename_failed">Failed to rename</string>
     <string name="VideoAdapter_toast_no_player">No video player found</string>
 
-    <string name="MediaProjectionPermissionActivity_permission_denied">Permission denied</string>
-    <string name="MediaProjectionPermissionActivity_log_init_failed">Initialization failed</string>
-    <string name="MediaProjectionPermissionActivity_log_proj_failed">Media projection request failed</string>
-    <string name="MediaProjectionPermissionActivity_log_service_failed">Service start failed</string>
-
-    <string name="ScreenRecordService_notif_title">Screen Recording</string>
-    <string name="ScreenRecordService_notif_text">Recording in progress...</string>
-    <string name="ScreenRecordService_notif_btn_stop">Stop</string>
-    <string name="ScreenRecordService_notif_done_title">Recording Saved</string>
-    <string name="ScreenRecordService_notif_done_btn_app">Open App</string>
-    <string name="ScreenRecordService_toast_saved">Recording saved successfully</string>
-    <string name="ScreenRecordService_toast_failed">Start recording failed</string>
-    <string name="ScreenRecordService_virtual_display_name">Screen Recorder</string>
-
-    <string name="ScreenRecordTileService_tile_start">Record</string>
-    <string name="ScreenRecordTileService_tile_stop">Stop Recording</string>
-
-    <string name="dialog_edit_text_rename_title">Title</string>
-
     <string name="ConfigManager_quality_max_with_label">Max (%1$s)</string>
+    <string name="ConfigManager_storage_default">Default (DCIM/ScreenRecorder)</string>
+    <string name="ConfigManager_storage_custom">Custom: %1$s</string>
 
-    <string name="settings_title">Recording Settings</string>
-    <string name="settings_audio_header">Audio</string>
-    <string name="settings_video_header">Video</string>
-    <string name="settings_appearance_header">Appearance</string>
-    <string name="settings_advanced_header">Advanced</string>
-    <string name="settings_about_header">Information</string>
-
-    <string name="settings_mic_title">Microphone</string>
-    <string name="settings_mic_summary">Record audio from your mic</string>
-    <string name="settings_system_audio_title">System Audio</string>
-    <string name="settings_system_audio_summary">Record internal device sound</string>
-
-    <string name="settings_quality_title">Video Quality</string>
-    <string name="settings_quality_summary">Choose the resolution for your recording</string>
-    <string name="settings_quality_max">Maximum</string>
-    <string name="settings_quality_4k">4K</string>
-    <string name="settings_quality_2k">2K</string>
-    <string name="settings_quality_1080p">1080p</string>
-    <string name="settings_quality_720p">720p</string>
-    <string name="settings_quality_480p">480p</string>
-    <string name="settings_quality_360p">360p</string>
-    <string name="settings_quality_240p">240p</string>
-
-    <string name="settings_dynamic_colors_title">Dynamic Colors</string>
-    <string name="settings_dynamic_colors_summary">Apply colors based on your wallpaper</string>
-
-    <string name="settings_theme_title">App Theme</string>
-    <string name="settings_theme_summary">Choose your preferred appearance</string>
-    <string name="settings_theme_system">System</string>
-    <string name="settings_theme_light">Light</string>
-    <string name="settings_theme_dark">Dark</string>
-
-    <string name="settings_show_touches_title">Show Touches</string>
-    <string name="settings_show_touches_summary">Display visual touch feedback during recording</string>
-
-    <string name="settings_about_app_title">About App</string>
-    <string name="settings_about_app_summary">Version, licenses and developer info</string>
+    <string name="LocaleHelper_language_system">System Language</string>
 
 </resources>

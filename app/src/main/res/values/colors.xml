@@ -144,4 +144,17 @@
     <color name="colorSurfaceContainerHighContrast">#FCEAE4</color>
     <color name="colorSurfaceContainerHighHighContrast">#F7E4DF</color>
     <color name="colorSurfaceContainerHighestHighContrast">#F1DFD9</color>
+    
+    <color name="draw_palette_red">#F44336</color>
+    <color name="draw_palette_pink">#E91E63</color>
+    <color name="draw_palette_orange">#FF9800</color>
+    <color name="draw_palette_yellow">#FFEB3B</color>
+    <color name="draw_palette_green">#4CAF50</color>
+    <color name="draw_palette_cyan">#00BCD4</color>
+    <color name="draw_palette_blue">#2196F3</color>
+    <color name="draw_palette_purple">#9C27B0</color>
+    <color name="draw_palette_white">#FFFFFF</color>
+    <color name="draw_palette_black">#212121</color>
+    
+    <color name="ic_launcher_background">#1C1C1E</color>
 </resources>

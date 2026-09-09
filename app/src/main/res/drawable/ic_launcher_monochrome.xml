@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_launcher_monochrome_raw"
+    android:drawable="@drawable/ic_screen_record"
     android:inset="25%" />

@@ -1,5 +1,0 @@
-v4.0 major comeback release:
-- Reworked the app by hand with cleaner Kotlin and Gradle structure.
-- Refined the interface with a polished Material experience and true pitch-black theme.
-- Updated floating control pill icons and recording controls.
-- Fixed known recording, permission, and UI state issues for a more stable release.
