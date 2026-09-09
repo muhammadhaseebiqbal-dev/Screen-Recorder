@@ -45,7 +45,7 @@
     <string name="AboutActivity_dialog_update_msg">ورژن %1$s گٹ ہب پر دستیاب ہے۔\n\nریلیز نوٹس:\n%2$s</string>
     <string name="AboutActivity_dialog_update_btn_download">ڈاؤنلوڈ کریں</string>
     <string name="AboutActivity_dialog_update_btn_cancel">منسوخ کریں</string>
-    <string name="AboutActivity_lib_material" translatable="false">میٹریل کمپونینٹس 3</string>
+    <string name="AboutActivity_lib_material" translatable="false">Material Components 3</string>
     <string name="AboutActivity_lib_material_desc" translatable="false">Apache License 2.0, The Android Open Source Project.</string>
     <string name="AboutActivity_lib_jetpack" translatable="false">AndroidX Jetpack &amp; KTX</string>
     <string name="AboutActivity_lib_jetpack_desc" translatable="false">Apache License 2.0, The Android Open Source Project.</string>

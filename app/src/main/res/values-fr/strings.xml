@@ -46,17 +46,17 @@
     <string name="AboutActivity_dialog_update_btn_download">Télécharger</string>
     <string name="AboutActivity_dialog_update_btn_cancel">Annuler</string>
     <string name="AboutActivity_lib_material" translatable="false">Material Components 3</string>
-    <string name="AboutActivity_lib_material_desc" translatable="false">Licence Apache 2.0, The Android Open Source Project.</string>
+    <string name="AboutActivity_lib_material_desc" translatable="false">Apache License 2.0, The Android Open Source Project.</string>
     <string name="AboutActivity_lib_jetpack" translatable="false">AndroidX Jetpack &amp; KTX</string>
-    <string name="AboutActivity_lib_jetpack_desc" translatable="false">Licence Apache 2.0, The Android Open Source Project.</string>
+    <string name="AboutActivity_lib_jetpack_desc" translatable="false">Apache License 2.0, The Android Open Source Project.</string>
     <string name="AboutActivity_lib_coroutines" translatable="false">Kotlin Coroutines</string>
-    <string name="AboutActivity_lib_coroutines_desc" translatable="false">Licence Apache 2.0, JetBrains s.r.o.</string>
+    <string name="AboutActivity_lib_coroutines_desc" translatable="false">Apache License 2.0, JetBrains s.r.o.</string>
     <string name="AboutActivity_lib_shizuku" translatable="false">Rikka Shizuku</string>
-    <string name="AboutActivity_lib_shizuku_desc" translatable="false">Licence Apache 2.0, Rikka.</string>
+    <string name="AboutActivity_lib_shizuku_desc" translatable="false">Apache License 2.0, Rikka.</string>
     <string name="AboutActivity_lib_glide" translatable="false">Glide</string>
-    <string name="AboutActivity_lib_glide_desc" translatable="false">Licence Apache 2.0 &amp; BSD 2-Clause, Google, Inc.</string>
+    <string name="AboutActivity_lib_glide_desc" translatable="false">Apache License 2.0 &amp; BSD 2-Clause, Google, Inc.</string>
     <string name="AboutActivity_lib_documentfile" translatable="false">AndroidX DocumentFile</string>
-    <string name="AboutActivity_lib_documentfile_desc" translatable="false">Licence Apache 2.0, The Android Open Source Project.</string>
+    <string name="AboutActivity_lib_documentfile_desc" translatable="false">Apache License 2.0, The Android Open Source Project.</string>
     <string name="item_about_desc_avatar">Photo de profil</string>
     <string name="item_about_desc_coffee">Offrez-moi un café</string>
     <string name="item_about_desc_github">Profil GitHub</string>
