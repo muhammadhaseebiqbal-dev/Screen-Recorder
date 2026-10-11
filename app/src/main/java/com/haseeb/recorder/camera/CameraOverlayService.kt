@@ -9,6 +9,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.content.pm.ServiceInfo
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
@@ -89,6 +90,7 @@ class CameraOverlayService : Service() {
     private val previewTimeout = Runnable { failCamera("Camera produced no preview frames") }
     private var screenWidth = 1080
     private var screenHeight = 1920
+    private var overlayAspectRatio = 185.0 / 140.0
 
     private val hideControlsRunnable = Runnable {
         hideControlsWithAnimation()
@@ -232,6 +234,7 @@ class CameraOverlayService : Service() {
         val density = resources.displayMetrics.density
         val initialW = (140 * density).toInt()
         val initialH = (185 * density).toInt()
+        overlayAspectRatio = initialH.toDouble() / initialW
         val marginEnd = (16 * density).toInt()
         val marginBottom = (90 * density).toInt()
 
@@ -442,29 +445,43 @@ class CameraOverlayService : Service() {
         val density = resources.displayMetrics.density
         val minW = (100 * density).toInt()
         val maxW = (300 * density).toInt()
+        val touchSlop = ViewConfiguration.get(this).scaledTouchSlop
+        var resizing = false
+
+        binding?.btnResizeHandle?.setOnClickListener {
+            updateScreenBounds()
+            val current = CameraOverlayBounds(params.x, params.y, params.width, params.height, overlayAspectRatio)
+            val expanded = current.resize(maxW, screenWidth, screenHeight, false, false)
+            val target = if (params.width < expanded.width * 0.9f) expanded.width else (140 * density).toInt()
+            val quadrant = currentQuadrant ?: ScreenQuadrant.BOTTOM_RIGHT
+            applyCameraBounds(current.resize(target, screenWidth, screenHeight,
+                quadrant == ScreenQuadrant.TOP_RIGHT || quadrant == ScreenQuadrant.BOTTOM_RIGHT,
+                quadrant == ScreenQuadrant.BOTTOM_LEFT || quadrant == ScreenQuadrant.BOTTOM_RIGHT))
+            updateDynamicPositions()
+            showControlsTemporary()
+        }
 
         var initialW = 0
         var initialH = 0
         var initialX = 0
         var initialY = 0
-        var initialRight = 0
-        var initialBottom = 0
         var startRawX = 0f
         var startRawY = 0f
         var aspectRatio = 1.32f
         var activeQuadrant: ScreenQuadrant = ScreenQuadrant.BOTTOM_RIGHT
 
-        binding?.btnResizeHandle?.setOnTouchListener { _, event ->
+        binding?.btnResizeHandle?.setOnTouchListener { handle, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     showControlsTemporary()
+                    mainHandler.removeCallbacks(hideControlsRunnable)
+                    updateScreenBounds()
+                    resizing = false
                     initialW = params.width
                     initialH = params.height
                     initialX = params.x
                     initialY = params.y
-                    initialRight = initialX + initialW
-                    initialBottom = initialY + initialH
-                    aspectRatio = initialH.toFloat() / initialW.toFloat().coerceAtLeast(1f)
+                    aspectRatio = overlayAspectRatio.toFloat()
                     startRawX = event.rawX
                     startRawY = event.rawY
                     activeQuadrant = currentQuadrant ?: ScreenQuadrant.BOTTOM_RIGHT
@@ -473,6 +490,8 @@ class CameraOverlayService : Service() {
                 MotionEvent.ACTION_MOVE -> {
                     val rawDx = event.rawX - startRawX
                     val rawDy = event.rawY - startRawY
+                    if (abs(rawDx) > touchSlop || abs(rawDy) > touchSlop) resizing = true
+                    if (!resizing) return@setOnTouchListener true
 
                     val delta = when (activeQuadrant) {
                         ScreenQuadrant.TOP_LEFT, ScreenQuadrant.CENTER -> {
@@ -490,38 +509,14 @@ class CameraOverlayService : Service() {
                     }
 
                     val targetWidth = (initialW + delta).toInt().coerceIn(minW, maxW)
-                    val targetHeight = (targetWidth * aspectRatio).toInt()
-
-                    when (activeQuadrant) {
-                        ScreenQuadrant.TOP_LEFT, ScreenQuadrant.CENTER -> {
-                            params.x = initialX
-                            params.y = initialY
-                        }
-                        ScreenQuadrant.TOP_RIGHT -> {
-                            params.x = initialRight - targetWidth
-                            params.y = initialY
-                        }
-                        ScreenQuadrant.BOTTOM_LEFT -> {
-                            params.x = initialX
-                            params.y = initialBottom - targetHeight
-                        }
-                        ScreenQuadrant.BOTTOM_RIGHT -> {
-                            params.x = initialRight - targetWidth
-                            params.y = initialBottom - targetHeight
-                        }
-                    }
-
-                    params.width = targetWidth
-                    params.height = targetHeight
-
-                    try {
-                        windowManager?.updateViewLayout(binding?.root, params)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Resize failed: ${e.message}")
-                    }
+                    applyCameraBounds(CameraOverlayBounds(initialX, initialY, initialW, initialH, overlayAspectRatio).resize(
+                        targetWidth, screenWidth, screenHeight,
+                        activeQuadrant == ScreenQuadrant.TOP_RIGHT || activeQuadrant == ScreenQuadrant.BOTTOM_RIGHT,
+                        activeQuadrant == ScreenQuadrant.BOTTOM_LEFT || activeQuadrant == ScreenQuadrant.BOTTOM_RIGHT))
                     true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    if (event.action == MotionEvent.ACTION_UP && !resizing) handle.performClick()
                     params.x = params.x.coerceIn(0, (screenWidth - params.width).coerceAtLeast(0))
                     params.y = params.y.coerceIn(0, (screenHeight - params.height).coerceAtLeast(0))
                     try {
@@ -533,6 +528,28 @@ class CameraOverlayService : Service() {
                 }
                 else -> false
             }
+        }
+    }
+
+    private fun applyCameraBounds(bounds: CameraOverlayBounds) {
+        params.x = bounds.x
+        params.y = bounds.y
+        params.width = bounds.width
+        params.height = bounds.height
+        try {
+            windowManager?.updateViewLayout(binding?.root, params)
+        } catch (e: Exception) {
+            Log.e(TAG, "Resize failed", e)
+        }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        updateScreenBounds()
+        if (binding != null && ::params.isInitialized) {
+            applyCameraBounds(CameraOverlayBounds(params.x, params.y, params.width, params.height,
+                overlayAspectRatio).resize(params.width, screenWidth, screenHeight, false, false))
+            updateDynamicPositions(force = true)
         }
     }
 
