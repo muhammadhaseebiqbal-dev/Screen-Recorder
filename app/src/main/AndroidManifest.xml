@@ -70,6 +70,15 @@
             android:excludeFromRecents="true"
             android:theme="@style/Theme.ScreenRecorder.Transparent" />
 
+        <activity
+            android:name=".ui.activity.TileRecordingPermissionActivity"
+            android:exported="false"
+            android:taskAffinity="${applicationId}.tile_recording"
+            android:launchMode="singleTask"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:theme="@style/Theme.ScreenRecorder.Transparent" />
+
         <service
             android:name=".recording.ScreenRecordService"
             android:exported="false"

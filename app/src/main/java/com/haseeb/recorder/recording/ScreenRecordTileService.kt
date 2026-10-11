@@ -12,7 +12,7 @@ import android.service.quicksettings.TileService
 import android.util.Log
 import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
-import com.haseeb.recorder.ui.activity.MediaProjectionPermissionActivity
+import com.haseeb.recorder.ui.activity.TileRecordingPermissionActivity
 
 /*
  * Quick Settings Tile service managing instant screen recording from the system panel.
@@ -91,7 +91,7 @@ class ScreenRecordTileService : TileService() {
      * Launches the permission activity passing current user audio configurations.
      */
     private fun launchPermissionActivity() {
-        val intent = Intent(this, MediaProjectionPermissionActivity::class.java).apply {
+        val intent = Intent(this, TileRecordingPermissionActivity::class.java).apply {
             putExtra("RECORD_MIC", configManager.isMicEnabled)
             putExtra("RECORD_SYSTEM_AUDIO", configManager.isSystemAudioEnabled)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
