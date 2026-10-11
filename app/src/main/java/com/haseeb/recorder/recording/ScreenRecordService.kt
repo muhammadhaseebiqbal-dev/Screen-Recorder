@@ -824,13 +824,13 @@ class ScreenRecordService : Service() {
      * Thoroughly frees system memory objects required by projection services.
      */
     private fun cleanup() {
+        microphoneEffects?.close(); microphoneEffects = null
         if (displayListenerRegistered) {
             getSystemService(DisplayManager::class.java).unregisterDisplayListener(displayListener)
             displayListenerRegistered = false
         }
         virtualDisplay?.release(); virtualDisplay = null
         rotationRenderer?.close(); rotationRenderer = null
-        microphoneEffects?.close(); microphoneEffects = null
         micRecord?.release(); micRecord = null
         sysRecord?.release(); sysRecord = null
         try { audioEncoder?.stop() } catch (_: Exception) {}; audioEncoder?.release(); audioEncoder = null
