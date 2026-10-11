@@ -118,6 +118,23 @@ class ScreenRecordService : Service() {
     private var audioTrackIndex = -1
     private var muxerStarted = false
     private var inputSurface: Surface? = null
+    private var rotationRenderer: AutoRotationRenderer? = null
+    private var captureScale = 1.0
+    private var captureWidth = 0
+    private var captureHeight = 0
+    private var displayListenerRegistered = false
+    private val displayListener = object : DisplayManager.DisplayListener {
+        override fun onDisplayAdded(displayId: Int) {}
+        override fun onDisplayRemoved(displayId: Int) {}
+        override fun onDisplayChanged(displayId: Int) {
+            if (displayId == android.view.Display.DEFAULT_DISPLAY && Build.VERSION.SDK_INT < 34) {
+                val metrics = DisplayMetrics()
+                @Suppress("DEPRECATION")
+                (getSystemService(WINDOW_SERVICE) as WindowManager).defaultDisplay.getRealMetrics(metrics)
+                resizeCapture(metrics.widthPixels, metrics.heightPixels)
+            }
+        }
+    }
 
     private var micRecord: AudioRecord? = null
     private var sysRecord: AudioRecord? = null
@@ -149,6 +166,10 @@ class ScreenRecordService : Service() {
     }
 
     private val projectionCallback = object : MediaProjection.Callback() {
+        override fun onCapturedContentResize(width: Int, height: Int) {
+            resizeCapture(width, height)
+        }
+
         override fun onStop() {
             mainHandler.post {
                 stopRecording()
@@ -412,6 +433,20 @@ class ScreenRecordService : Service() {
                 start()
             }
 
+            if (configManager.videoOrientation == ConfigManager.ORIENTATION_AUTO) {
+                captureScale = screenWidth.toDouble() / physicalMaxRes.first
+                captureWidth = screenWidth
+                captureHeight = screenHeight
+                rotationRenderer = AutoRotationRenderer(checkNotNull(inputSurface), screenWidth, screenHeight) { error ->
+                    mainHandler.post {
+                        Log.e(TAG, "Rotation rendering failed", error)
+                        stopRecording()
+                        stopForeground(STOP_FOREGROUND_REMOVE)
+                        stopSelf()
+                    }
+                }
+            }
+
             if (hasAnyAudio) setupAudioEncoders(wantMic, wantSysAudio)
 
             mediaMuxer = if (outputFileDescriptor != null) {
@@ -423,8 +458,13 @@ class ScreenRecordService : Service() {
             virtualDisplay = mediaProjection?.createVirtualDisplay(
                 getString(R.string.ScreenRecordService_virtual_display_name),
                 screenWidth, screenHeight, scaledDensity,
-                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, inputSurface, null, null
+                DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, rotationRenderer?.surface ?: inputSurface, null, null
             )
+
+            if (rotationRenderer != null && Build.VERSION.SDK_INT < 34) {
+                getSystemService(DisplayManager::class.java).registerDisplayListener(displayListener, mainHandler)
+                displayListenerRegistered = true
+            }
 
             if (hasAnyAudio) {
                 micRecord?.startRecording()
@@ -446,6 +486,27 @@ class ScreenRecordService : Service() {
             Log.e(TAG, "Start failed: ${e.message}")
             PrivilegedAccessManager.runAsync(sessionUsesRoot) { restorePrivilegedFeaturesOnStop() }
             cleanup()
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            stopSelf()
+        }
+    }
+
+    private fun resizeCapture(width: Int, height: Int) {
+        val renderer = rotationRenderer ?: return
+        val display = virtualDisplay ?: return
+        if (stopRequested || width <= 0 || height <= 0) return
+        val (newWidth, newHeight) = RecordingFrameLayout.captureSize(width, height, captureScale)
+        if (captureWidth == newWidth && captureHeight == newHeight) return
+        try {
+            display.setSurface(null)
+            renderer.resize(newWidth, newHeight)
+            display.resize(newWidth, newHeight, scaledDensity)
+            captureWidth = newWidth
+            captureHeight = newHeight
+            if (!isPaused) display.setSurface(renderer.surface)
+        } catch (e: Exception) {
+            Log.e(TAG, "Capture resize failed", e)
+            stopRecording()
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
@@ -706,6 +767,9 @@ class ScreenRecordService : Service() {
      */
      private fun stopRecording() {
         if (!isRecording) return
+        virtualDisplay?.setSurface(null)
+        rotationRenderer?.close()
+        rotationRenderer = null
         stopRequested = true
         isPaused = false
         isMuted = false
@@ -734,6 +798,12 @@ class ScreenRecordService : Service() {
      * Thoroughly frees system memory objects required by projection services.
      */
     private fun cleanup() {
+        if (displayListenerRegistered) {
+            getSystemService(DisplayManager::class.java).unregisterDisplayListener(displayListener)
+            displayListenerRegistered = false
+        }
+        virtualDisplay?.release(); virtualDisplay = null
+        rotationRenderer?.close(); rotationRenderer = null
         micRecord?.release(); micRecord = null
         sysRecord?.release(); sysRecord = null
         try { audioEncoder?.stop() } catch (_: Exception) {}; audioEncoder?.release(); audioEncoder = null
@@ -742,7 +812,6 @@ class ScreenRecordService : Service() {
         try { mediaMuxer?.release() } catch (_: Exception) {}; mediaMuxer = null
         muxerStarted = false
         try { outputFileDescriptor?.close() } catch (_: Exception) {}; outputFileDescriptor = null
-        virtualDisplay?.release(); virtualDisplay = null
         mediaProjection?.stop(); mediaProjection = null
         releaseWakeLock()
     }
@@ -775,7 +844,7 @@ class ScreenRecordService : Service() {
         val resumeTimeUs = System.nanoTime() / 1000
         totalPausedDurationUs += (resumeTimeUs - pauseStartTimeUs)
         isPaused = false
-        inputSurface?.let { virtualDisplay?.setSurface(it) }
+        (rotationRenderer?.surface ?: inputSurface)?.let { virtualDisplay?.setSurface(it) }
         RecordingStateManager.onRecordingResumed()
         sendStateBroadcast(STATE_RESUME)
         updateNotification()

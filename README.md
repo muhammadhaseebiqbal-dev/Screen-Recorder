@@ -84,7 +84,7 @@
 - 🎞️ Multiple video codec options for better compatibility and compression
 - 🎚️ FPS controls with multiple frame rate options
 - 📊 Bitrate controls with automatic and manual settings
-- 🔄 Screen orientation controls for different recording layouts
+- 🔄 Screen orientation controls for different recording layouts. Auto follows portrait/landscape changes in one continuous video, fitting the screen into the starting frame with black bars when needed.
 - 🎙️ Audio source controls for internal audio and microphone recording
 - 🎚️ Audio quality controls with multiple sample rate options
 - ⏱️ Customizable countdown before recording starts
