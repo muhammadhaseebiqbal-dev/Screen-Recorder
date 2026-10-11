@@ -148,14 +148,14 @@ class AudioFramePumpTest {
         assertTrue(h.frames.all { frame -> h.samples(frame).all { it == 333 } })
     }
 
-    @Test fun mixingClampsPositiveAndNegativeOverflow() {
+    @Test fun mixingLimitsPositiveAndNegativeOverflow() {
         val h = Harness(Source(30_000), Source(30_000))
         h.run(100)
         assertTrue(h.samples().all { it == Short.MAX_VALUE.toInt() })
         h.mic.value = -30_000
         h.system.value = -30_000
         h.run(100)
-        assertTrue(h.samples().all { it == Short.MIN_VALUE.toInt() })
+        assertTrue(h.samples().all { it == -Short.MAX_VALUE.toInt() })
     }
 
     @Test fun eitherSourceCanRecordAlone() {

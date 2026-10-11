@@ -137,6 +137,8 @@ class ScreenRecordService : Service() {
     }
 
     private var micRecord: AudioRecord? = null
+    private var microphoneEffects: MicrophoneEffects? = null
+    private var cancelMicrophoneEcho = false
     private var sysRecord: AudioRecord? = null
 
     @Volatile private var audioRecordingThread: Thread? = null
@@ -587,6 +589,7 @@ class ScreenRecordService : Service() {
             start()
         }
 
+        cancelMicrophoneEcho = wantMic && wantSysAudio
         if (wantMic) micRecord = createAudioRecord(isMic = true)
         if (wantSysAudio) sysRecord = createAudioRecord(isMic = false)
     }
@@ -596,7 +599,7 @@ class ScreenRecordService : Service() {
         val minBuf = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
         check(minBuf > 0) { "Unsupported audio capture format" }
         val record = if (isMic) {
-            AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, minBuf * 4)
+            createMicrophoneRecord(sampleRate, minBuf * 4)
         } else {
             check(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
             val captureConfig = AudioPlaybackCaptureConfiguration.Builder(mediaProjection!!)
@@ -614,7 +617,28 @@ class ScreenRecordService : Service() {
             record.release()
             error("Audio capture did not initialize")
         }
+        if (isMic) {
+            microphoneEffects?.close()
+            microphoneEffects = MicrophoneEffects(record.audioSessionId, cancelMicrophoneEcho)
+        }
         return record
+    }
+
+    private fun createMicrophoneRecord(sampleRate: Int, bufferSize: Int): AudioRecord {
+        val sources = if (cancelMicrophoneEcho) {
+            intArrayOf(MediaRecorder.AudioSource.VOICE_COMMUNICATION, MediaRecorder.AudioSource.MIC)
+        } else intArrayOf(MediaRecorder.AudioSource.MIC)
+        for (source in sources) {
+            try {
+                val record = AudioRecord(source, sampleRate, AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT, bufferSize)
+                if (record.state == AudioRecord.STATE_INITIALIZED) return record
+                record.release()
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "Microphone source $source unavailable", e)
+            }
+        }
+        error("Microphone capture did not initialize")
     }
 
     private var micRetryAfterMs = 0L
@@ -635,6 +659,7 @@ class ScreenRecordService : Service() {
                 record.startRecording()
                 if (isMic) micRecord = record else sysRecord = record
             } catch (e: Exception) {
+                if (isMic) { microphoneEffects?.close(); microphoneEffects = null }
                 try { record?.release() } catch (_: Exception) {}
                 Log.w(TAG, "Audio source restart failed (mic=$isMic)", e)
                 if (isMic) micRetryAfterMs = now + 1000 else systemRetryAfterMs = now + 1000
@@ -653,6 +678,7 @@ class ScreenRecordService : Service() {
             try { record.stop() } catch (_: Exception) {}
             try { record.release() } catch (_: Exception) {}
             if (isMic) {
+                microphoneEffects?.close(); microphoneEffects = null
                 micRecord = null
                 micRetryAfterMs = now + 1000
             } else {
@@ -804,6 +830,7 @@ class ScreenRecordService : Service() {
         }
         virtualDisplay?.release(); virtualDisplay = null
         rotationRenderer?.close(); rotationRenderer = null
+        microphoneEffects?.close(); microphoneEffects = null
         micRecord?.release(); micRecord = null
         sysRecord?.release(); sysRecord = null
         try { audioEncoder?.stop() } catch (_: Exception) {}; audioEncoder?.release(); audioEncoder = null

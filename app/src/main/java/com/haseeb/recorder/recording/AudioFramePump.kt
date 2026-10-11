@@ -11,6 +11,7 @@ internal class AudioFramePump(
     private val mic = ShortArray(frameSamples)
     private val system = ShortArray(frameSamples)
     private val pcm = ByteArray(frameSamples * 2)
+    private val limiter = AudioMixLimiter()
     private val frameDurationUs = frameSamples * 1_000_000L / sampleRate
     private var micCount = 0
     private var systemCount = 0
@@ -34,15 +35,7 @@ internal class AudioFramePump(
             micCount += readAvailable(readMic, mic, micCount)
             systemCount += readAvailable(readSystem, system, systemCount)
             if (nowUs < deadlineUs) return
-            for (i in 0 until frameSamples) {
-                val sample = if (muted) 0 else {
-                    val m = if (i < micCount) mic[i].toInt() else 0
-                    val s = if (i < systemCount) system[i].toInt() else 0
-                    (m + s).coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
-                }
-                pcm[i * 2] = sample.toByte()
-                pcm[i * 2 + 1] = (sample shr 8).toByte()
-            }
+            limiter.mix(mic, micCount, system, systemCount, pcm, muted)
             pendingPtsUs = nowUs - frameDurationUs
             pending = true
         }
