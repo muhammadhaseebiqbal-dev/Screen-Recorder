@@ -7,6 +7,7 @@ import android.os.Looper
 import android.os.SystemClock
 import com.haseeb.recorder.camera.CameraOverlayService
 import com.haseeb.recorder.draw.DrawOverlayService
+import com.haseeb.recorder.ui.activity.CameraPermissionActivity
 import java.util.concurrent.CopyOnWriteArrayList
 
 /*
@@ -178,8 +179,12 @@ object RecordingStateManager {
      * Dispatches floating camera toggle command to the recording service.
      */
     fun toggleCamera(context: Context) {
-        val intent = Intent(context, ScreenRecordService::class.java).apply { action = ScreenRecordService.ACTION_TOGGLE_CAMERA }
-        context.startService(intent)
+        if (!isRecording) return
+        if (isCameraActive) {
+            context.stopService(Intent(context, CameraOverlayService::class.java))
+        } else {
+            CameraPermissionActivity.launch(context)
+        }
     }
 
     /*

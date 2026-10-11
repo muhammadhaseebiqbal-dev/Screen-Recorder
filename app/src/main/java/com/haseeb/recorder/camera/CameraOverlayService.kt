@@ -4,8 +4,12 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.Service
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.graphics.PixelFormat
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCaptureSession
@@ -14,7 +18,7 @@ import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
 import android.os.Build
 import android.os.Handler
-import android.os.HandlerThread
+import android.os.ResultReceiver
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
@@ -28,6 +32,8 @@ import android.view.ViewConfiguration
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.RelativeLayout
+import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.appcompat.view.ContextThemeWrapper
 import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
@@ -37,7 +43,7 @@ import com.haseeb.recorder.recording.ScreenRecordService
 import kotlin.math.abs
 
 /*
- * Floating camera preview overlay service using optimized Camera2 background pipeline.
+ * Floating camera preview with a camera foreground service and serialized Camera2 callbacks.
  * Features ultra-fast preview loading, bottom-anchored default position, and jitter-free multi-corner resizing.
  */
 class CameraOverlayService : Service() {
@@ -47,6 +53,9 @@ class CameraOverlayService : Service() {
         const val ACTION_START = "com.haseeb.recorder.ACTION_START_CAMERA"
         const val ACTION_STOP = "com.haseeb.recorder.ACTION_STOP_CAMERA"
         const val ACTION_SWITCH = "com.haseeb.recorder.ACTION_SWITCH_CAMERA"
+        const val EXTRA_READY_RECEIVER = "camera_ready_receiver"
+        private const val CHANNEL_ID = "camera_preview_channel"
+        private const val NOTIFICATION_ID = 2
 
         @Volatile var isCameraRunning = false
             private set
@@ -66,14 +75,18 @@ class CameraOverlayService : Service() {
     private lateinit var params: WindowManager.LayoutParams
     private lateinit var configManager: ConfigManager
 
-    private var cameraThread: HandlerThread? = null
-    private var cameraHandler: Handler? = null
     private val mainHandler = Handler(Looper.getMainLooper())
 
     private var cameraDevice: CameraDevice? = null
     private var captureSession: CameraCaptureSession? = null
     private var pendingSurfaceTexture: SurfaceTexture? = null
-    private var isCameraOpening = false
+    private val previewState = CameraPreviewState()
+    private var previewSurface: Surface? = null
+    private var previewSize: PreviewSize? = null
+    private var destroyed = false
+    private var stopping = false
+    private var failureReported = false
+    private val previewTimeout = Runnable { failCamera("Camera produced no preview frames") }
     private var screenWidth = 1080
     private var screenHeight = 1920
 
@@ -86,7 +99,7 @@ class CameraOverlayService : Service() {
             pendingSurfaceTexture = texture
             if (cameraDevice != null) {
                 startCameraPreview()
-            } else if (!isCameraOpening) {
+            } else {
                 openCamera()
             }
         }
@@ -99,7 +112,9 @@ class CameraOverlayService : Service() {
             return true
         }
 
-        override fun onSurfaceTextureUpdated(texture: SurfaceTexture) {}
+        override fun onSurfaceTextureUpdated(texture: SurfaceTexture) {
+            mainHandler.removeCallbacks(previewTimeout)
+        }
     }
 
     /*
@@ -108,53 +123,85 @@ class CameraOverlayService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     /*
-     * Initializes background threads, configuration, overlay layout, and starts immediate camera open.
+     * Initializes configuration. Camera access starts only after foreground promotion.
      */
     override fun onCreate() {
         super.onCreate()
         configManager = ConfigManager(this)
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        startCameraThread()
         updateScreenBounds()
-        createOverlay()
-        openCamera()
-        isCameraRunning = true
-        RecordingStateManager.notifyListeners()
-        sendBroadcast(Intent(ScreenRecordService.ACTION_STATE_CHANGED))
-    }
-
-    /*
-     * Spawns dedicated background thread for high-priority asynchronous camera operations.
-     */
-    private fun startCameraThread() {
-        val thread = HandlerThread("CameraBackgroundThread", android.os.Process.THREAD_PRIORITY_DISPLAY).apply {
-            start()
-        }
-        cameraThread = thread
-        cameraHandler = Handler(thread.looper)
-    }
-
-    /*
-     * Safely terminates background thread and clears pending camera runnables.
-     */
-    private fun stopCameraThread() {
-        cameraThread?.quitSafely()
-        try {
-            cameraThread?.join(500)
-        } catch (_: Exception) {}
-        cameraThread = null
-        cameraHandler = null
     }
 
     /*
      * Processes incoming intents to control camera service actions.
      */
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        @Suppress("DEPRECATION")
+        val readyReceiver = intent?.getParcelableExtra<ResultReceiver>(EXTRA_READY_RECEIVER)
         when (intent?.action) {
-            ACTION_STOP -> stopSelf()
-            ACTION_SWITCH -> switchCamera()
+            ACTION_STOP -> { stopping = true; closeCamera(); stopSelf() }
+            ACTION_SWITCH -> if (!stopping) switchCamera()
+            else -> {
+                if (!isCameraRunning && !stopping) {
+                    try {
+                        startCameraForeground()
+                        if (!RecordingStateManager.isRecording) {
+                            stopping = true
+                            stopSelf()
+                        } else if (createOverlay()) {
+                            isCameraRunning = true
+                            notifyCameraState()
+                            openCamera()
+                        }
+                    } catch (e: RuntimeException) {
+                        failCamera("Camera foreground startup failed", e)
+                    }
+                }
+            }
         }
+        readyReceiver?.send(0, null)
         return START_NOT_STICKY
+    }
+
+    private fun startCameraForeground() {
+        val manager = getSystemService(NotificationManager::class.java)
+        manager.createNotificationChannel(NotificationChannel(CHANNEL_ID,
+            getString(R.string.camera_preview_notification_title), NotificationManager.IMPORTANCE_LOW))
+        val stop = PendingIntent.getService(this, 20,
+            Intent(this, CameraOverlayService::class.java).setAction(ACTION_STOP),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_camera)
+            .setContentTitle(getString(R.string.camera_preview_notification_title))
+            .setOngoing(true).setOnlyAlertOnce(true)
+            .addAction(R.drawable.ic_close, getString(R.string.overlay_camera_desc_close), stop)
+            .build()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA)
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
+    }
+
+    private fun notifyCameraState() {
+        RecordingStateManager.notifyListeners()
+        sendBroadcast(Intent(ScreenRecordService.ACTION_STATE_CHANGED).setPackage(packageName))
+        if (ScreenRecordService.isRecording) {
+            startService(Intent(this, ScreenRecordService::class.java)
+                .setAction(ScreenRecordService.ACTION_REFRESH_CAMERA))
+        }
+    }
+
+    private fun failCamera(reason: String, error: Exception? = null) {
+        if (destroyed || stopping) return
+        Log.e(TAG, reason, error)
+        if (!failureReported) {
+            failureReported = true
+            Toast.makeText(this, R.string.camera_preview_unavailable, Toast.LENGTH_LONG).show()
+        }
+        stopping = true
+        closeCamera()
+        stopSelf()
     }
 
     /*
@@ -177,7 +224,7 @@ class CameraOverlayService : Service() {
     /*
      * Inflates layout, positions window at comfortable bottom default location, and registers touch listeners.
      */
-    private fun createOverlay() {
+    private fun createOverlay(): Boolean {
         val themedContext = ContextThemeWrapper(this, R.style.Theme_ScreenRecorder)
         binding = OverlayCameraBinding.inflate(LayoutInflater.from(themedContext))
         val view = binding!!.root
@@ -211,8 +258,10 @@ class CameraOverlayService : Service() {
 
         try {
             windowManager?.addView(view, params)
+            return true
         } catch (e: Exception) {
-            Log.e(TAG, "Failed to add camera window: ${e.message}")
+            failCamera("Failed to add camera window", e)
+            return false
         }
     }
 
@@ -537,137 +586,121 @@ class CameraOverlayService : Service() {
         }
     }
 
-    /*
-     * Asynchronously opens the target camera device via dedicated background camera thread.
-     */
+    /** All lifecycle state and callbacks run on the main looper; camera capture remains asynchronous. */
     @SuppressLint("MissingPermission")
     private fun openCamera() {
-        val handler = cameraHandler ?: return
-        isCameraOpening = true
-
-        handler.post {
-            val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
-            try {
-                val facing = if (configManager.useFrontCamera) CameraCharacteristics.LENS_FACING_FRONT else CameraCharacteristics.LENS_FACING_BACK
-                var cameraIdToOpen: String? = null
-
-                for (id in manager.cameraIdList) {
-                    val characteristics = manager.getCameraCharacteristics(id)
-                    if (characteristics.get(CameraCharacteristics.LENS_FACING) == facing) {
-                        cameraIdToOpen = id
-                        break
+        if (destroyed || stopping || cameraDevice != null) return
+        val token = previewState.beginOpen() ?: return
+        mainHandler.removeCallbacks(previewTimeout)
+        mainHandler.postDelayed(previewTimeout, 10000)
+        val manager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        try {
+            val facing = if (configManager.useFrontCamera) CameraCharacteristics.LENS_FACING_FRONT else CameraCharacteristics.LENS_FACING_BACK
+            val cameraId = manager.cameraIdList.firstOrNull {
+                manager.getCameraCharacteristics(it).get(CameraCharacteristics.LENS_FACING) == facing
+            } ?: manager.cameraIdList.firstOrNull()
+            if (cameraId == null) { failCamera("No camera available"); return }
+            val map = manager.getCameraCharacteristics(cameraId)
+                .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+            previewSize = choosePreviewSize(map?.getOutputSizes(SurfaceTexture::class.java)
+                ?.map { PreviewSize(it.width, it.height) }.orEmpty())
+            if (previewSize == null) { failCamera("No supported camera preview size"); return }
+            manager.openCamera(cameraId, object : CameraDevice.StateCallback() {
+                override fun onOpened(camera: CameraDevice) {
+                    if (destroyed || stopping || !previewState.opened(token)) {
+                        camera.close()
+                        return
                     }
+                    cameraDevice = camera
+                    startCameraPreview()
                 }
 
-                if (cameraIdToOpen == null && manager.cameraIdList.isNotEmpty()) {
-                    cameraIdToOpen = manager.cameraIdList[0]
+                override fun onDisconnected(camera: CameraDevice) {
+                    camera.close()
+                    if (previewState.isCurrent(token)) failCamera("Camera disconnected")
                 }
 
-                if (cameraIdToOpen != null) {
-                    manager.openCamera(cameraIdToOpen, object : CameraDevice.StateCallback() {
-                        override fun onOpened(camera: CameraDevice) {
-                            isCameraOpening = false
-                            cameraDevice = camera
-                            if (pendingSurfaceTexture != null || binding?.textureView?.isAvailable == true) {
-                                if (pendingSurfaceTexture == null) {
-                                    pendingSurfaceTexture = binding?.textureView?.surfaceTexture
-                                }
-                                startCameraPreview()
-                            }
-                        }
-
-                        override fun onDisconnected(camera: CameraDevice) {
-                            isCameraOpening = false
-                            camera.close()
-                            cameraDevice = null
-                        }
-
-                        override fun onError(camera: CameraDevice, error: Int) {
-                            isCameraOpening = false
-                            camera.close()
-                            cameraDevice = null
-                        }
-                    }, handler)
-                } else {
-                    isCameraOpening = false
+                override fun onError(camera: CameraDevice, error: Int) {
+                    camera.close()
+                    if (previewState.isCurrent(token)) failCamera("Camera error: $error")
                 }
-            } catch (e: Exception) {
-                isCameraOpening = false
-                Log.e(TAG, "Open camera failed: ${e.message}")
-            }
+            }, mainHandler)
+        } catch (e: Exception) {
+            failCamera("Open camera failed", e)
         }
     }
 
-    /*
-     * Configures the camera preview session immediately using the available TextureView SurfaceTexture.
-     */
+    @Suppress("DEPRECATION")
     private fun startCameraPreview() {
+        if (destroyed || stopping) return
         val device = cameraDevice ?: return
-        val texture = pendingSurfaceTexture ?: binding?.textureView?.surfaceTexture ?: return
-        val handler = cameraHandler ?: return
-
-        handler.post {
-            try {
-                texture.setDefaultBufferSize(640, 480)
-                val surface = Surface(texture)
-                val previewRequestBuilder = device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
-                    addTarget(surface)
+        val texture = pendingSurfaceTexture ?: return
+        val size = previewSize ?: return
+        val token = previewState.generation
+        if (!previewState.beginPreview(token)) return
+        try {
+            texture.setDefaultBufferSize(size.width, size.height)
+            val surface = Surface(texture)
+            previewSurface = surface
+            val request = device.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW).apply {
+                addTarget(surface)
+            }.build()
+            device.createCaptureSession(listOf(surface), object : CameraCaptureSession.StateCallback() {
+                override fun onConfigured(session: CameraCaptureSession) {
+                    if (destroyed || stopping || !previewState.isCurrent(token) || cameraDevice !== device) {
+                        session.close()
+                        return
+                    }
+                    captureSession = session
+                    try {
+                        session.setRepeatingRequest(request, null, mainHandler)
+                    } catch (e: Exception) {
+                        failCamera("Repeating request failed", e)
+                    }
                 }
 
-                device.createCaptureSession(listOf(surface), object : CameraCaptureSession.StateCallback() {
-                    override fun onConfigured(session: CameraCaptureSession) {
-                        if (cameraDevice == null) return
-                        captureSession = session
-                        try {
-                            session.setRepeatingRequest(previewRequestBuilder.build(), null, handler)
-                        } catch (e: Exception) {
-                            Log.e(TAG, "Repeating request failed: ${e.message}")
-                        }
-                    }
-
-                    override fun onConfigureFailed(session: CameraCaptureSession) {
-                        Log.e(TAG, "Camera preview config failed")
-                    }
-                }, handler)
-            } catch (e: Exception) {
-                Log.e(TAG, "Start preview failed: ${e.message}")
-            }
+                override fun onConfigureFailed(session: CameraCaptureSession) {
+                    session.close()
+                    if (previewState.isCurrent(token)) failCamera("Camera preview configuration failed")
+                }
+            }, mainHandler)
+        } catch (e: Exception) {
+            failCamera("Start preview failed", e)
         }
     }
 
-    /*
-     * Switches between front and back camera lenses asynchronously.
-     */
     private fun switchCamera() {
+        if (destroyed || stopping) return
         configManager.useFrontCamera = !configManager.useFrontCamera
         closeCamera()
         openCamera()
     }
 
-    /*
-     * Closes the active camera capture session and releases camera device resources.
-     */
     private fun closeCamera() {
+        previewState.close()
+        mainHandler.removeCallbacks(previewTimeout)
         try { captureSession?.close() } catch (_: Exception) {}
         captureSession = null
         try { cameraDevice?.close() } catch (_: Exception) {}
         cameraDevice = null
+        previewSurface?.release()
+        previewSurface = null
     }
 
-    /*
-     * Performs final cleanup by quitting background threads, closing camera, and removing overlay view.
-     */
     override fun onDestroy() {
-        super.onDestroy()
+        destroyed = true
+        stopping = true
         isCameraRunning = false
-        RecordingStateManager.notifyListeners()
-        sendBroadcast(Intent(ScreenRecordService.ACTION_STATE_CHANGED))
-        mainHandler.removeCallbacks(hideControlsRunnable)
+        notifyCameraState()
+        mainHandler.removeCallbacksAndMessages(null)
         closeCamera()
-        stopCameraThread()
+        binding?.textureView?.surfaceTextureListener = null
         binding?.root?.let {
             try { windowManager?.removeView(it) } catch (_: Exception) {}
         }
         binding = null
+        pendingSurfaceTexture = null
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        super.onDestroy()
     }
 }

@@ -220,6 +220,9 @@
     <string name="SettingsBottomSheet_language_btn_ok">OK</string>
     <string name="SettingsBottomSheet_language_btn_cancel">Cancel</string>
 
+    <string name="camera_preview_notification_title">Camera preview active</string>
+    <string name="camera_preview_unavailable">Camera preview could not start. Check camera access and close other apps using the camera, then try again.</string>
+    <string name="camera_preview_permission_required">Camera permission is required for the preview.</string>
     <string name="overlay_camera_desc_switch">Switch camera</string>
     <string name="overlay_camera_desc_close">Close camera preview</string>
     <string name="overlay_camera_desc_resize">Resize camera preview</string>

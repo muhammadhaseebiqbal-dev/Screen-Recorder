@@ -29,6 +29,7 @@ import com.haseeb.recorder.draw.DrawOverlayService
 import com.haseeb.recorder.overlay.RecordingOverlayService
 import com.haseeb.recorder.privileged.PrivilegedAccessManager
 import com.haseeb.recorder.ui.activity.MainActivity
+import com.haseeb.recorder.ui.activity.CameraPermissionActivity
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -50,6 +51,7 @@ class ScreenRecordService : Service() {
         const val ACTION_RESUME = "com.haseeb.recorder.ACTION_RESUME"
         const val ACTION_TOGGLE_MUTE = "com.haseeb.recorder.ACTION_TOGGLE_MUTE"
         const val ACTION_TOGGLE_CAMERA = "com.haseeb.recorder.ACTION_TOGGLE_CAMERA"
+        const val ACTION_REFRESH_CAMERA = "com.haseeb.recorder.ACTION_REFRESH_CAMERA"
         const val ACTION_TOGGLE_DRAW = "com.haseeb.recorder.ACTION_TOGGLE_DRAW"
         
         const val ACTION_STATE_CHANGED = "com.haseeb.recorder.ACTION_STATE_CHANGED"
@@ -224,7 +226,7 @@ class ScreenRecordService : Service() {
                 if (CameraOverlayService.isCameraRunning) {
                     stopService(Intent(this, CameraOverlayService::class.java))
                 } else {
-                    startService(Intent(this, CameraOverlayService::class.java))
+                    if (isRecording) CameraPermissionActivity.launch(this)
                 }
                 mainHandler.postDelayed({
                     updateNotification()
@@ -232,6 +234,7 @@ class ScreenRecordService : Service() {
                     sendStateBroadcast("state_camera_changed")
                 }, 150)
             }
+            ACTION_REFRESH_CAMERA -> if (isRecording) updateNotification()
             ACTION_STOP -> {
                 stopRecording()
                 stopForeground(STOP_FOREGROUND_REMOVE)
@@ -800,7 +803,7 @@ class ScreenRecordService : Service() {
         val stopIntent = PendingIntent.getService(this, 0, Intent(this, ScreenRecordService::class.java).apply { action = ACTION_STOP }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val pauseResumeIntent = PendingIntent.getService(this, 1, Intent(this, ScreenRecordService::class.java).apply { action = if (isPaused) ACTION_RESUME else ACTION_PAUSE }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val muteIntent = PendingIntent.getService(this, 2, Intent(this, ScreenRecordService::class.java).apply { action = ACTION_TOGGLE_MUTE }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        val cameraIntent = PendingIntent.getService(this, 3, Intent(this, ScreenRecordService::class.java).apply { action = ACTION_TOGGLE_CAMERA }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val cameraIntent = PendingIntent.getActivity(this, 3, Intent(this, CameraPermissionActivity::class.java), PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val drawIntent = PendingIntent.getService(this, 4, Intent(this, ScreenRecordService::class.java).apply { action = ACTION_TOGGLE_DRAW }, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         val contentIntent = PendingIntent.getActivity(
