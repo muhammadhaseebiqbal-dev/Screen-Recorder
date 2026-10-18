@@ -362,4 +362,5 @@
 
     <string name="LocaleHelper_language_system">System Language</string>
 
+    <string name="recording_countdown_failed">Could not show the countdown. Recording was not started. Please try again.</string>
 </resources>
