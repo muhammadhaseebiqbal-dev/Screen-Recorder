@@ -34,6 +34,16 @@
         android:theme="@style/Theme.ScreenRecorder">
 
         <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.recording_files"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/recording_file_paths" />
+        </provider>
+
+        <provider
             android:name="rikka.shizuku.ShizukuProvider"
             android:authorities="${applicationId}.shizuku"
             android:multiprocess="false"

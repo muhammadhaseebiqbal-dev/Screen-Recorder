@@ -316,4 +316,10 @@
     <string name="LocaleHelper_language_system">सिस्टम भाषा</string>
     <string name="AboutActivity_dialog_update_notes_header">नया क्या है</string>
     <string name="AboutActivity_dialog_update_no_notes">इस संस्करण के लिए कोई रिलीज़ नोट प्रदान नहीं किया गया है।</string>
+    <string name="RecordingSessionStore_title">रिकॉर्डिंग बाधित हुई</string>
+    <string name="RecordingSessionStore_recovered">रिकॉर्डिंग सहेजना पूरा होने से पहले ऐप बंद हो गया था। आपकी वीडियो अब सहेज दी गई है।</string>
+    <string name="RecordingSessionStore_removed">रिकॉर्डिंग पूरी नहीं हो सकी। अधूरी वीडियो को वापस नहीं पाया जा सका, इसलिए उसे हटा दिया गया।</string>
+    <string name="RecordingSessionStore_retry">सहेजने या सफाई का काम पूरा नहीं हो सका। रिकॉर्डिंग रखी गई है और ऐप अगली बार खुलने पर फिर कोशिश करेगा। खाली जगह और फ़ोल्डर की पहुँच जाँचें।</string>
+    <string name="RecordingSessionStore_memory_saved">डिवाइस की मेमोरी कम हो गई थी। रिकॉर्डिंग रोककर वीडियो सहेज दी गई है।</string>
+    <string name="RecordingSessionStore_busy">पिछली रिकॉर्डिंग पूरी की जा रही है। कृपया थोड़ी देर बाद फिर कोशिश करें।</string>
 </resources>

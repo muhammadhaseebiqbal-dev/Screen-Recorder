@@ -316,4 +316,10 @@
     <string name="LocaleHelper_language_system">سسٹم کی زبان</string>
     <string name="AboutActivity_dialog_update_notes_header">نیا کیا ہے</string>
     <string name="AboutActivity_dialog_update_no_notes">اس ورژن کے لیے ریلیز نوٹس دستیاب نہیں ہیں۔</string>
+    <string name="RecordingSessionStore_title">ریکارڈنگ میں خلل</string>
+    <string name="RecordingSessionStore_recovered">ریکارڈنگ محفوظ ہونے سے پہلے ایپ بند ہو گئی تھی۔ آپ کی ویڈیو اب محفوظ ہو گئی ہے۔</string>
+    <string name="RecordingSessionStore_removed">ریکارڈنگ مکمل نہیں ہو سکی۔ نامکمل ویڈیو بحال نہیں ہو سکی، اس لیے اسے حذف کر دیا گیا۔</string>
+    <string name="RecordingSessionStore_retry">محفوظ کرنے یا صفائی کا عمل مکمل نہیں ہو سکا۔ ریکارڈنگ برقرار ہے اور ایپ اگلی بار کھلنے پر دوبارہ کوشش کرے گی۔ خالی جگہ اور فولڈر تک رسائی چیک کریں۔</string>
+    <string name="RecordingSessionStore_memory_saved">ڈیوائس کی میموری کم ہو گئی تھی۔ ریکارڈنگ روک کر ویڈیو محفوظ کر دی گئی ہے۔</string>
+    <string name="RecordingSessionStore_busy">پچھلی ریکارڈنگ مکمل کی جا رہی ہے۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔</string>
 </resources>

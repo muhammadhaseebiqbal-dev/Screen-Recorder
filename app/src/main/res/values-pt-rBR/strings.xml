@@ -314,4 +314,10 @@
     <string name="ConfigManager_storage_default">Padrão (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">Personalizado: %1$s</string>
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
+    <string name="RecordingSessionStore_title">Gravação interrompida</string>
+    <string name="RecordingSessionStore_recovered">O app fechou antes de terminar de salvar a gravação. Seu vídeo já foi salvo.</string>
+    <string name="RecordingSessionStore_removed">Não foi possível finalizar a gravação. O vídeo incompleto não pôde ser recuperado e foi removido.</string>
+    <string name="RecordingSessionStore_retry">Não foi possível concluir o salvamento ou a limpeza. A gravação foi mantida. O app tentará novamente quando for aberto. Verifique o espaço livre e o acesso à pasta.</string>
+    <string name="RecordingSessionStore_memory_saved">O dispositivo ficou com pouca memória. A gravação foi interrompida e seu vídeo foi salvo.</string>
+    <string name="RecordingSessionStore_busy">Finalizando a gravação anterior. Tente novamente em instantes.</string>
 </resources>

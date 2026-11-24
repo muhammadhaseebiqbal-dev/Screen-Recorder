@@ -22,6 +22,8 @@ import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.data.VideoFile
 import com.haseeb.recorder.recording.ScreenRecordService
+import com.haseeb.recorder.recording.RecordingSessionStore
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.haseeb.recorder.ui.adapter.VideoAdapter
 import com.haseeb.recorder.ui.dialog.SettingsBottomSheet
 import com.haseeb.recorder.util.*
@@ -42,11 +44,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var configManager: ConfigManager
     private lateinit var adapter: VideoAdapter
+    private var recoveryDialog: androidx.appcompat.app.AlertDialog? = null
 
     private val recordingStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ScreenRecordService.ACTION_STATE_CHANGED) {
                 syncRecordingUi()
+                loadVideos()
+                showRecoveryNotice()
             }
         }
     }
@@ -187,6 +192,12 @@ class MainActivity : AppCompatActivity() {
      * Starts or stops recording based on the current service state.
      */
     private fun handleRecordAction() {
+        if (!ScreenRecordService.isRecording &&
+            (RecordingSessionStore.isFinishing || RecordingSessionStore.hasSession(this))) {
+            if (!RecordingSessionStore.isFinishing) RecordingSessionStore.recoverInterruptedSession(this)
+            android.widget.Toast.makeText(this, R.string.RecordingSessionStore_busy, android.widget.Toast.LENGTH_LONG).show()
+            return
+        }
         if (ScreenRecordService.isRecording) {
             startService(Intent(this, ScreenRecordService::class.java).apply {
                 action = ScreenRecordService.ACTION_STOP
@@ -228,7 +239,8 @@ class MainActivity : AppCompatActivity() {
                 MediaStore.Video.Media.HEIGHT
             )
 
-            val selection = "${MediaStore.Video.Media.DISPLAY_NAME} LIKE ?"
+            val selection = "${MediaStore.Video.Media.DISPLAY_NAME} LIKE ?" +
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) " AND ${MediaStore.MediaColumns.IS_PENDING} = 0" else ""
             val selectionArgs = arrayOf("ScreenRecord_%.mp4")
 
             contentResolver.query(
@@ -294,6 +306,16 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                val directory = java.io.File(getExternalFilesDir(Environment.DIRECTORY_MOVIES) ?: filesDir, "ScreenRecorder")
+                directory.listFiles()?.filter { it.name.startsWith("ScreenRecord_") && it.extension == "mp4" && it.length() > 0 }
+                    ?.forEach { file ->
+                        val uri = androidx.core.content.FileProvider.getUriForFile(this@MainActivity,
+                            "$packageName.recording_files", file)
+                        videos.add(VideoFile(file.name.hashCode().toLong(), uri, file.name,
+                            0L, file.length(), file.lastModified() / 1000, null))
+                    }
+            }
             videos.sortByDescending { it.dateAdded }
 
             val initialList = ArrayList(videos)
@@ -347,6 +369,29 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         syncRecordingUi()
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        if (!ScreenRecordService.isRecording && !ScreenRecordService.isStarting &&
+            !RecordingSessionStore.isFinishing && RecordingSessionStore.hasSession(this)) {
+            RecordingSessionStore.recoverInterruptedSession(this)
+        }
+        showRecoveryNotice()
+    }
+
+    private fun showRecoveryNotice() {
+        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || recoveryDialog != null) return
+        val message = RecordingSessionStore.notice(this) ?: return
+        recoveryDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.RecordingSessionStore_title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok) { _, _ -> RecordingSessionStore.acknowledgeNotice(this, message) }
+            .setOnDismissListener {
+                recoveryDialog = null
+                if (RecordingSessionStore.notice(this) != message) showRecoveryNotice()
+            }
+            .show()
     }
 
     /*

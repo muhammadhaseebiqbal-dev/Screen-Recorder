@@ -316,4 +316,10 @@
     <string name="LocaleHelper_language_system">لغة النظام</string>
     <string name="AboutActivity_dialog_update_notes_header">ما الجديد</string>
     <string name="AboutActivity_dialog_update_no_notes">لا توجد ملاحظات إصدار لهذا الإصدار.</string>
+    <string name="RecordingSessionStore_title">توقف التسجيل</string>
+    <string name="RecordingSessionStore_recovered">أُغلق التطبيق قبل اكتمال حفظ التسجيل. تم حفظ الفيديو الآن.</string>
+    <string name="RecordingSessionStore_removed">تعذر إنهاء التسجيل. لم يكن بالإمكان استعادة الفيديو غير المكتمل، لذلك تمت إزالته.</string>
+    <string name="RecordingSessionStore_retry">تعذر إكمال الحفظ أو التنظيف. تم الاحتفاظ بالتسجيل وسيحاول التطبيق مجددًا عند فتحه. تحقق من مساحة التخزين وإمكانية الوصول إلى المجلد.</string>
+    <string name="RecordingSessionStore_memory_saved">انخفضت ذاكرة الجهاز. توقف التسجيل وتم حفظ الفيديو.</string>
+    <string name="RecordingSessionStore_busy">جارٍ إنهاء التسجيل السابق. يرجى المحاولة مجددًا بعد قليل.</string>
 </resources>
