@@ -7,9 +7,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
+import android.provider.Settings
 import android.view.WindowManager
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.recording.RecordingStateManager
+import com.haseeb.recorder.recording.ScreenRecordService
+import com.haseeb.recorder.ui.activity.TileRecordingPermissionActivity
 
 /*
  * Main overlay controller service orchestrating recording session state and decoupled floating window UIs.
@@ -62,6 +65,22 @@ class RecordingOverlayService : Service(), RecordingOverlayController, Recording
         }
     }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val shouldRun = FloatingBarPolicy.shouldRunOverlayService(
+            isRecording = RecordingStateManager.isRecording,
+            isStarting = ScreenRecordService.isStarting,
+            isOverlayEnabledDuringRecording = configManager.isRecordingOverlayEnabled,
+            isAlwaysShowEnabled = configManager.isAlwaysShowFloatingBarEnabled,
+            hasOverlayPermission = Settings.canDrawOverlays(this)
+        )
+        if (!shouldRun) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+        currentWindow?.onRecordingStateChanged()
+        return START_NOT_STICKY
+    }
+
     /*
      * Callback from RecordingStateManager when any recording property changes.
      */
@@ -88,7 +107,14 @@ class RecordingOverlayService : Service(), RecordingOverlayController, Recording
      * Updates overlay style or control visibility dynamically without restarting recording.
      */
     private fun handleOverlayConfigChange() {
-        if (!configManager.isRecordingOverlayEnabled) {
+        val shouldRun = FloatingBarPolicy.shouldRunOverlayService(
+            isRecording = RecordingStateManager.isRecording,
+            isStarting = ScreenRecordService.isStarting,
+            isOverlayEnabledDuringRecording = configManager.isRecordingOverlayEnabled,
+            isAlwaysShowEnabled = configManager.isAlwaysShowFloatingBarEnabled,
+            hasOverlayPermission = Settings.canDrawOverlays(this)
+        )
+        if (!shouldRun) {
             stopSelf()
             return
         }
@@ -201,6 +227,31 @@ class RecordingOverlayService : Service(), RecordingOverlayController, Recording
      */
     override fun onStopClicked() {
         RecordingStateManager.stopRecording(this)
+    }
+
+    override fun getOverlayMode(): FloatingBarPolicy.OverlayMode =
+        FloatingBarPolicy.resolveMode(
+            isRecording = RecordingStateManager.isRecording,
+            isStarting = ScreenRecordService.isStarting,
+            isPaused = RecordingStateManager.isPaused
+        )
+
+    override fun onStartRecordingClicked() {
+        if (!FloatingBarPolicy.isStartActionAllowed(RecordingStateManager.isRecording, ScreenRecordService.isStarting)) {
+            return
+        }
+        val intent = Intent(this, TileRecordingPermissionActivity::class.java).apply {
+            putExtra("RECORD_MIC", configManager.isMicEnabled)
+            putExtra("RECORD_SYSTEM_AUDIO", configManager.isSystemAudioEnabled)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        }
+        startActivity(intent)
+    }
+
+    override fun onDismissIdleOverlayClicked() {
+        if (!RecordingStateManager.isRecording && !ScreenRecordService.isStarting) {
+            stopSelf()
+        }
     }
 
     /*

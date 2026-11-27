@@ -362,4 +362,8 @@
 
     <string name="LocaleHelper_language_system">System Language</string>
 
+    <string name="sheet_settings_always_floating_title">Always Show Floating Bar</string>
+    <string name="sheet_settings_always_floating_summary">Keep the floating bar on screen when idle to start recording anytime without opening the app</string>
+    <string name="overlay_floating_desc_start">Start recording</string>
+    <string name="overlay_floating_desc_close">Close floating bar</string>
 </resources>

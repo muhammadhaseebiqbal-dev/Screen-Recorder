@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">Sistem Dili</string>
     <string name="AboutActivity_dialog_update_notes_header">Yenilikler</string>
     <string name="AboutActivity_dialog_update_no_notes">Bu sürüm için sürüm notu sağlanmadı.</string>
+    <string name="sheet_settings_always_floating_title">Kayan Çubuğu Her Zaman Göster</string>
+    <string name="sheet_settings_always_floating_summary">Uygulamayı açmadan istediğiniz zaman kayıt başlatmak için boşta dururken de kayan çubuğu ekranda tutun</string>
+    <string name="overlay_floating_desc_start">Kaydı başlat</string>
+    <string name="overlay_floating_desc_close">Kayan çubuğu kapat</string>
 </resources>

@@ -323,4 +323,8 @@
     <string name="LocaleHelper_language_system">系统语言</string>
     <string name="AboutActivity_dialog_update_notes_header">更新日志</string>
     <string name="AboutActivity_dialog_update_no_notes">此版本未提供发行说明。</string>
+    <string name="sheet_settings_always_floating_title">永遠顯示懸浮工具列</string>
+    <string name="sheet_settings_always_floating_summary">待機時將懸浮控制列保持在畫面上，無需開啟應用程式即可隨時開始錄製</string>
+    <string name="overlay_floating_desc_start">開始錄製</string>
+    <string name="overlay_floating_desc_close">關閉懸浮工具列</string>
 </resources>

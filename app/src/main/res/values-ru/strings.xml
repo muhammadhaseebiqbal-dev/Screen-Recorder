@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">Язык системы</string>
     <string name="AboutActivity_dialog_update_notes_header">Что нового</string>
     <string name="AboutActivity_dialog_update_no_notes">Примечания к выпуску для этой версии не предоставлены.</string>
+    <string name="sheet_settings_always_floating_title">Всегда показывать плавающую панель</string>
+    <string name="sheet_settings_always_floating_summary">Оставлять плавающую панель на экране в режиме ожидания для быстрого запуска записи без открытия приложения</string>
+    <string name="overlay_floating_desc_start">Начать запись</string>
+    <string name="overlay_floating_desc_close">Закрыть плавающую панель</string>
 </resources>

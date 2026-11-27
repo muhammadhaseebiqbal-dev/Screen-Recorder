@@ -39,6 +39,7 @@ class RadialOverlayWindow(
     private var screenHeight = 1920
     private var isExpanded = false
     private var isAnimating = false
+    private var lastOverlayMode: FloatingBarPolicy.OverlayMode? = null
 
     private var bubbleSizePx = 0
     private var expandedWindowSizePx = 0
@@ -191,19 +192,31 @@ class RadialOverlayWindow(
         b.btnRadialStop.setOnClickListener {
             controller.onStopClicked()
         }
+        b.btnRadialStart.setOnClickListener {
+            collapseOverlay()
+            controller.onStartRecordingClicked()
+        }
+        b.btnRadialDismiss.setOnClickListener {
+            collapseOverlay()
+            controller.onDismissIdleOverlayClicked()
+        }
     }
 
     /*
      * Synchronizes chronometer widget directly from controller base timestamp.
      */
     private fun synchronizeTimer() {
-        binding?.radialTimer?.apply {
-            base = controller.getChronometerBase()
-            if (controller.isPaused()) {
-                stop()
-            } else {
-                start()
+        val timer = binding?.radialTimer ?: return
+        when (controller.getOverlayMode()) {
+            FloatingBarPolicy.OverlayMode.RECORDING -> {
+                timer.base = controller.getChronometerBase()
+                timer.start()
             }
+            FloatingBarPolicy.OverlayMode.PAUSED -> {
+                timer.base = controller.getChronometerBase()
+                timer.stop()
+            }
+            else -> timer.stop()
         }
     }
 
@@ -212,7 +225,7 @@ class RadialOverlayWindow(
      */
     private fun synchronizeDotAnimation() {
         val dot = binding?.radialRedDot ?: return
-        if (controller.isPaused()) {
+        if (controller.getOverlayMode() != FloatingBarPolicy.OverlayMode.RECORDING) {
             redDotAnimator?.cancel()
             dot.alpha = 1f
         } else {
@@ -237,7 +250,26 @@ class RadialOverlayWindow(
      */
     private fun updateControlsState() {
         val b = binding ?: return
+        val mode = controller.getOverlayMode()
+        if (lastOverlayMode != null && lastOverlayMode != mode && isExpanded) {
+            collapseOverlay()
+        }
+        lastOverlayMode = mode
+        val isIdleOrStarting = mode == FloatingBarPolicy.OverlayMode.IDLE_READY ||
+            mode == FloatingBarPolicy.OverlayMode.STARTING
+
+        b.radialIdleIcon.visibility = if (isIdleOrStarting) View.VISIBLE else View.GONE
+        b.radialIdleIcon.alpha = if (mode == FloatingBarPolicy.OverlayMode.STARTING) 0.5f else 1.0f
+        b.radialTimerContainer.visibility = if (isIdleOrStarting) View.GONE else View.VISIBLE
+
         val activeButtons = getActiveButtons(b)
+        if (!isExpanded || activeButtons.isEmpty()) {
+            for (button in allSatelliteButtons(b)) {
+                if (button !in activeButtons || !isExpanded) {
+                    button.visibility = View.GONE
+                }
+            }
+        }
         if (activeButtons.isEmpty() && isExpanded) {
             collapseOverlay()
         }
@@ -275,14 +307,26 @@ class RadialOverlayWindow(
     /*
      * Returns the ordered list of enabled radial satellite buttons based on controller.
      */
+    private fun allSatelliteButtons(b: OverlayRecordingRadialBinding): List<MaterialButton> = listOf(
+        b.btnRadialPause, b.btnRadialMute, b.btnRadialCamera, b.btnRadialDraw, b.btnRadialStop,
+        b.btnRadialStart, b.btnRadialDismiss
+    )
+
     private fun getActiveButtons(b: OverlayRecordingRadialBinding): List<MaterialButton> {
-        val list = mutableListOf<MaterialButton>()
-        if (controller.isShowPauseEnabled()) list.add(b.btnRadialPause)
-        if (controller.isShowMuteEnabled()) list.add(b.btnRadialMute)
-        if (controller.isShowCameraEnabled()) list.add(b.btnRadialCamera)
-        if (controller.isShowDrawEnabled()) list.add(b.btnRadialDraw)
-        if (controller.isShowStopEnabled()) list.add(b.btnRadialStop)
-        return list
+        return when (controller.getOverlayMode()) {
+            FloatingBarPolicy.OverlayMode.IDLE_READY -> listOf(b.btnRadialStart, b.btnRadialDismiss)
+            FloatingBarPolicy.OverlayMode.STARTING -> emptyList()
+            FloatingBarPolicy.OverlayMode.RECORDING,
+            FloatingBarPolicy.OverlayMode.PAUSED -> {
+                val list = mutableListOf<MaterialButton>()
+                if (controller.isShowPauseEnabled()) list.add(b.btnRadialPause)
+                if (controller.isShowMuteEnabled()) list.add(b.btnRadialMute)
+                if (controller.isShowCameraEnabled()) list.add(b.btnRadialCamera)
+                if (controller.isShowDrawEnabled()) list.add(b.btnRadialDraw)
+                if (controller.isShowStopEnabled()) list.add(b.btnRadialStop)
+                list
+            }
+        }
     }
 
     /*
@@ -435,7 +479,7 @@ class RadialOverlayWindow(
         isAnimating = true
         autoCollapseHandler.removeCallbacks(autoCollapseRunnable)
 
-        val activeButtons = getActiveButtons(b)
+        val activeButtons = allSatelliteButtons(b).filter { it.visibility == View.VISIBLE }
         var finishedCount = 0
 
         for (button in activeButtons) {

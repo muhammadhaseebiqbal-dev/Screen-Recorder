@@ -79,4 +79,19 @@ interface RecordingOverlayController {
      * Invoked when the stop recording action is triggered by the user.
      */
     fun onStopClicked()
+
+    /*
+     * Returns whether the floating bar is idle, starting, recording, or paused.
+     */
+    fun getOverlayMode(): FloatingBarPolicy.OverlayMode
+
+    /*
+     * Starts a new screen recording session from the idle floating bar.
+     */
+    fun onStartRecordingClicked()
+
+    /*
+     * Dismisses the idle floating bar until re-enabled or reopened.
+     */
+    fun onDismissIdleOverlayClicked()
 }

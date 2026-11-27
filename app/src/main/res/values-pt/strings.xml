@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
     <string name="AboutActivity_dialog_update_notes_header">O que há de novo</string>
     <string name="AboutActivity_dialog_update_no_notes">Nenhuma nota de versão fornecida para esta versão.</string>
+    <string name="sheet_settings_always_floating_title">Mostrar sempre a barra flutuante</string>
+    <string name="sheet_settings_always_floating_summary">Manter a barra flutuante no ecrã quando inativa para iniciar a gravação sem abrir a aplicação</string>
+    <string name="overlay_floating_desc_start">Iniciar gravação</string>
+    <string name="overlay_floating_desc_close">Fechar barra flutuante</string>
 </resources>

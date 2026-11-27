@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">لغة النظام</string>
     <string name="AboutActivity_dialog_update_notes_header">ما الجديد</string>
     <string name="AboutActivity_dialog_update_no_notes">لا توجد ملاحظات إصدار لهذا الإصدار.</string>
+    <string name="sheet_settings_always_floating_title">إظهار الشريط العائم دائماً</string>
+    <string name="sheet_settings_always_floating_summary">إبقاء الشريط العائم ظاهراً على الشاشة لبدء التسجيل في أي وقت دون فتح التطبيق</string>
+    <string name="overlay_floating_desc_start">بدء التسجيل</string>
+    <string name="overlay_floating_desc_close">إغلاق الشريط العائم</string>
 </resources>

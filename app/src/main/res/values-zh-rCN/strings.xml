@@ -321,4 +321,8 @@
     <string name="ConfigManager_storage_default">默认路径 (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">自定义: %1$s</string>
     <string name="LocaleHelper_language_system">系统语言</string>
+    <string name="sheet_settings_always_floating_title">始终显示悬浮栏</string>
+    <string name="sheet_settings_always_floating_summary">空闲时在屏幕上保留悬浮栏，无需打开应用即可随时开始录制</string>
+    <string name="overlay_floating_desc_start">开始录制</string>
+    <string name="overlay_floating_desc_close">关闭悬浮栏</string>
 </resources>

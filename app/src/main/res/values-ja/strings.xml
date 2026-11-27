@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">システム言語</string>
     <string name="AboutActivity_dialog_update_notes_header">新機能</string>
     <string name="AboutActivity_dialog_update_no_notes">このバージョンのリリースノートはありません。</string>
+    <string name="sheet_settings_always_floating_title">フローティングバーを常に表示</string>
+    <string name="sheet_settings_always_floating_summary">アプリを開かずにいつでも録画を開始できるよう、待機中もフローティングバーを表示したままにします</string>
+    <string name="overlay_floating_desc_start">録画を開始</string>
+    <string name="overlay_floating_desc_close">フローティングバーを閉じる</string>
 </resources>

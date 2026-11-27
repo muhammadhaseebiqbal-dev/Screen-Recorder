@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">Idioma del sistema</string>
     <string name="AboutActivity_dialog_update_notes_header">Novedades</string>
     <string name="AboutActivity_dialog_update_no_notes">No se proporcionaron notas de la versión para esta versión.</string>
+    <string name="sheet_settings_always_floating_title">Mostrar barra flotante siempre</string>
+    <string name="sheet_settings_always_floating_summary">Mantén la barra flotante en pantalla para iniciar la grabación en cualquier momento sin abrir la app</string>
+    <string name="overlay_floating_desc_start">Iniciar grabación</string>
+    <string name="overlay_floating_desc_close">Cerrar barra flotante</string>
 </resources>

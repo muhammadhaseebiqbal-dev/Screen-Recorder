@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">सिस्टम भाषा</string>
     <string name="AboutActivity_dialog_update_notes_header">नया क्या है</string>
     <string name="AboutActivity_dialog_update_no_notes">इस संस्करण के लिए कोई रिलीज़ नोट प्रदान नहीं किया गया है।</string>
+    <string name="sheet_settings_always_floating_title">फ़्लोटिंग बार हमेशा दिखाएँ</string>
+    <string name="sheet_settings_always_floating_summary">ऐप खोले बिना कभी भी रिकॉर्डिंग शुरू करने के लिए फ़्लोटिंग बार को स्क्रीन पर रखें</string>
+    <string name="overlay_floating_desc_start">रिकॉर्डिंग शुरू करें</string>
+    <string name="overlay_floating_desc_close">फ़्लोटिंग बार बंद करें</string>
 </resources>

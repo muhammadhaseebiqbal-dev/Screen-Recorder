@@ -26,6 +26,7 @@ import com.haseeb.recorder.R
 import com.haseeb.recorder.camera.CameraOverlayService
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.draw.DrawOverlayService
+import com.haseeb.recorder.overlay.FloatingBarPolicy
 import com.haseeb.recorder.overlay.RecordingOverlayService
 import com.haseeb.recorder.privileged.PrivilegedAccessManager
 import com.haseeb.recorder.ui.activity.MainActivity
@@ -288,7 +289,14 @@ class ScreenRecordService : Service() {
             startForeground(NOTIFICATION_ID, buildRecordingNotification())
         }
 
-        if (configManager.isRecordingOverlayEnabled) {
+        if (FloatingBarPolicy.shouldRunOverlayService(
+                isRecording = true,
+                isStarting = true,
+                isOverlayEnabledDuringRecording = configManager.isRecordingOverlayEnabled,
+                isAlwaysShowEnabled = configManager.isAlwaysShowFloatingBarEnabled,
+                hasOverlayPermission = Settings.canDrawOverlays(this)
+            )
+        ) {
             startService(Intent(this, RecordingOverlayService::class.java))
         }
 
@@ -801,7 +809,13 @@ class ScreenRecordService : Service() {
         isMuted = false
         RecordingStateManager.onRecordingStopped()
 
-        stopService(Intent(this, RecordingOverlayService::class.java))
+        if (FloatingBarPolicy.shouldStopOverlayOnRecordingEnd(
+                isAlwaysShowEnabled = configManager.isAlwaysShowFloatingBarEnabled,
+                hasOverlayPermission = Settings.canDrawOverlays(this)
+            )
+        ) {
+            stopService(Intent(this, RecordingOverlayService::class.java))
+        }
         stopService(Intent(this, CameraOverlayService::class.java))
         stopService(Intent(this, DrawOverlayService::class.java))
 
@@ -1000,7 +1014,13 @@ class ScreenRecordService : Service() {
         isStarting = false
         stopRecording()
         releaseWakeLock()
-        stopService(Intent(this, RecordingOverlayService::class.java))
+        if (FloatingBarPolicy.shouldStopOverlayOnRecordingEnd(
+                isAlwaysShowEnabled = configManager.isAlwaysShowFloatingBarEnabled,
+                hasOverlayPermission = Settings.canDrawOverlays(this)
+            )
+        ) {
+            stopService(Intent(this, RecordingOverlayService::class.java))
+        }
         RecordingStateManager.notifyListeners()
         super.onDestroy()
     }

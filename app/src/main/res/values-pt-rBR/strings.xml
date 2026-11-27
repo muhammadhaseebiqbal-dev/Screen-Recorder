@@ -314,4 +314,8 @@
     <string name="ConfigManager_storage_default">Padrão (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">Personalizado: %1$s</string>
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
+    <string name="sheet_settings_always_floating_title">Mostrar barra flutuante sempre</string>
+    <string name="sheet_settings_always_floating_summary">Manter a barra flutuante na tela quando parada para iniciar a gravação sem abrir o app</string>
+    <string name="overlay_floating_desc_start">Iniciar gravação</string>
+    <string name="overlay_floating_desc_close">Fechar barra flutuante</string>
 </resources>

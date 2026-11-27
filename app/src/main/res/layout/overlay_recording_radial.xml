@@ -97,6 +97,38 @@
             app:backgroundTint="?attr/colorError"
             app:iconTint="?attr/colorOnError"
             android:contentDescription="@string/overlay_recording_radial_desc_stop"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRadialStart"
+            style="@style/MaterialButtonIconFilled"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:minWidth="44dp"
+            android:minHeight="44dp"
+            android:visibility="gone"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="20dp"
+            app:icon="@drawable/ic_screen_record"
+            app:backgroundTint="?attr/colorError"
+            app:iconTint="?attr/colorOnError"
+            android:contentDescription="@string/overlay_floating_desc_start"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRadialDismiss"
+            style="@style/MaterialButtonIconTonal"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="center"
+            android:minWidth="44dp"
+            android:minHeight="44dp"
+            android:visibility="gone"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="18dp"
+            app:icon="@drawable/ic_close"
+            android:contentDescription="@string/overlay_floating_desc_close"/>
     </FrameLayout>
 
     <com.google.android.material.card.MaterialCardView
@@ -109,7 +141,18 @@
         app:strokeWidth="0dp"
         app:cardBackgroundColor="?attr/colorSurfaceContainerHigh">
 
+        <ImageView
+            android:id="@+id/radialIdleIcon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_screen_record"
+            android:visibility="gone"
+            app:tint="?attr/colorError"
+            android:contentDescription="@string/overlay_floating_desc_start"/>
+
         <LinearLayout
+            android:id="@+id/radialTimerContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"

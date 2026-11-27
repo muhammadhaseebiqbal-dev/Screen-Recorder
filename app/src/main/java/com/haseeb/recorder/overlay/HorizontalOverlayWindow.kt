@@ -68,14 +68,23 @@ class HorizontalOverlayWindow(
         setupLayoutParams()
         setupButtons(b)
         applyTouchHandling(b.timerContainer)
+        applyIdleTouchHandling(b.idleDragHandle)
+        applyIdleTouchHandling(b.btnIdleRecord) {
+            if (controller.getOverlayMode() == FloatingBarPolicy.OverlayMode.IDLE_READY) {
+                controller.onStartRecordingClicked()
+            }
+        }
+        applyIdleTouchHandling(b.btnIdleDismiss) {
+            controller.onDismissIdleOverlayClicked()
+        }
 
         try {
             windowManager.addView(rootView, params)
         } catch (_: Exception) {}
 
+        updateControlsState()
         synchronizeTimer()
         synchronizeDotAnimation()
-        updateControlsState()
         startDockInactivityTimer()
     }
 
@@ -184,13 +193,17 @@ class HorizontalOverlayWindow(
      * Synchronizes chronometer widget directly from controller base timestamp.
      */
     private fun synchronizeTimer() {
-        binding?.timer?.apply {
-            base = controller.getChronometerBase()
-            if (controller.isPaused()) {
-                stop()
-            } else {
-                start()
+        val timer = binding?.timer ?: return
+        when (controller.getOverlayMode()) {
+            FloatingBarPolicy.OverlayMode.RECORDING -> {
+                timer.base = controller.getChronometerBase()
+                timer.start()
             }
+            FloatingBarPolicy.OverlayMode.PAUSED -> {
+                timer.base = controller.getChronometerBase()
+                timer.stop()
+            }
+            else -> timer.stop()
         }
     }
 
@@ -199,7 +212,8 @@ class HorizontalOverlayWindow(
      */
     private fun synchronizeDotAnimation() {
         val dot = binding?.redDot ?: return
-        if (controller.isPaused()) {
+        val mode = controller.getOverlayMode()
+        if (mode != FloatingBarPolicy.OverlayMode.RECORDING) {
             redDotAnimator?.cancel()
             dot.alpha = 1f
         } else {
@@ -224,6 +238,26 @@ class HorizontalOverlayWindow(
      */
     private fun updateControlsState() {
         val b = binding ?: return
+        val mode = controller.getOverlayMode()
+        val isIdleOrStarting = mode == FloatingBarPolicy.OverlayMode.IDLE_READY ||
+            mode == FloatingBarPolicy.OverlayMode.STARTING
+        if (isIdleOrStarting) {
+            autoCollapseHandler.removeCallbacks(autoCollapseRunnable)
+            moveAnimator?.cancel()
+            isExpanded = false
+            b.scrollControls.visibility = View.GONE
+            b.dividerControls.visibility = View.GONE
+            b.timerContainer.visibility = View.GONE
+            b.idleContainer.visibility = View.VISIBLE
+            val ready = mode == FloatingBarPolicy.OverlayMode.IDLE_READY
+            b.btnIdleRecord.isEnabled = ready
+            b.btnIdleRecord.alpha = if (ready) 1.0f else 0.5f
+            updateViewLayoutSafe()
+            return
+        }
+
+        b.idleContainer.visibility = View.GONE
+        b.timerContainer.visibility = View.VISIBLE
         val showPause = controller.isShowPauseEnabled()
         val showStop = controller.isShowStopEnabled()
         val showMute = controller.isShowMuteEnabled()
@@ -271,6 +305,51 @@ class HorizontalOverlayWindow(
             if (isDrawOn) R.string.HorizontalOverlayWindow_desc_draw_on else R.string.HorizontalOverlayWindow_desc_draw_off
         )
         b.btnDraw.isChecked = isDrawOn
+    }
+
+    private fun applyIdleTouchHandling(targetView: View, onTap: (() -> Unit)? = null) {
+        val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+        var initialX = 0
+        var initialY = 0
+        var touchX = 0f
+        var touchY = 0f
+        var isDragging = false
+
+        targetView.setOnTouchListener { v, event ->
+            wakeUpOverlay()
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    initialX = params.x
+                    initialY = params.y
+                    touchX = event.rawX
+                    touchY = event.rawY
+                    isDragging = false
+                    true
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val dx = (event.rawX - touchX).toInt()
+                    val dy = (event.rawY - touchY).toInt()
+                    if (abs(dx) > touchSlop || abs(dy) > touchSlop || isDragging) {
+                        isDragging = true
+                        val currentWidth = if (params.width > 0) params.width else (rootView?.width ?: 100)
+                        val currentHeight = if (params.height > 0) params.height else (rootView?.height ?: 50)
+                        params.x = (initialX + dx).coerceIn(0, (screenWidth - currentWidth).coerceAtLeast(0))
+                        params.y = (initialY + dy).coerceIn(24, (screenHeight - currentHeight - 24).coerceAtLeast(24))
+                        updateViewLayoutSafe()
+                    }
+                    true
+                }
+                MotionEvent.ACTION_UP -> {
+                    if (!isDragging) {
+                        onTap?.invoke()
+                        v.performClick()
+                    }
+                    startDockInactivityTimer()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     /*
