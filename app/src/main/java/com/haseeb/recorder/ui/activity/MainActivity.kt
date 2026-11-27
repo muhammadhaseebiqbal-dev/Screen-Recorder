@@ -24,9 +24,9 @@ import com.haseeb.recorder.data.VideoFile
 import com.haseeb.recorder.recording.RecordingWarningStore
 import com.haseeb.recorder.overlay.FloatingBarPolicy
 import com.haseeb.recorder.overlay.RecordingOverlayService
+import com.haseeb.recorder.recording.EnhancedAudioWarningStore
 import com.haseeb.recorder.recording.ScreenRecordService
 import com.haseeb.recorder.recording.RecordingSessionStore
-import com.haseeb.recorder.recording.SystemAudioWarningStore
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.haseeb.recorder.ui.adapter.VideoAdapter
 import com.haseeb.recorder.ui.dialog.SettingsBottomSheet
@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: VideoAdapter
     private var recoveryDialog: androidx.appcompat.app.AlertDialog? = null
     private var warningDialog: androidx.appcompat.app.AlertDialog? = null
+    private var enhancedAudioDialog: androidx.appcompat.app.AlertDialog? = null
 
     private val recordingStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -58,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                 loadVideos()
                 showRecoveryNotice()
                 showWarningNotice()
-                showSystemAudioWarning()
+                showEnhancedAudioWarning()
             }
         }
     }
@@ -400,7 +401,7 @@ class MainActivity : AppCompatActivity() {
         }
         showRecoveryNotice()
         showWarningNotice()
-        showSystemAudioWarning()
+        showEnhancedAudioWarning()
     }
 
     private fun showRecoveryNotice() {
@@ -431,16 +432,18 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun showSystemAudioWarning() {
-        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || warningDialog != null) return
-        val message = SystemAudioWarningStore.pendingWarning(this) ?: return
-        warningDialog = MaterialAlertDialogBuilder(this)
-            .setTitle(R.string.ScreenRecordService_warn_sys_audio_title)
+    private fun showEnhancedAudioWarning() {
+        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || enhancedAudioDialog != null) return
+        val message = EnhancedAudioWarningStore.pendingWarning(this) ?: return
+        enhancedAudioDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.EnhancedAudio_warn_title)
             .setMessage(message)
-            .setPositiveButton(android.R.string.ok) { _, _ -> SystemAudioWarningStore.acknowledgeWarning(this, message) }
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                EnhancedAudioWarningStore.acknowledgeWarning(this, message)
+            }
             .setOnDismissListener {
-                warningDialog = null
-                if (SystemAudioWarningStore.pendingWarning(this) != message) showSystemAudioWarning()
+                enhancedAudioDialog = null
+                if (EnhancedAudioWarningStore.pendingWarning(this) != message) showEnhancedAudioWarning()
             }
             .show()
     }

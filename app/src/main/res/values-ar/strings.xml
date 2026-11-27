@@ -336,4 +336,9 @@
     <string name="ScreenRecordService_warn_sys_audio_unavailable">تعذر بدء التقاط صوت النظام على هذا الجهاز. استمر التسجيل بالفيديو وصوت الميكروفون فقط.</string>
     <string name="ScreenRecordService_warn_sys_audio_restricted">يقوم التطبيق النشط بتقييد التقاط الصوت الداخلي عبر سياسة Android، لذا كان صوت النظام صامتاً.</string>
     <string name="ScreenRecordService_warn_sys_audio_usage">كان الصوت يعمل عبر مكالمة أو قناة غير وسائطية يستثنيها Android من الالتقاط الداخلي القياسي.</string>
+    <string name="EnhancedAudio_warn_title">تنبيه التقاط الصوت المحسّن</string>
+    <string name="EnhancedAudio_warn_by_none">حظر التطبيق المسجَّل التقاط الصوت الداخلي باستخدام سياسة ALLOW_CAPTURE_BY_NONE. يمنع Android التقاط هذا الصوت حتى مع تفعيل Shizuku أو Root.</string>
+    <string name="EnhancedAudio_warn_by_system">يسمح التطبيق فقط بالالتقاط المميّز للنظام (ALLOW_CAPTURE_BY_SYSTEM)، ولم يمنح Android هذا الإذن لهذه الجلسة.</string>
+    <string name="EnhancedAudio_warn_non_media">تم تشغيل الصوت على مسار غير وسائطي (مثل المكالمات أو التنبيهات) يستثنيه Android من الالتقاط الداخلي.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">يتطلب التقاط الصوت المحسّن دعم Shizuku أو Root المميّز لالتقاط التشغيل على هذا الجهاز.</string>
 </resources>

@@ -343,4 +343,9 @@
     <string name="ScreenRecordService_warn_sys_audio_unavailable">無法在此裝置上啟動系統音訊擷取，錄製已僅保留視訊與麥克風音訊繼續進行。</string>
     <string name="ScreenRecordService_warn_sys_audio_restricted">目前應用程式透過 Android 播放擷取原則限制了內部音訊擷取，因此系統音訊為靜音。</string>
     <string name="ScreenRecordService_warn_sys_audio_usage">音訊正在通話或非媒體串流中播放，Android 會將此類串流排除於標準內部音訊擷取之外。</string>
+    <string name="EnhancedAudio_warn_title">進階音訊擷取提示</string>
+    <string name="EnhancedAudio_warn_by_none">目標應用程式透過 ALLOW_CAPTURE_BY_NONE 原則封鎖了內部錄音。即使啟用 Shizuku 或 Root，Android 系統仍會限制擷取。</string>
+    <string name="EnhancedAudio_warn_by_system">目標應用程式僅允許系統特權擷取（ALLOW_CAPTURE_BY_SYSTEM），但系統未授予此工作階段該權限。</string>
+    <string name="EnhancedAudio_warn_non_media">音訊正於通話或鬧鐘等非媒體串流播放，Android 已將其排除於內部錄音之外。</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">進階音訊擷取需要此裝置啟用 Shizuku 或 Root 的特權播放擷取支援。</string>
 </resources>

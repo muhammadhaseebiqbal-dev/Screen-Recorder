@@ -336,4 +336,9 @@
     <string name="ScreenRecordService_warn_sys_audio_unavailable">Не удалось запустить запись системного звука на этом устройстве. Запись продолжилась только с видео и микрофоном.</string>
     <string name="ScreenRecordService_warn_sys_audio_restricted">Активное приложение запрещает запись внутреннего звука политикой воспроизведения Android, поэтому системный звук не записался.</string>
     <string name="ScreenRecordService_warn_sys_audio_usage">Звук воспроизводился через канал звонка или немедийный поток, который Android исключает из стандартной внутренней записи.</string>
+    <string name="EnhancedAudio_warn_title">Уведомление расширенной записи звука</string>
+    <string name="EnhancedAudio_warn_by_none">Записываемое приложение запретило внутреннюю запись политикой ALLOW_CAPTURE_BY_NONE. Android блокирует её даже при Shizuku или Root.</string>
+    <string name="EnhancedAudio_warn_by_system">Приложение разрешает только системный привилегированный захват (ALLOW_CAPTURE_BY_SYSTEM), который Android не предоставил в этой сессии.</string>
+    <string name="EnhancedAudio_warn_non_media">Звук шёл через немедийный поток (например, звонок или будильник), исключённый Android из внутреннего захвата.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">Для расширенной записи звука требуется активная привилегированная поддержка Shizuku или Root на этом устройстве.</string>
 </resources>

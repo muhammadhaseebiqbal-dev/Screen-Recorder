@@ -336,4 +336,9 @@
     <string name="ScreenRecordService_warn_sys_audio_unavailable">Não foi possível iniciar a captura de áudio do sistema neste dispositivo. A gravação continuou apenas com vídeo e microfone.</string>
     <string name="ScreenRecordService_warn_sys_audio_restricted">A aplicação ativa restringe a captura de áudio interno pela política do Android, por isso o som interno ficou mudo.</string>
     <string name="ScreenRecordService_warn_sys_audio_usage">O áudio estava a tocar numa chamada ou fluxo não multimédia que o Android exclui da captura interna padrão.</string>
+    <string name="EnhancedAudio_warn_title">Aviso de captura de áudio melhorada</string>
+    <string name="EnhancedAudio_warn_by_none">A aplicação gravada bloqueou a captura interna com ALLOW_CAPTURE_BY_NONE. O Android impede a captura mesmo com Shizuku ou Root.</string>
+    <string name="EnhancedAudio_warn_by_system">A aplicação apenas permite captura privilegiada do sistema (ALLOW_CAPTURE_BY_SYSTEM), que o Android não concedeu nesta sessão.</string>
+    <string name="EnhancedAudio_warn_non_media">O áudio foi reproduzido num fluxo não multimédia (como chamada ou alarme) excluído pelo Android da captura interna.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">A captura de áudio melhorada requer suporte privilegiado ativo de Shizuku ou Root neste dispositivo.</string>
 </resources>
