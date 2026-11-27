@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">Sistem Dili</string>
     <string name="AboutActivity_dialog_update_notes_header">Yenilikler</string>
     <string name="AboutActivity_dialog_update_no_notes">Bu sürüm için sürüm notu sağlanmadı.</string>
+    <string name="VoipAudio_warn_title">VoIP ve Uygulama Ses Kısıtlaması</string>
+    <string name="VoipAudio_warn_voice_call">Sistem ayrıcalıklı CAPTURE_VOICE_COMMUNICATION_OUTPUT izni verilmedikçe Android, WeChat aramaları gibi VoIP akışlarını standart veya Shizuku dahili kayıttan ayırır. Etkin aramanın bozulmaması için mikrofon standart MIC modunda tutuldu.</string>
+    <string name="VoipAudio_warn_app_blocked">Etkin uygulama ALLOW_CAPTURE_BY_NONE ile dahili ses yakalamayı engelledi; Android bunu Shizuku veya Root açıkken de uygular.</string>
 </resources>

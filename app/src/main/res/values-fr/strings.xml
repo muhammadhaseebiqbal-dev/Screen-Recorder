@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">Langue du système</string>
     <string name="AboutActivity_dialog_update_notes_header">Nouveautés</string>
     <string name="AboutActivity_dialog_update_no_notes">Aucune note de version fournie pour cette version.</string>
+    <string name="VoipAudio_warn_title">Restriction audio VoIP et application</string>
+    <string name="VoipAudio_warn_voice_call">Android isole les flux d’appel VoIP (tels que les appels WeChat) de la capture interne standard ou Shizuku sans permission système CAPTURE_VOICE_COMMUNICATION_OUTPUT. Le micro est resté en mode MIC standard afin de préserver l’appel actif.</string>
+    <string name="VoipAudio_warn_app_blocked">L’application active a bloqué la capture audio interne via ALLOW_CAPTURE_BY_NONE, appliquée par Android même avec Shizuku ou Root.</string>
 </resources>

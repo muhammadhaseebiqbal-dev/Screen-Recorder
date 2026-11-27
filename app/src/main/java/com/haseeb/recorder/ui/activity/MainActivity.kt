@@ -22,6 +22,8 @@ import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.data.VideoFile
 import com.haseeb.recorder.recording.ScreenRecordService
+import com.haseeb.recorder.recording.VoipAudioWarningStore
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.haseeb.recorder.ui.adapter.VideoAdapter
 import com.haseeb.recorder.ui.dialog.SettingsBottomSheet
 import com.haseeb.recorder.util.*
@@ -42,11 +44,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var configManager: ConfigManager
     private lateinit var adapter: VideoAdapter
+    private var voipWarningDialog: androidx.appcompat.app.AlertDialog? = null
 
     private val recordingStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ScreenRecordService.ACTION_STATE_CHANGED) {
                 syncRecordingUi()
+                showVoipAudioWarning()
             }
         }
     }
@@ -347,6 +351,27 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         syncRecordingUi()
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        showVoipAudioWarning()
+    }
+
+    private fun showVoipAudioWarning() {
+        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || voipWarningDialog != null) return
+        val message = VoipAudioWarningStore.pendingWarning(this) ?: return
+        voipWarningDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.VoipAudio_warn_title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                VoipAudioWarningStore.acknowledgeWarning(this, message)
+            }
+            .setOnDismissListener {
+                voipWarningDialog = null
+                if (VoipAudioWarningStore.pendingWarning(this) != message) showVoipAudioWarning()
+            }
+            .show()
     }
 
     /*

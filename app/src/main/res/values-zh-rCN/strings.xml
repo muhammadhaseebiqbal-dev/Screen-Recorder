@@ -321,4 +321,7 @@
     <string name="ConfigManager_storage_default">默认路径 (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">自定义: %1$s</string>
     <string name="LocaleHelper_language_system">系统语言</string>
+    <string name="VoipAudio_warn_title">微信通话与应用音频限制</string>
+    <string name="VoipAudio_warn_voice_call">除非系统授予特权权限 CAPTURE_VOICE_COMMUNICATION_OUTPUT，否则 Android 会将微信语音/视频通话等 VoIP 音频流与常规或 Shizuku 内录隔离（虚拟机因处于独立虚拟音频层而可录制）。录制已自动保持标准 MIC 采集，避免冲突导致通话静音或异常。</string>
+    <string name="VoipAudio_warn_app_blocked">当前应用通过 ALLOW_CAPTURE_BY_NONE 禁止了内部音频捕获，即使开启 Shizuku 或 Root，Android 原生系统仍会阻止外部应用录制该声音。</string>
 </resources>

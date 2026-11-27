@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">Язык системы</string>
     <string name="AboutActivity_dialog_update_notes_header">Что нового</string>
     <string name="AboutActivity_dialog_update_no_notes">Примечания к выпуску для этой версии не предоставлены.</string>
+    <string name="VoipAudio_warn_title">Ограничение звука VoIP и приложений</string>
+    <string name="VoipAudio_warn_voice_call">Android изолирует аудиопотоки голосовых и видеозвонков (например, звонков WeChat) от обычного и Shizuku-захвата без системного права CAPTURE_VOICE_COMMUNICATION_OUTPUT. Микрофон автоматически переведён в стандартный режим MIC во избежание сбоя звонка.</string>
+    <string name="VoipAudio_warn_app_blocked">Приложение запретило внутренний захват звука через ALLOW_CAPTURE_BY_NONE — Android соблюдает это ограничение вне виртуальной среды даже с Shizuku или Root.</string>
 </resources>

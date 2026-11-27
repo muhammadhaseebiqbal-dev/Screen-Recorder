@@ -197,13 +197,20 @@ object ShizukuManager {
     }
 
     /*
-     * Grants enhanced audio output capture privileges via Shizuku shell.
+     * Grants enhanced audio and VoIP communication capture privileges when permitted by ROM/system.
      */
     fun grantEnhancedAudioPermission(context: Context): Boolean {
-        val p1 = executeShell("pm grant ${context.packageName} android.permission.CAPTURE_AUDIO_OUTPUT")
-        val p2 = executeShell("cmd appops set ${context.packageName} CAPTURE_AUDIO_OUTPUT allow")
-        val p3 = executeShell("cmd appops set ${context.packageName} RECORD_AUDIO allow")
-        return p1 || p2 || p3
+        val pkg = context.packageName
+        executeShell("pm grant $pkg android.permission.CAPTURE_AUDIO_OUTPUT")
+        executeShell("pm grant $pkg android.permission.CAPTURE_MEDIA_OUTPUT")
+        executeShell("pm grant $pkg android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT")
+        executeShell("cmd appops set $pkg CAPTURE_AUDIO_OUTPUT allow")
+        executeShell("cmd appops set $pkg CAPTURE_MEDIA_OUTPUT allow")
+        executeShell("cmd appops set $pkg RECORD_AUDIO allow")
+        val pm = PackageManager.PERMISSION_GRANTED
+        return context.checkSelfPermission("android.permission.CAPTURE_AUDIO_OUTPUT") == pm ||
+            context.checkSelfPermission("android.permission.CAPTURE_MEDIA_OUTPUT") == pm ||
+            context.checkSelfPermission("android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT") == pm
     }
 
     /*

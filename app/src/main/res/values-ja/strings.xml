@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">システム言語</string>
     <string name="AboutActivity_dialog_update_notes_header">新機能</string>
     <string name="AboutActivity_dialog_update_no_notes">このバージョンのリリースノートはありません。</string>
+    <string name="VoipAudio_warn_title">通話・アプリ音声の制限</string>
+    <string name="VoipAudio_warn_voice_call">システムの CAPTURE_VOICE_COMMUNICATION_OUTPUT 権限がない限り、Android は WeChat 通話などの VoIP 音声を標準または Shizuku による内部録音から隔離します。通話を妨げないようマイクは自動的に標準 MIC を維持しました。</string>
+    <string name="VoipAudio_warn_app_blocked">対象アプリが ALLOW_CAPTURE_BY_NONE により内部音声の録音を拒否しているため、仮想環境外では Shizuku や Root があってもシステム側で遮断されます。</string>
 </resources>

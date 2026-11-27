@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">لغة النظام</string>
     <string name="AboutActivity_dialog_update_notes_header">ما الجديد</string>
     <string name="AboutActivity_dialog_update_no_notes">لا توجد ملاحظات إصدار لهذا الإصدار.</string>
+    <string name="VoipAudio_warn_title">قيود صوت المكالمات والتطبيقات</string>
+    <string name="VoipAudio_warn_voice_call">يعزل نظام Android تدفقات صوت المكالمات الصوتية والمرئية عن الالتقاط الداخلي القياسي أو عبر Shizuku ما لم يُمنح إذن النظام المميز CAPTURE_VOICE_COMMUNICATION_OUTPUT. تم إبقاء الميكروفون على الوضع القياسي لتجنب تعطل المكالمة.</string>
+    <string name="VoipAudio_warn_app_blocked">قام التطبيق النشط بحظر التقاط الصوت الداخلي عبر ALLOW_CAPTURE_BY_NONE، وهو قيد يفرضه Android خارج البيئات الافتراضية حتى مع Shizuku أو Root.</string>
 </resources>

@@ -314,4 +314,7 @@
     <string name="ConfigManager_storage_default">Padrão (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">Personalizado: %1$s</string>
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
+    <string name="VoipAudio_warn_title">Restrição de áudio VoIP e de app</string>
+    <string name="VoipAudio_warn_voice_call">O Android isola chamadas VoIP (como chamadas do WeChat) da captura interna padrão ou via Shizuku sem permissão de sistema CAPTURE_VOICE_COMMUNICATION_OUTPUT. O microfone foi mantido no modo MIC padrão para não afetar a chamada.</string>
+    <string name="VoipAudio_warn_app_blocked">O app ativo bloqueou a captura interna com ALLOW_CAPTURE_BY_NONE, aplicada pelo Android mesmo com Shizuku ou Root.</string>
 </resources>

@@ -323,4 +323,7 @@
     <string name="LocaleHelper_language_system">系统语言</string>
     <string name="AboutActivity_dialog_update_notes_header">更新日志</string>
     <string name="AboutActivity_dialog_update_no_notes">此版本未提供发行说明。</string>
+    <string name="VoipAudio_warn_title">通話與應用程式音訊限制</string>
+    <string name="VoipAudio_warn_voice_call">除非系統授予特權權限 CAPTURE_VOICE_COMMUNICATION_OUTPUT，否則 Android 會將微信通話等 VoIP 語音串流與一般或 Shizuku 內部錄音隔離（虛擬機因位於獨立沙盒音訊層而可錄製）。系統已自動切換為標準 MIC 避免影響通話。</string>
+    <string name="VoipAudio_warn_app_blocked">目前應用程式透過 ALLOW_CAPTURE_BY_NONE 停用了內部錄音擷取，即使啟用 Shizuku 或 Root，Android 系統仍會於原生環境限制擷取。</string>
 </resources>

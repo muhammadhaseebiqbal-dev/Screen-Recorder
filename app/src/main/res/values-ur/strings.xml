@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">سسٹم کی زبان</string>
     <string name="AboutActivity_dialog_update_notes_header">نیا کیا ہے</string>
     <string name="AboutActivity_dialog_update_no_notes">اس ورژن کے لیے ریلیز نوٹس دستیاب نہیں ہیں۔</string>
+    <string name="VoipAudio_warn_title">VoIP اور ایپ آڈیو پابندی</string>
+    <string name="VoipAudio_warn_voice_call">جب تک سسٹم CAPTURE_VOICE_COMMUNICATION_OUTPUT کی خصوصی اجازت نہ دے، Android وی چیٹ کالز جیسی VoIP آڈیو کو عام یا Shizuku اندرونی ریکارڈنگ سے الگ رکھتا ہے۔ فعال کال متاثر نہ ہو اس لیے مائیکروفون خودکار طور پر معیاری MIC پر رکھا گیا۔</string>
+    <string name="VoipAudio_warn_app_blocked">فعال ایپ نے ALLOW_CAPTURE_BY_NONE کے ذریعے اندرونی آڈیو ریکارڈنگ بلاک کی ہے، جسے Android ورچوئل ماحول سے باہر Shizuku یا Root کے باوجود نافذ کرتا ہے۔</string>
 </resources>
