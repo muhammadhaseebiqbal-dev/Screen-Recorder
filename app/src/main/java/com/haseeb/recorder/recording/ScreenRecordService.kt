@@ -696,12 +696,7 @@ class ScreenRecordService : Service() {
             }
             if (voipCaps.hasVoiceCommCapturePermission) {
                 try {
-                    val ruleField = AudioPlaybackCaptureConfiguration.Builder::class.java
-                        .getDeclaredField("mAudioMixingRuleBuilder").apply { isAccessible = true }
-                    val ruleBuilder = ruleField.get(configBuilder)
-                    ruleBuilder.javaClass
-                        .getMethod("voiceCommunicationCaptureAllowed", Boolean::class.javaPrimitiveType)
-                        .invoke(ruleBuilder, true)
+                    PrivilegedAudioCapture.applyMixingRuleFlag(configBuilder, "voiceCommunicationCaptureAllowed")
                 } catch (t: Throwable) {
                     Log.w(TAG, "Could not enable privileged VoIP capture rule: ${t.message}")
                 }

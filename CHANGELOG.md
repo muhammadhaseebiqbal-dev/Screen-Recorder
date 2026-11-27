@@ -1,5 +1,22 @@
 # Changelog
 
+## 5.2
+
+- Added optional **Always Show Floating Bar** controls to start and manage recordings from anywhere, with smoother drag/snap physics and edge-magnet snapping (#27).
+- Added **Hide Floating Ball While Recording** to exclude floating controls from full-screen and single-app video capture while keeping notification controls accessible (#45).
+- Isolated camera permissions from the main app task so toggling the floating camera while recording does not bring `MainActivity` to the foreground (#27).
+- Added **AV1** video encoder support on Android 12+ devices with automatic fallback (`VideoEncoderCatalog`) (#44).
+- Kept recording countdowns intact across permission dialogs and activity transitions (#43).
+- Kept video capture alive during display sleep/timeouts and added frame-drop warnings if a video track ends early (#48).
+- Safeguarded interrupted recordings for recovery across OS kills and prevented non-critical `TRIM_MEMORY_BACKGROUND` / moderate trim callbacks from prematurely stopping recordings (#49).
+- Improved simultaneous internal + microphone audio capture with playback/restriction diagnostics and optional privileged Shizuku/Root capture fallback for `ALLOW_CAPTURE_BY_SYSTEM` streams (#43, #47).
+- Improved VoIP/communication app coexistence (WeChat, Tencent Meeting, etc.) on HAL-sensitive devices and active calls, added explicit `USAGE_VOICE_COMMUNICATION` / `ALLOW_CAPTURE_BY_NONE` restriction diagnostics, and added privileged `CAPTURE_VOICE_COMMUNICATION_OUTPUT` support (#24).
+
+### Known limitations
+
+- On stock non-rooted Android 10+, Android restricts third-party internal capture of `USAGE_VOICE_COMMUNICATION` call streams unless privileged `CAPTURE_VOICE_COMMUNICATION_OUTPUT` is granted, and the OS may also silence background microphone streams while another app holds active call capture.
+- Pressing the hardware Power button on devices where Keyguard immediately revokes `MediaProjection` still cleanly stops and saves the active recording when the OS revokes screen capture.
+
 ## 5.1
 
 - Fixed intermittent internal and microphone audio capture stalls during recording (#21).

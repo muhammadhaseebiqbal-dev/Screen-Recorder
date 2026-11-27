@@ -1,5 +1,6 @@
 package com.haseeb.recorder.recording
 
+import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
@@ -151,6 +152,20 @@ internal class PrivilegedAudioCapture private constructor(
     companion object {
         private const val TAG = "PrivilegedAudioCapture"
 
+        @SuppressLint("BlockedPrivateApi")
+        internal fun applyMixingRuleFlag(
+            builder: AudioPlaybackCaptureConfiguration.Builder,
+            methodName: String,
+            enabled: Boolean = true
+        ) {
+            val field = AudioPlaybackCaptureConfiguration.Builder::class.java
+                .getDeclaredField("mAudioMixingRuleBuilder").apply { isAccessible = true }
+            val ruleBuilder = field.get(builder)
+            ruleBuilder.javaClass
+                .getMethod(methodName, Boolean::class.javaPrimitiveType)
+                .invoke(ruleBuilder, enabled)
+        }
+
         fun tryCreateInProcess(
             mediaProjection: MediaProjection,
             excludeUid: Int
@@ -162,12 +177,7 @@ internal class PrivilegedAudioCapture private constructor(
                     .addMatchingUsage(AudioAttributes.USAGE_UNKNOWN)
                     .excludeUid(excludeUid)
 
-                val mixingRuleBuilderField = AudioPlaybackCaptureConfiguration.Builder::class.java
-                    .getDeclaredField("mAudioMixingRuleBuilder").apply { isAccessible = true }
-                val mixingRuleBuilder = mixingRuleBuilderField.get(builder)
-                mixingRuleBuilder.javaClass
-                    .getMethod("allowPrivilegedPlaybackCapture", Boolean::class.javaPrimitiveType)
-                    .invoke(mixingRuleBuilder, true)
+                applyMixingRuleFlag(builder, "allowPrivilegedPlaybackCapture")
 
                 val config = builder.build()
                 val rate = EnhancedAudioDiagnostics.PRIVILEGED_CAPTURE_SAMPLE_RATE
