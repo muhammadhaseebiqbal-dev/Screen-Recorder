@@ -401,7 +401,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         }
 
         binding.cardHideFloatingBall.setOnClickListener {
-            if (configManager.isRecordingOverlayEnabled) binding.switchHideFloatingBall.toggle()
+            if (isAnyOverlayModeEnabled()) binding.switchHideFloatingBall.toggle()
         }
         binding.switchHideFloatingBall.setOnCheckedChangeListener { _, isChecked ->
             configManager.isHideFloatingBallWhileRecording = isChecked

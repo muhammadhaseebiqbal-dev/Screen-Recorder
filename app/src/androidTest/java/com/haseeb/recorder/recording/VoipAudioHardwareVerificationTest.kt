@@ -1,7 +1,10 @@
 package com.haseeb.recorder.recording
 
 import android.Manifest
+import android.content.ComponentName
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioManager
@@ -12,13 +15,18 @@ import android.os.Build
 import android.os.SystemClock
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.haseeb.recorder.ui.activity.CameraPermissionActivity
+import com.haseeb.recorder.ui.activity.MainActivity
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.math.sin
 
-/** Hardware verification tests for VoIP/communication audio coexistence and capture policy detection. */
+/**
+ * Hardware-verified checks for VoIP/communication audio coexistence, Android playback capture policy
+ * inspection, and isolated activity task metadata.
+ */
 @RunWith(AndroidJUnit4::class)
 class VoipAudioHardwareVerificationTest {
     private val context: Context
@@ -27,6 +35,14 @@ class VoipAudioHardwareVerificationTest {
     @Before fun grantMicPermission() {
         InstrumentationRegistry.getInstrumentation().uiAutomation
             .grantRuntimePermission(context.packageName, Manifest.permission.RECORD_AUDIO)
+    }
+
+    @Test fun cameraPermissionActivityUsesIsolatedSingleTaskToAvoidForegroundingMainActivity() {
+        val pm = context.packageManager
+        val mainInfo = pm.getActivityInfo(ComponentName(context, MainActivity::class.java), PackageManager.GET_META_DATA)
+        val camInfo = pm.getActivityInfo(ComponentName(context, CameraPermissionActivity::class.java), PackageManager.GET_META_DATA)
+        assertEquals(ActivityInfo.LAUNCH_SINGLE_TASK, camInfo.launchMode)
+        assertNotEquals(mainInfo.taskAffinity, camInfo.taskAffinity)
     }
 
     @Test fun detectsAllowCaptureByNonePolicyOnRealPlaybackStream() {
@@ -44,6 +60,16 @@ class VoipAudioHardwareVerificationTest {
                 snapshots = snapshots.map { VoipAudioDiagnostics.PlaybackEntry(it.first, it.second) }
             )
             assertEquals(VoipAudioDiagnostics.CaptureIssue.APP_CAPTURE_BLOCKED, voipIssue)
+
+            val enhancedReason = EnhancedAudioDiagnostics.evaluateBlockReason(
+                systemAudioRequested = true,
+                enhancedAudioEnabled = true,
+                hasNonZeroSystemAudio = false,
+                snapshots = snapshots.map { EnhancedAudioDiagnostics.PlaybackSnapshot(it.first, it.second) },
+                capabilities = EnhancedAudioDiagnostics.CapabilitySummary(false, false, false, false),
+                privilegedCaptureActive = false
+            )
+            assertEquals(EnhancedAudioDiagnostics.BlockReason.ALLOW_CAPTURE_BY_NONE, enhancedReason)
         } finally {
             runCatching { track.stop() }
             runCatching { track.release() }
