@@ -316,4 +316,10 @@
     <string name="LocaleHelper_language_system">Sistem Dili</string>
     <string name="AboutActivity_dialog_update_notes_header">Yenilikler</string>
     <string name="AboutActivity_dialog_update_no_notes">Bu sürüm için sürüm notu sağlanmadı.</string>
+    <string name="RecordingSessionStore_title">Kayıt kesintiye uğradı</string>
+    <string name="RecordingSessionStore_recovered">Kayıt kaydedilmeden önce uygulama kapandı. Videonuz artık kaydedildi.</string>
+    <string name="RecordingSessionStore_removed">Kayıt tamamlanamadı. Tamamlanmamış video kurtarılamadığı için silindi.</string>
+    <string name="RecordingSessionStore_retry">Kaydetme veya temizleme tamamlanamadı. Kayıt korundu ve uygulama tekrar açıldığında yeniden denenecek. Boş depolama alanını ve klasör erişimini kontrol edin.</string>
+    <string name="RecordingSessionStore_memory_saved">Cihazın belleği azaldı. Kayıt durduruldu ve videonuz kaydedildi.</string>
+    <string name="RecordingSessionStore_busy">Önceki kayıt tamamlanıyor. Lütfen kısa süre sonra tekrar deneyin.</string>
 </resources>

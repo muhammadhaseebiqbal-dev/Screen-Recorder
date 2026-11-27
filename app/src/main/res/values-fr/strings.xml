@@ -316,4 +316,10 @@
     <string name="LocaleHelper_language_system">Langue du système</string>
     <string name="AboutActivity_dialog_update_notes_header">Nouveautés</string>
     <string name="AboutActivity_dialog_update_no_notes">Aucune note de version fournie pour cette version.</string>
+    <string name="RecordingSessionStore_title">Enregistrement interrompu</string>
+    <string name="RecordingSessionStore_recovered">L’application a été fermée avant la fin de la sauvegarde. Votre vidéo est maintenant enregistrée.</string>
+    <string name="RecordingSessionStore_removed">L’enregistrement n’a pas pu être finalisé. La vidéo incomplète n’a pas pu être récupérée et a été supprimée.</string>
+    <string name="RecordingSessionStore_retry">La sauvegarde ou le nettoyage n’a pas pu se terminer. L’enregistrement est conservé. L’application réessaiera à sa prochaine ouverture. Vérifiez l’espace libre et l’accès au dossier.</string>
+    <string name="RecordingSessionStore_memory_saved">La mémoire de l’appareil était insuffisante. L’enregistrement a été arrêté et la vidéo sauvegardée.</string>
+    <string name="RecordingSessionStore_busy">Finalisation de l’enregistrement précédent. Veuillez réessayer dans un instant.</string>
 </resources>

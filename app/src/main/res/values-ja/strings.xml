@@ -316,4 +316,10 @@
     <string name="LocaleHelper_language_system">システム言語</string>
     <string name="AboutActivity_dialog_update_notes_header">新機能</string>
     <string name="AboutActivity_dialog_update_no_notes">このバージョンのリリースノートはありません。</string>
+    <string name="RecordingSessionStore_title">録画が中断されました</string>
+    <string name="RecordingSessionStore_recovered">録画の保存が完了する前にアプリが終了しました。動画は現在保存されています。</string>
+    <string name="RecordingSessionStore_removed">録画を正常に完了できませんでした。未完成の動画は復元できなかったため削除されました。</string>
+    <string name="RecordingSessionStore_retry">保存または後処理を完了できませんでした。録画は保持されており、次回アプリを開いたときに再試行します。空き容量とフォルダへのアクセスを確認してください。</string>
+    <string name="RecordingSessionStore_memory_saved">端末のメモリが不足しました。録画を停止し、動画を保存しました。</string>
+    <string name="RecordingSessionStore_busy">前の録画を処理しています。少し待ってから再試行してください。</string>
 </resources>

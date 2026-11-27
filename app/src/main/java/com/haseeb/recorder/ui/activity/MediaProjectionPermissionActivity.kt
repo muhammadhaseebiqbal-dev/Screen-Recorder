@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import android.Manifest
 import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
+import com.haseeb.recorder.recording.RecordingSessionStore
 import com.haseeb.recorder.recording.ScreenRecordService
 import com.haseeb.recorder.privileged.PrivilegedAccessManager
 import com.haseeb.recorder.util.LocaleHelper
@@ -80,6 +81,12 @@ open class MediaProjectionPermissionActivity : Activity() {
      */
     private fun validateAndProceed() {
         if (isProjectionRequestPending) return
+        if (RecordingSessionStore.isBusy(this)) {
+            if (!RecordingSessionStore.isFinishing) RecordingSessionStore.recoverInterruptedSession(this)
+            android.widget.Toast.makeText(this, R.string.RecordingSessionStore_busy, android.widget.Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
         if (!checkRuntimePermissions()) return
         if (!checkOverlayPermission()) return
         if (PrivilegedAccessManager.isPermissionGranted() && configManager.isShizukuDirectRecordingEnabled) {

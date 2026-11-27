@@ -316,4 +316,10 @@
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
     <string name="AboutActivity_dialog_update_notes_header">O que há de novo</string>
     <string name="AboutActivity_dialog_update_no_notes">Nenhuma nota de versão fornecida para esta versão.</string>
+    <string name="RecordingSessionStore_title">Gravação interrompida</string>
+    <string name="RecordingSessionStore_recovered">A aplicação fechou antes de terminar de guardar a gravação. O vídeo já foi guardado.</string>
+    <string name="RecordingSessionStore_removed">Não foi possível finalizar a gravação. O vídeo incompleto não pôde ser recuperado e foi removido.</string>
+    <string name="RecordingSessionStore_retry">Não foi possível concluir a gravação ou a limpeza. A gravação foi mantida. A aplicação tentará novamente quando a abrir. Verifique o espaço livre e o acesso à pasta.</string>
+    <string name="RecordingSessionStore_memory_saved">O dispositivo ficou com pouca memória. A gravação foi interrompida e o vídeo foi guardado.</string>
+    <string name="RecordingSessionStore_busy">A finalizar a gravação anterior. Tente novamente dentro de instantes.</string>
 </resources>
