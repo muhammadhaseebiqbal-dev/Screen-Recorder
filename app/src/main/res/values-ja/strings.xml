@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">システム言語</string>
     <string name="AboutActivity_dialog_update_notes_header">新機能</string>
     <string name="AboutActivity_dialog_update_no_notes">このバージョンのリリースノートはありません。</string>
+    <string name="ScreenRecordService_warn_video_title">映像フレームが停止しました</string>
+    <string name="ScreenRecordService_warn_video_gap">録画中に一部の映像フレームが途切れました。その区間では静止画のまま再生される場合があります。</string>
+    <string name="ScreenRecordService_warn_video_tail">音声終了前に映像フレームが停止しました。最後の映像フレーム以降の余分な音声はトリミングされました。</string>
 </resources>

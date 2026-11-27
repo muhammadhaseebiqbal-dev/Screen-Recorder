@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">Idioma del sistema</string>
     <string name="AboutActivity_dialog_update_notes_header">Novedades</string>
     <string name="AboutActivity_dialog_update_no_notes">No se proporcionaron notas de la versión para esta versión.</string>
+    <string name="ScreenRecordService_warn_video_title">Fotogramas de video detenidos</string>
+    <string name="ScreenRecordService_warn_video_gap">Algunos fotogramas de video se interrumpieron durante la grabación. La reproducción puede quedar fija en ese tramo.</string>
+    <string name="ScreenRecordService_warn_video_tail">Los fotogramas de video se detuvieron antes de finalizar el audio. Se recortó el audio sobrante tras el último fotograma.</string>
 </resources>

@@ -321,4 +321,7 @@
     <string name="ConfigManager_storage_default">默认路径 (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">自定义: %1$s</string>
     <string name="LocaleHelper_language_system">系统语言</string>
+    <string name="ScreenRecordService_warn_video_title">视频帧已停止</string>
+    <string name="ScreenRecordService_warn_video_gap">录制期间部分视频帧中断，播放时该片段可能会停留在静止画面。</string>
+    <string name="ScreenRecordService_warn_video_tail">视频帧在音频结束前停止，已裁剪最后一个视频帧之后的多余音频。</string>
 </resources>

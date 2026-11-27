@@ -119,6 +119,7 @@ class ScreenRecordService : Service() {
     private var muxerStarted = false
     private var inputSurface: Surface? = null
     private var rotationRenderer: AutoRotationRenderer? = null
+    private val trackHealth = RecordingTrackHealth()
     private var captureScale = 1.0
     private var captureWidth = 0
     private var captureHeight = 0
@@ -127,11 +128,14 @@ class ScreenRecordService : Service() {
         override fun onDisplayAdded(displayId: Int) {}
         override fun onDisplayRemoved(displayId: Int) {}
         override fun onDisplayChanged(displayId: Int) {
-            if (displayId == android.view.Display.DEFAULT_DISPLAY && Build.VERSION.SDK_INT < 34) {
-                val metrics = DisplayMetrics()
-                @Suppress("DEPRECATION")
-                (getSystemService(WINDOW_SERVICE) as WindowManager).defaultDisplay.getRealMetrics(metrics)
-                resizeCapture(metrics.widthPixels, metrics.heightPixels)
+            if (displayId == android.view.Display.DEFAULT_DISPLAY) {
+                updateDisplaySleepState()
+                if (configManager.videoOrientation == ConfigManager.ORIENTATION_AUTO && Build.VERSION.SDK_INT < 34) {
+                    val metrics = DisplayMetrics()
+                    @Suppress("DEPRECATION")
+                    (getSystemService(WINDOW_SERVICE) as WindowManager).defaultDisplay.getRealMetrics(metrics)
+                    resizeCapture(metrics.widthPixels, metrics.heightPixels)
+                }
             }
         }
     }
@@ -155,12 +159,16 @@ class ScreenRecordService : Service() {
                     if (configManager.isPauseOnScreenOff && isRecording && !isPaused) {
                         isScreenOffPaused = true
                         pauseRecording()
+                    } else if (isRecording && !isPaused) {
+                        rotationRenderer?.setDisplayOff(true)
                     }
                 }
                 Intent.ACTION_SCREEN_ON, Intent.ACTION_USER_PRESENT -> {
                     if (configManager.isPauseOnScreenOff && isRecording && isPaused && isScreenOffPaused) {
                         isScreenOffPaused = false
                         resumeRecording()
+                    } else if (isRecording) {
+                        updateDisplaySleepState(forceInteractive = intent.action == Intent.ACTION_USER_PRESENT)
                     }
                 }
             }
@@ -409,6 +417,7 @@ class ScreenRecordService : Service() {
         val wantSysAudio = configManager.isSystemAudioEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
         hasAnyAudio = wantMic || wantSysAudio
         stopRequested = false
+        trackHealth.reset()
 
         try {
             val videoMime = if (configManager.videoEncoder == ConfigManager.ENCODER_HEVC && isH265Supported()) {
@@ -435,18 +444,21 @@ class ScreenRecordService : Service() {
                 start()
             }
 
-            if (configManager.videoOrientation == ConfigManager.ORIENTATION_AUTO) {
-                captureScale = screenWidth.toDouble() / physicalMaxRes.first
-                captureWidth = screenWidth
-                captureHeight = screenHeight
+            captureScale = screenWidth.toDouble() / physicalMaxRes.first
+            captureWidth = screenWidth
+            captureHeight = screenHeight
+            try {
                 rotationRenderer = AutoRotationRenderer(checkNotNull(inputSurface), screenWidth, screenHeight) { error ->
                     mainHandler.post {
-                        Log.e(TAG, "Rotation rendering failed", error)
+                        Log.e(TAG, "Frame rendering failed", error)
                         stopRecording()
                         stopForeground(STOP_FOREGROUND_REMOVE)
                         stopSelf()
                     }
                 }
+            } catch (e: Exception) {
+                if (configManager.videoOrientation == ConfigManager.ORIENTATION_AUTO) throw e
+                Log.w(TAG, "Falling back to direct encoder surface", e)
             }
 
             if (hasAnyAudio) setupAudioEncoders(wantMic, wantSysAudio)
@@ -463,7 +475,7 @@ class ScreenRecordService : Service() {
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, rotationRenderer?.surface ?: inputSurface, null, null
             )
 
-            if (rotationRenderer != null && Build.VERSION.SDK_INT < 34) {
+            if (rotationRenderer != null) {
                 getSystemService(DisplayManager::class.java).registerDisplayListener(displayListener, mainHandler)
                 displayListenerRegistered = true
             }
@@ -483,6 +495,7 @@ class ScreenRecordService : Service() {
             sendStateBroadcast(STATE_START)
 
             registerScreenStateReceiver()
+            updateDisplaySleepState()
 
         } catch (e: Exception) {
             Log.e(TAG, "Start failed: ${e.message}")
@@ -494,6 +507,7 @@ class ScreenRecordService : Service() {
     }
 
     private fun resizeCapture(width: Int, height: Int) {
+        if (configManager.videoOrientation != ConfigManager.ORIENTATION_AUTO) return
         val renderer = rotationRenderer ?: return
         val display = virtualDisplay ?: return
         if (stopRequested || width <= 0 || height <= 0) return
@@ -512,6 +526,15 @@ class ScreenRecordService : Service() {
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
+    }
+
+    private fun updateDisplaySleepState(forceInteractive: Boolean = false) {
+        val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+        val displayManager = getSystemService(DisplayManager::class.java)
+        val defaultDisplay = displayManager?.getDisplay(android.view.Display.DEFAULT_DISPLAY)
+        val displayOff = !forceInteractive && (!powerManager.isInteractive ||
+            (defaultDisplay != null && defaultDisplay.state != android.view.Display.STATE_ON))
+        rotationRenderer?.setDisplayOff(displayOff)
     }
 
     /*
@@ -764,11 +787,18 @@ class ScreenRecordService : Service() {
                                 var pts = bufferInfo.presentationTimeUs - totalPausedDurationUs
                                 
                                 if (isAudio) {
-                                    if (pts <= lastAudioWrittenPtsUs) pts = lastAudioWrittenPtsUs + 10 
+                                    if (pts <= lastAudioWrittenPtsUs) pts = lastAudioWrittenPtsUs + 10
+                                    if (trackHealth.shouldDropTrailingAudioSample(pts, stopRequested)) {
+                                        encoder.releaseOutputBuffer(outputIndex, false)
+                                        if (bufferInfo.flags and MediaCodec.BUFFER_FLAG_END_OF_STREAM != 0) return
+                                        continue
+                                    }
                                     lastAudioWrittenPtsUs = pts
+                                    trackHealth.recordAudioSample(pts)
                                 } else {
                                     if (pts <= lastVideoWrittenPtsUs) pts = lastVideoWrittenPtsUs + 10
                                     lastVideoWrittenPtsUs = pts
+                                    trackHealth.recordVideoSample(pts)
                                 }
                                 
                                 bufferInfo.presentationTimeUs = pts
@@ -793,6 +823,11 @@ class ScreenRecordService : Service() {
      */
      private fun stopRecording() {
         if (!isRecording) return
+        if (isPaused) {
+            totalPausedDurationUs += (System.nanoTime() / 1000 - pauseStartTimeUs).coerceAtLeast(0L)
+        } else {
+            rotationRenderer?.emitClosingFrame()
+        }
         virtualDisplay?.setSurface(null)
         rotationRenderer?.close()
         rotationRenderer = null
@@ -811,11 +846,15 @@ class ScreenRecordService : Service() {
 
         try { micRecord?.stop() } catch (_: Exception) {}
         try { sysRecord?.stop() } catch (_: Exception) {}
-        try { audioRecordingThread?.join(1000) } catch (_: Exception) {}
-        try { videoEncoderThread?.join(1000) } catch (_: Exception) {}
+        try { audioRecordingThread?.join(1500) } catch (_: Exception) {}
+        try { videoEncoderThread?.join(1500) } catch (_: Exception) {}
+        val dropWarning = trackHealth.evaluate(muxerStarted, hasAnyAudio)
         try { if (muxerStarted) mediaMuxer?.stop() } catch (_: Exception) {}
 
         cleanup()
+        if (dropWarning != RecordingTrackHealth.Warning.NONE) {
+            RecordingWarningStore.reportVideoDrop(this, dropWarning)
+        }
         isRecording = false
         sendStateBroadcast(STATE_STOP)
     }
@@ -857,6 +896,7 @@ class ScreenRecordService : Service() {
         if (!isRecording || isPaused) return
         isPaused = true
         pauseStartTimeUs = System.nanoTime() / 1000
+        rotationRenderer?.setPaused(true)
         virtualDisplay?.setSurface(null)
         RecordingStateManager.onRecordingPaused()
         sendStateBroadcast(STATE_PAUSE)
@@ -871,6 +911,8 @@ class ScreenRecordService : Service() {
         val resumeTimeUs = System.nanoTime() / 1000
         totalPausedDurationUs += (resumeTimeUs - pauseStartTimeUs)
         isPaused = false
+        rotationRenderer?.setPaused(false)
+        updateDisplaySleepState()
         (rotationRenderer?.surface ?: inputSurface)?.let { virtualDisplay?.setSurface(it) }
         RecordingStateManager.onRecordingResumed()
         sendStateBroadcast(STATE_RESUME)

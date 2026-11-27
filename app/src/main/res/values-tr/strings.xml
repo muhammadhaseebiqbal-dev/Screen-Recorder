@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">Sistem Dili</string>
     <string name="AboutActivity_dialog_update_notes_header">Yenilikler</string>
     <string name="AboutActivity_dialog_update_no_notes">Bu sürüm için sürüm notu sağlanmadı.</string>
+    <string name="ScreenRecordService_warn_video_title">Video kareleri durdu</string>
+    <string name="ScreenRecordService_warn_video_gap">Kayıt sırasında bazı video kareleri kesintiye uğradı. Oynatma bu bölümde sabit bir karede kalabilir.</string>
+    <string name="ScreenRecordService_warn_video_tail">Ses bitmeden önce video kareleri durdu. Son video karesinden sonraki fazla ses kırpıldı.</string>
 </resources>

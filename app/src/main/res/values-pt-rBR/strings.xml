@@ -314,4 +314,7 @@
     <string name="ConfigManager_storage_default">Padrão (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">Personalizado: %1$s</string>
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
+    <string name="ScreenRecordService_warn_video_title">Quadros de vídeo interrompidos</string>
+    <string name="ScreenRecordService_warn_video_gap">Alguns quadros de vídeo foram interrompidos durante a gravação. A reprodução pode travar nesse trecho.</string>
+    <string name="ScreenRecordService_warn_video_tail">Os quadros de vídeo pararam antes do áudio terminar. O áudio excedente após o último quadro foi cortado.</string>
 </resources>

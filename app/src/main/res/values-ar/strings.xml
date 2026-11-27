@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">لغة النظام</string>
     <string name="AboutActivity_dialog_update_notes_header">ما الجديد</string>
     <string name="AboutActivity_dialog_update_no_notes">لا توجد ملاحظات إصدار لهذا الإصدار.</string>
+    <string name="ScreenRecordService_warn_video_title">توقفت إطارات الفيديو</string>
+    <string name="ScreenRecordService_warn_video_gap">توقفت بعض إطارات الفيديو أثناء التسجيل. قد يتجمد التشغيل على إطار ثابت في ذلك الجزء.</string>
+    <string name="ScreenRecordService_warn_video_tail">توقفت إطارات الفيديو قبل انتهاء الصوت. تم قص الصوت الزائد بعد آخر إطار فيديو.</string>
 </resources>

@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">سسٹم کی زبان</string>
     <string name="AboutActivity_dialog_update_notes_header">نیا کیا ہے</string>
     <string name="AboutActivity_dialog_update_no_notes">اس ورژن کے لیے ریلیز نوٹس دستیاب نہیں ہیں۔</string>
+    <string name="ScreenRecordService_warn_video_title">ویڈیو فریم رک گئے</string>
+    <string name="ScreenRecordService_warn_video_gap">ریکارڈنگ کے دوران کچھ ویڈیو فریم منقطع ہو گئے۔ اس حصے میں پلے بیک ایک ہی فریم پر رک سکتا ہے۔</string>
+    <string name="ScreenRecordService_warn_video_tail">آڈیو ختم ہونے سے پہلے ویڈیو فریم رک گئے۔ آخری ویڈیو فریم کے بعد کی اضافی آڈیو کاٹ دی گئی۔</string>
 </resources>

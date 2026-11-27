@@ -362,4 +362,7 @@
 
     <string name="LocaleHelper_language_system">System Language</string>
 
+    <string name="ScreenRecordService_warn_video_title">Video frames stopped</string>
+    <string name="ScreenRecordService_warn_video_gap">Some video frames were interrupted during recording. Playback may hold on a still frame during that section.</string>
+    <string name="ScreenRecordService_warn_video_tail">Video frames stopped before audio ended. Trailing audio beyond the last video frame was trimmed.</string>
 </resources>

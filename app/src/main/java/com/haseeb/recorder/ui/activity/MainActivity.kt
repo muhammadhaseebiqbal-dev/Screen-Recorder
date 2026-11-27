@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.data.VideoFile
+import com.haseeb.recorder.recording.RecordingWarningStore
 import com.haseeb.recorder.recording.ScreenRecordService
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.haseeb.recorder.ui.adapter.VideoAdapter
 import com.haseeb.recorder.ui.dialog.SettingsBottomSheet
 import com.haseeb.recorder.util.*
@@ -42,11 +44,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var configManager: ConfigManager
     private lateinit var adapter: VideoAdapter
+    private var warningDialog: androidx.appcompat.app.AlertDialog? = null
 
     private val recordingStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ScreenRecordService.ACTION_STATE_CHANGED) {
                 syncRecordingUi()
+                showWarningNotice()
             }
         }
     }
@@ -347,6 +351,25 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         syncRecordingUi()
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        showWarningNotice()
+    }
+
+    private fun showWarningNotice() {
+        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || warningDialog != null) return
+        val message = RecordingWarningStore.pendingWarning(this) ?: return
+        warningDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.ScreenRecordService_warn_video_title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok) { _, _ -> RecordingWarningStore.acknowledgeWarning(this, message) }
+            .setOnDismissListener {
+                warningDialog = null
+                if (RecordingWarningStore.pendingWarning(this) != message) showWarningNotice()
+            }
+            .show()
     }
 
     /*

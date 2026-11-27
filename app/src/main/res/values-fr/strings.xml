@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">Langue du système</string>
     <string name="AboutActivity_dialog_update_notes_header">Nouveautés</string>
     <string name="AboutActivity_dialog_update_no_notes">Aucune note de version fournie pour cette version.</string>
+    <string name="ScreenRecordService_warn_video_title">Images vidéo arrêtées</string>
+    <string name="ScreenRecordService_warn_video_gap">Certaines images vidéo ont été interrompues pendant l’enregistrement. La lecture peut rester figée sur cette section.</string>
+    <string name="ScreenRecordService_warn_video_tail">Les images vidéo se sont arrêtées avant la fin de l’audio. L’audio excédentaire après la dernière image a été coupé.</string>
 </resources>

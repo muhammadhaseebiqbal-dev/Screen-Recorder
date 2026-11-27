@@ -316,4 +316,7 @@
     <string name="LocaleHelper_language_system">Язык системы</string>
     <string name="AboutActivity_dialog_update_notes_header">Что нового</string>
     <string name="AboutActivity_dialog_update_no_notes">Примечания к выпуску для этой версии не предоставлены.</string>
+    <string name="ScreenRecordService_warn_video_title">Видеокадры остановлены</string>
+    <string name="ScreenRecordService_warn_video_gap">Во время записи часть видеокадров прервалась. На этом участке изображение может замирать.</string>
+    <string name="ScreenRecordService_warn_video_tail">Видеокадры остановились раньше звука. Лишний звук после последнего видеокадра был обрезан.</string>
 </resources>

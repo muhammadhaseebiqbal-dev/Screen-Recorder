@@ -323,4 +323,7 @@
     <string name="LocaleHelper_language_system">系统语言</string>
     <string name="AboutActivity_dialog_update_notes_header">更新日志</string>
     <string name="AboutActivity_dialog_update_no_notes">此版本未提供发行说明。</string>
+    <string name="ScreenRecordService_warn_video_title">視訊影格已停止</string>
+    <string name="ScreenRecordService_warn_video_gap">錄製期間部分視訊影格中斷，播放時該片段可能會停留在靜止畫面。</string>
+    <string name="ScreenRecordService_warn_video_tail">視訊影格在音訊結束前停止，已裁切最後一個視訊影格之後的多餘音訊。</string>
 </resources>
