@@ -25,6 +25,36 @@ object OverlayMath {
         return PointF(x, y)
     }
 
+    fun clampX(x: Int, viewWidth: Int, screenWidth: Int, edgeMarginPx: Int = 0): Int {
+        val maxX = (screenWidth - viewWidth - edgeMarginPx).coerceAtLeast(edgeMarginPx)
+        return x.coerceIn(edgeMarginPx.coerceAtMost(maxX), maxX)
+    }
+
+    fun clampY(y: Int, viewHeight: Int, screenHeight: Int, topInsetPx: Int, bottomInsetPx: Int): Int {
+        val maxY = (screenHeight - viewHeight - bottomInsetPx).coerceAtLeast(topInsetPx)
+        return y.coerceIn(topInsetPx.coerceAtMost(maxY), maxY)
+    }
+
+    /**
+     * Snaps smoothly to the nearest horizontal screen margin when released inside the magnetic
+     * edge zone; preserves arbitrary free placement anywhere in the middle region.
+     */
+    fun calculateReleaseSnapX(
+        currentX: Int,
+        viewWidth: Int,
+        screenWidth: Int,
+        edgeMarginPx: Int,
+        edgeMagnetPx: Int
+    ): Int {
+        val clamped = clampX(currentX, viewWidth, screenWidth, edgeMarginPx)
+        val rightEdgeX = (screenWidth - viewWidth - edgeMarginPx).coerceAtLeast(edgeMarginPx)
+        return when {
+            clamped <= edgeMarginPx + edgeMagnetPx -> edgeMarginPx
+            clamped >= rightEdgeX - edgeMagnetPx -> rightEdgeX
+            else -> clamped
+        }
+    }
+
     /*
      * Calculates horizontal docking coordinate placing the view against the closest screen edge.
      */

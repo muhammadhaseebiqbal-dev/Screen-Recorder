@@ -13,10 +13,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.button.MaterialButton
 import com.haseeb.recorder.R
 import com.haseeb.recorder.databinding.OverlayRecordingRadialBinding
@@ -37,6 +39,10 @@ class RadialOverlayWindow(
 
     private var screenWidth = 1080
     private var screenHeight = 1920
+    private var topInsetPx = 0
+    private var bottomInsetPx = 0
+    private var leftInsetPx = 0
+    private var rightInsetPx = 0
     private var isExpanded = false
     private var isAnimating = false
     private var lastOverlayMode: FloatingBarPolicy.OverlayMode? = null
@@ -141,6 +147,7 @@ class RadialOverlayWindow(
         }
 
         val density = context.resources.displayMetrics.density
+        val margin = maxOf((8 * density).toInt(), leftInsetPx)
         params = WindowManager.LayoutParams(
             bubbleSizePx,
             bubbleSizePx,
@@ -149,23 +156,37 @@ class RadialOverlayWindow(
             PixelFormat.TRANSLUCENT
         ).apply {
             gravity = Gravity.TOP or Gravity.START
-            x = 0
-            y = (120 * density).toInt()
+            x = margin
+            y = maxOf((120 * density).toInt(), topInsetPx)
         }
     }
 
     /*
-     * Queries display metrics to determine physical screen width and height.
+     * Queries display metrics and safe system/cutout insets.
      */
     private fun updateScreenBounds() {
+        val density = context.resources.displayMetrics.density
+        val minPad = (8 * density).toInt()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val metrics = windowManager.currentWindowMetrics
             screenWidth = metrics.bounds.width()
             screenHeight = metrics.bounds.height()
+            val insets = metrics.windowInsets.getInsetsIgnoringVisibility(
+                WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()
+            )
+            topInsetPx = insets.top.coerceAtLeast(minPad)
+            bottomInsetPx = insets.bottom.coerceAtLeast(minPad)
+            leftInsetPx = insets.left.coerceAtLeast(minPad)
+            rightInsetPx = insets.right.coerceAtLeast(minPad)
         } else {
             val displayMetrics = context.resources.displayMetrics
             screenWidth = displayMetrics.widthPixels
             screenHeight = displayMetrics.heightPixels
+            val fallbackVert = (24 * density).toInt()
+            topInsetPx = fallbackVert
+            bottomInsetPx = fallbackVert
+            leftInsetPx = minPad
+            rightInsetPx = minPad
         }
     }
 
@@ -329,51 +350,86 @@ class RadialOverlayWindow(
         }
     }
 
+    private fun edgeMarginPx(): Int {
+        val density = context.resources.displayMetrics.density
+        return maxOf((8 * density).toInt(), leftInsetPx, rightInsetPx)
+    }
+
+    private fun edgeMagnetPx(): Int {
+        val density = context.resources.displayMetrics.density
+        return minOf((72 * density).toInt(), screenWidth / 4)
+    }
+
     /*
-     * Attaches touch listeners for drag movement, tap expansion, and activity reset on the center bubble.
+     * Attaches touch listeners for smooth drag movement, tap expansion, and release snap on the center bubble.
      */
     private fun applyTouchHandling(targetView: View) {
         val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
         var initialX = 0
         var initialY = 0
-        var touchX = 0f
-        var touchY = 0f
+        var touchDownRawX = 0f
+        var touchDownRawY = 0f
+        var dragOriginRawX = 0f
+        var dragOriginRawY = 0f
         var isDragging = false
 
         targetView.setOnTouchListener { v, event ->
-            wakeUpOverlay()
-            when (event.action) {
+            when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
+                    wakeUpOverlay()
+                    updateScreenBounds()
                     initialX = params.x
                     initialY = params.y
-                    touchX = event.rawX
-                    touchY = event.rawY
+                    touchDownRawX = event.rawX
+                    touchDownRawY = event.rawY
+                    dragOriginRawX = event.rawX
+                    dragOriginRawY = event.rawY
                     isDragging = false
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    val dx = (event.rawX - touchX).toInt()
-                    val dy = (event.rawY - touchY).toInt()
-                    if (abs(dx) > touchSlop || abs(dy) > touchSlop || isDragging) {
+                    val slopDx = event.rawX - touchDownRawX
+                    val slopDy = event.rawY - touchDownRawY
+                    if (!isDragging && (abs(slopDx) > touchSlop || abs(slopDy) > touchSlop)) {
                         isDragging = true
+                        dragOriginRawX = event.rawX
+                        dragOriginRawY = event.rawY
+                    }
+                    if (isDragging) {
                         val currentWidth = if (params.width > 0) params.width else bubbleSizePx
                         val currentHeight = if (params.height > 0) params.height else bubbleSizePx
-                        params.x = (initialX + dx).coerceIn(0, (screenWidth - currentWidth).coerceAtLeast(0))
-                        params.y = (initialY + dy).coerceIn(24, (screenHeight - currentHeight - 24).coerceAtLeast(24))
+                        val dx = kotlin.math.round(event.rawX - dragOriginRawX).toInt()
+                        val dy = kotlin.math.round(event.rawY - dragOriginRawY).toInt()
+                        params.x = OverlayMath.clampX(initialX + dx, currentWidth, screenWidth, 0)
+                        params.y = OverlayMath.clampY(initialY + dy, currentHeight, screenHeight, topInsetPx, bottomInsetPx)
                         updateViewLayoutSafe()
                     }
                     true
                 }
-                MotionEvent.ACTION_UP -> {
-                    if (!isDragging) {
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    if (!isDragging && event.actionMasked == MotionEvent.ACTION_UP) {
                         if (!isExpanded) expandOverlay() else collapseOverlay()
                         v.performClick()
-                    } else {
+                    } else if (isDragging) {
                         if (isExpanded) {
+                            val currentWidth = if (params.width > 0) params.width else expandedWindowSizePx
+                            val clampedX = OverlayMath.clampX(params.x, currentWidth, screenWidth, edgeMarginPx())
+                            animateWindowPositionX(params.x, clampedX)
                             startAutoCollapseTimer()
                         } else {
-                            startDockInactivityTimer()
+                            val targetX = OverlayMath.calculateReleaseSnapX(
+                                currentX = params.x,
+                                viewWidth = bubbleSizePx,
+                                screenWidth = screenWidth,
+                                edgeMarginPx = edgeMarginPx(),
+                                edgeMagnetPx = edgeMagnetPx()
+                            )
+                            animateWindowPositionX(params.x, targetX) {
+                                startDockInactivityTimer()
+                            }
                         }
+                    } else {
+                        startDockInactivityTimer()
                     }
                     true
                 }
@@ -520,15 +576,22 @@ class RadialOverlayWindow(
         val currentCenterX = params.x + halfExpanded
         val currentCenterY = params.y + halfExpanded
 
-        params.x = (currentCenterX - bubbleSizePx / 2).coerceIn(0, screenWidth - bubbleSizePx)
-        params.y = (currentCenterY - bubbleSizePx / 2).coerceIn(24, screenHeight - bubbleSizePx - 24)
+        val margin = edgeMarginPx()
+        params.x = OverlayMath.clampX(currentCenterX - bubbleSizePx / 2, bubbleSizePx, screenWidth, margin)
+        params.y = OverlayMath.clampY(currentCenterY - bubbleSizePx / 2, bubbleSizePx, screenHeight, topInsetPx, bottomInsetPx)
         params.width = bubbleSizePx
         params.height = bubbleSizePx
         updateViewLayoutSafe()
 
         isAnimating = false
 
-        val targetDockX = if (currentCenterX < screenWidth / 2) 0 else screenWidth - bubbleSizePx
+        val targetDockX = OverlayMath.calculateReleaseSnapX(
+            currentX = params.x,
+            viewWidth = bubbleSizePx,
+            screenWidth = screenWidth,
+            edgeMarginPx = margin,
+            edgeMagnetPx = edgeMagnetPx()
+        )
         animateWindowPositionX(params.x, targetDockX) {
             startDockInactivityTimer()
         }
@@ -543,7 +606,7 @@ class RadialOverlayWindow(
     }
 
     /*
-     * Starts the inactivity timer before docking against the screen edge.
+     * Starts the inactivity timer before dimming the idle bubble.
      */
     private fun startDockInactivityTimer() {
         dockInactivityHandler.removeCallbacks(dockInactivityRunnable)
@@ -551,23 +614,19 @@ class RadialOverlayWindow(
     }
 
     /*
-     * Docks the collapsed bubble against the closest screen edge and lowers transparency.
+     * Gently lowers opacity after inactivity while preserving the user's chosen screen position.
      */
     private fun performInactivityDocking() {
         if (isExpanded || isAnimating) return
-        val density = context.resources.displayMetrics.density
-        val peekInsetPx = (10 * density).toInt()
-
-        val targetX = OverlayMath.calculateDockedX(params.x, bubbleSizePx, screenWidth, peekInsetPx)
-        animateWindowPositionX(params.x, targetX)
-        animateOverlayAlpha(0.45f)
+        animateOverlayAlpha(0.55f)
     }
 
     /*
-     * Restores full opacity and cancels pending docking timers upon user interaction.
+     * Restores full opacity and cancels pending animations and timers upon user interaction.
      */
     private fun wakeUpOverlay() {
         dockInactivityHandler.removeCallbacks(dockInactivityRunnable)
+        windowXAnimator?.cancel()
         alphaAnimator?.cancel()
         rootView?.alpha = 1.0f
     }
@@ -580,7 +639,7 @@ class RadialOverlayWindow(
         val currentAlpha = rootView?.alpha ?: 1f
         alphaAnimator = ValueAnimator.ofFloat(currentAlpha, targetAlpha).apply {
             duration = 240
-            interpolator = DecelerateInterpolator()
+            interpolator = FastOutSlowInInterpolator()
             addUpdateListener {
                 rootView?.alpha = it.animatedValue as Float
             }
@@ -589,7 +648,7 @@ class RadialOverlayWindow(
     }
 
     /*
-     * Animates window horizontal position during edge docking.
+     * Animates window horizontal position smoothly during edge snapping.
      */
     private fun animateWindowPositionX(startX: Int, endX: Int, onEnd: (() -> Unit)? = null) {
         if (startX == endX) {
@@ -598,8 +657,8 @@ class RadialOverlayWindow(
         }
         windowXAnimator?.cancel()
         windowXAnimator = ValueAnimator.ofInt(startX, endX).apply {
-            duration = 240
-            interpolator = DecelerateInterpolator(2f)
+            duration = 260
+            interpolator = FastOutSlowInInterpolator()
             addUpdateListener { animation ->
                 params.x = animation.animatedValue as Int
                 updateViewLayoutSafe()
