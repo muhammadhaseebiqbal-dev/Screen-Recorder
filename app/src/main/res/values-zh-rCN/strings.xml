@@ -321,4 +321,5 @@
     <string name="ConfigManager_storage_default">默认路径 (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">自定义: %1$s</string>
     <string name="LocaleHelper_language_system">系统语言</string>
+    <string name="sheet_settings_encoder_av1">AV1</string>
 </resources>

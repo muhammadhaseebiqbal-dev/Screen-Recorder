@@ -411,29 +411,45 @@ class ScreenRecordService : Service() {
         stopRequested = false
 
         try {
-            val videoMime = if (configManager.videoEncoder == ConfigManager.ENCODER_HEVC && isH265Supported()) {
-                MediaFormat.MIMETYPE_VIDEO_HEVC
-            } else {
-                MediaFormat.MIMETYPE_VIDEO_AVC
-            }
-
             val targetFps = configManager.videoFps
-            val videoFormat = MediaFormat.createVideoFormat(videoMime, screenWidth, screenHeight).apply {
-                setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface)
-                setInteger(MediaFormat.KEY_BIT_RATE, configManager.getOptimalVideoBitrate())
-                setInteger(MediaFormat.KEY_FRAME_RATE, targetFps)
-                setFloat(MediaFormat.KEY_MAX_FPS_TO_ENCODER, targetFps.toFloat())
-                setInteger(MediaFormat.KEY_CAPTURE_RATE, targetFps)
-                setLong(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, (1_000_000L / targetFps).coerceAtLeast(1000L))
-                setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1)
-                setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR)
+            val encoderCandidates = VideoEncoderCatalog.fallbackCandidates(
+                configManager.videoEncoder,
+                Build.VERSION.SDK_INT,
+                VideoEncoderCatalog.deviceEncoders()
+            )
+            var startedEncoder: MediaCodec? = null
+            var lastCodecError: Exception? = null
+            for (candidate in encoderCandidates) {
+                var codec: MediaCodec? = null
+                try {
+                    val videoFormat = MediaFormat.createVideoFormat(candidate.mimeType, screenWidth, screenHeight).apply {
+                        setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface)
+                        setInteger(MediaFormat.KEY_BIT_RATE, configManager.getOptimalVideoBitrate())
+                        setInteger(MediaFormat.KEY_FRAME_RATE, targetFps)
+                        setFloat(MediaFormat.KEY_MAX_FPS_TO_ENCODER, targetFps.toFloat())
+                        setInteger(MediaFormat.KEY_CAPTURE_RATE, targetFps)
+                        setLong(MediaFormat.KEY_REPEAT_PREVIOUS_FRAME_AFTER, (1_000_000L / targetFps).coerceAtLeast(1000L))
+                        setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1)
+                        if (candidate.supportsVbr) {
+                            setInteger(MediaFormat.KEY_BITRATE_MODE, MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR)
+                        }
+                    }
+                    codec = MediaCodec.createByCodecName(candidate.name).apply {
+                        configure(videoFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
+                        inputSurface = createInputSurface()
+                        start()
+                    }
+                    startedEncoder = codec
+                    break
+                } catch (e: Exception) {
+                    lastCodecError = e
+                    Log.w(TAG, "Encoder ${candidate.name} (${candidate.mimeType}) failed; trying fallback", e)
+                    try { inputSurface?.release() } catch (_: Exception) {}
+                    inputSurface = null
+                    try { codec?.release() } catch (_: Exception) {}
+                }
             }
-
-            videoEncoder = MediaCodec.createEncoderByType(videoMime).apply {
-                configure(videoFormat, null, null, MediaCodec.CONFIGURE_FLAG_ENCODE)
-                inputSurface = createInputSurface()
-                start()
-            }
+            videoEncoder = startedEncoder ?: throw (lastCodecError ?: IllegalStateException("No supported video encoder"))
 
             if (configManager.videoOrientation == ConfigManager.ORIENTATION_AUTO) {
                 captureScale = screenWidth.toDouble() / physicalMaxRes.first
@@ -972,20 +988,6 @@ class ScreenRecordService : Service() {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(CHANNEL_ID, getString(R.string.ScreenRecordService_notif_title), NotificationManager.IMPORTANCE_LOW)
         getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
-    }
-
-    /*
-     * Dynamically verifies codec HEVC compliance on varying target hardware architectures.
-     */
-    private fun isH265Supported(): Boolean {
-        val list = MediaCodecList(MediaCodecList.REGULAR_CODECS)
-        for (info in list.codecInfos) {
-            if (!info.isEncoder) continue
-            for (type in info.supportedTypes) {
-                if (type.equals(MediaFormat.MIMETYPE_VIDEO_HEVC, ignoreCase = true)) return true
-            }
-        }
-        return false
     }
 
     /*

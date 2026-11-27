@@ -363,4 +363,5 @@
     <string name="LocaleHelper_language_system">System Language</string>
 
     <string name="recording_countdown_failed">Could not show the countdown. Recording was not started. Please try again.</string>
+    <string name="sheet_settings_encoder_av1">AV1</string>
 </resources>

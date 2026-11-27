@@ -4,14 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Point
 import android.graphics.Rect
-import android.media.MediaCodecList
-import android.media.MediaFormat
 import android.net.Uri
 import android.os.Build
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.documentfile.provider.DocumentFile
 import com.haseeb.recorder.R
+import com.haseeb.recorder.recording.VideoEncoderCatalog
 import kotlin.math.min
 
 /*
@@ -93,8 +92,9 @@ class ConfigManager(private val context: Context) {
         const val QUALITY_360P = "360p"
         const val QUALITY_240P = "240p"
 
-        const val ENCODER_H264 = "h264"
-        const val ENCODER_HEVC = "hevc"
+        const val ENCODER_H264 = VideoEncoderCatalog.ENCODER_H264
+        const val ENCODER_HEVC = VideoEncoderCatalog.ENCODER_HEVC
+        const val ENCODER_AV1 = VideoEncoderCatalog.ENCODER_AV1
 
         const val ORIENTATION_AUTO = "auto"
         const val ORIENTATION_PORTRAIT = "portrait"
@@ -445,16 +445,14 @@ class ConfigManager(private val context: Context) {
     /*
      * Checks if the device hardware supports HEVC/H.265 video encoding.
      */
-    fun isHevcSupported(): Boolean {
-        val list = MediaCodecList(MediaCodecList.REGULAR_CODECS)
-        for (info in list.codecInfos) {
-            if (!info.isEncoder) continue
-            for (type in info.supportedTypes) {
-                if (type.equals(MediaFormat.MIMETYPE_VIDEO_HEVC, ignoreCase = true)) return true
-            }
-        }
-        return false
-    }
+    fun isHevcSupported(): Boolean =
+        VideoEncoderCatalog.isCodecSupported(ENCODER_HEVC, Build.VERSION.SDK_INT, VideoEncoderCatalog.deviceEncoders())
+
+    /*
+     * Checks if the device supports AV1 video encoding and MP4 muxing (Android 12+).
+     */
+    fun isAv1Supported(): Boolean =
+        VideoEncoderCatalog.isCodecSupported(ENCODER_AV1, Build.VERSION.SDK_INT, VideoEncoderCatalog.deviceEncoders())
 
     /*
      * Returns a user-friendly display name for the current storage destination.

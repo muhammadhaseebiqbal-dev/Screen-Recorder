@@ -316,4 +316,5 @@
     <string name="LocaleHelper_language_system">Sistem Dili</string>
     <string name="AboutActivity_dialog_update_notes_header">Yenilikler</string>
     <string name="AboutActivity_dialog_update_no_notes">Bu sürüm için sürüm notu sağlanmadı.</string>
+    <string name="sheet_settings_encoder_av1">AV1</string>
 </resources>
