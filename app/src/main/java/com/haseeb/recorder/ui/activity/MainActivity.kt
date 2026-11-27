@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.data.VideoFile
+import com.haseeb.recorder.recording.EnhancedAudioWarningStore
 import com.haseeb.recorder.recording.ScreenRecordService
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.haseeb.recorder.ui.adapter.VideoAdapter
 import com.haseeb.recorder.ui.dialog.SettingsBottomSheet
 import com.haseeb.recorder.util.*
@@ -42,11 +44,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var configManager: ConfigManager
     private lateinit var adapter: VideoAdapter
+    private var enhancedAudioDialog: androidx.appcompat.app.AlertDialog? = null
 
     private val recordingStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == ScreenRecordService.ACTION_STATE_CHANGED) {
                 syncRecordingUi()
+                showEnhancedAudioWarning()
             }
         }
     }
@@ -347,6 +351,27 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         syncRecordingUi()
+    }
+
+    override fun onPostResume() {
+        super.onPostResume()
+        showEnhancedAudioWarning()
+    }
+
+    private fun showEnhancedAudioWarning() {
+        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || enhancedAudioDialog != null) return
+        val message = EnhancedAudioWarningStore.pendingWarning(this) ?: return
+        enhancedAudioDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.EnhancedAudio_warn_title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                EnhancedAudioWarningStore.acknowledgeWarning(this, message)
+            }
+            .setOnDismissListener {
+                enhancedAudioDialog = null
+                if (EnhancedAudioWarningStore.pendingWarning(this) != message) showEnhancedAudioWarning()
+            }
+            .show()
     }
 
     /*

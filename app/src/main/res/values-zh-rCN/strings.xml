@@ -321,4 +321,9 @@
     <string name="ConfigManager_storage_default">默认路径 (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">自定义: %1$s</string>
     <string name="LocaleHelper_language_system">系统语言</string>
+    <string name="EnhancedAudio_warn_title">增强音频捕获提示</string>
+    <string name="EnhancedAudio_warn_by_none">目标应用通过 ALLOW_CAPTURE_BY_NONE 策略禁止了内部录音。即使启用了 Shizuku 或 Root，Android 系统仍会阻止捕获。</string>
+    <string name="EnhancedAudio_warn_by_system">目标应用仅允许系统特权捕获（ALLOW_CAPTURE_BY_SYSTEM），但系统未在本次录制中授予该权限。</string>
+    <string name="EnhancedAudio_warn_non_media">音频正在通话或闹钟等非媒体流上播放，Android 会将其排除在内部录音之外。</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">增强音频捕获需要设备启用有效的 Shizuku 或 Root 特权播放捕获支持。</string>
 </resources>

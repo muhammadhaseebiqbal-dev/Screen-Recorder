@@ -316,4 +316,9 @@
     <string name="LocaleHelper_language_system">Langue du système</string>
     <string name="AboutActivity_dialog_update_notes_header">Nouveautés</string>
     <string name="AboutActivity_dialog_update_no_notes">Aucune note de version fournie pour cette version.</string>
+    <string name="EnhancedAudio_warn_title">Avis de capture audio améliorée</string>
+    <string name="EnhancedAudio_warn_by_none">L’application enregistrée bloque la capture interne via ALLOW_CAPTURE_BY_NONE. Android l’empêche même avec Shizuku ou Root.</string>
+    <string name="EnhancedAudio_warn_by_system">L’application autorise uniquement la capture privilégiée système (ALLOW_CAPTURE_BY_SYSTEM), refusée par Android pour cette session.</string>
+    <string name="EnhancedAudio_warn_non_media">Le son a été diffusé sur un flux hors média (appel ou alarme) exclu de la capture audio interne par Android.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">La capture audio améliorée nécessite une prise en charge privilégiée active de Shizuku ou Root sur cet appareil.</string>
 </resources>

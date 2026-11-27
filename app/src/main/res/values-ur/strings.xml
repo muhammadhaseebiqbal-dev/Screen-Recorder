@@ -316,4 +316,9 @@
     <string name="LocaleHelper_language_system">سسٹم کی زبان</string>
     <string name="AboutActivity_dialog_update_notes_header">نیا کیا ہے</string>
     <string name="AboutActivity_dialog_update_no_notes">اس ورژن کے لیے ریلیز نوٹس دستیاب نہیں ہیں۔</string>
+    <string name="EnhancedAudio_warn_title">بہتر آڈیو ریکارڈنگ کی اطلاع</string>
+    <string name="EnhancedAudio_warn_by_none">ریکارڈ کردہ ایپ نے ALLOW_CAPTURE_BY_NONE پالیسی سے اندرونی آڈیو ریکارڈنگ بلاک کی ہے۔ Shizuku یا Root کے باوجود Android اسے روکتا ہے۔</string>
+    <string name="EnhancedAudio_warn_by_system">ایپ صرف سسٹم پرائیویلیج کیپچر (ALLOW_CAPTURE_BY_SYSTEM) کی اجازت دیتی ہے جو Android نے اس سیشن میں فراہم نہیں کی۔</string>
+    <string name="EnhancedAudio_warn_non_media">آڈیو کسی غیر میڈیا اسٹریم (جیسے کال یا الارم) پر چل رہی تھی جسے Android اندرونی کیپچر سے خارج کرتا ہے۔</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">بہتر آڈیو کیپچر کے لیے اس ڈیوائس پر فعال Shizuku یا Root پرائیویلیج سپورٹ درکار ہے۔</string>
 </resources>

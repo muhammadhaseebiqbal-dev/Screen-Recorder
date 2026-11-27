@@ -362,4 +362,9 @@
 
     <string name="LocaleHelper_language_system">System Language</string>
 
+    <string name="EnhancedAudio_warn_title">Enhanced Audio Capture Notice</string>
+    <string name="EnhancedAudio_warn_by_none">The recorded app blocked internal capture using Android ALLOW_CAPTURE_BY_NONE policy. Android prevents other apps from capturing this audio even when Shizuku or Root is enabled.</string>
+    <string name="EnhancedAudio_warn_by_system">The recorded app only permits system-privileged playback capture (ALLOW_CAPTURE_BY_SYSTEM), which Android did not grant for this session.</string>
+    <string name="EnhancedAudio_warn_non_media">Playback was routed on a non-media stream (such as a voice call or alarm) that Android excludes from internal audio capture.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">Enhanced audio capture requires active Shizuku or Root privileged playback capture support on this device.</string>
 </resources>

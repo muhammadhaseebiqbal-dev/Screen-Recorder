@@ -323,4 +323,9 @@
     <string name="LocaleHelper_language_system">系统语言</string>
     <string name="AboutActivity_dialog_update_notes_header">更新日志</string>
     <string name="AboutActivity_dialog_update_no_notes">此版本未提供发行说明。</string>
+    <string name="EnhancedAudio_warn_title">進階音訊擷取提示</string>
+    <string name="EnhancedAudio_warn_by_none">目標應用程式透過 ALLOW_CAPTURE_BY_NONE 原則封鎖了內部錄音。即使啟用 Shizuku 或 Root，Android 系統仍會限制擷取。</string>
+    <string name="EnhancedAudio_warn_by_system">目標應用程式僅允許系統特權擷取（ALLOW_CAPTURE_BY_SYSTEM），但系統未授予此工作階段該權限。</string>
+    <string name="EnhancedAudio_warn_non_media">音訊正於通話或鬧鐘等非媒體串流播放，Android 已將其排除於內部錄音之外。</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">進階音訊擷取需要此裝置啟用 Shizuku 或 Root 的特權播放擷取支援。</string>
 </resources>

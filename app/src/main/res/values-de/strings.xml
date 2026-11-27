@@ -316,4 +316,9 @@
     <string name="LocaleHelper_language_system">Systemsprache</string>
     <string name="AboutActivity_dialog_update_notes_header">Was gibt\'s Neues</string>
     <string name="AboutActivity_dialog_update_no_notes">Keine Versionshinweise für diese Version bereitgestellt.</string>
+    <string name="EnhancedAudio_warn_title">Hinweis zur erweiterten Audioaufnahme</string>
+    <string name="EnhancedAudio_warn_by_none">Die aufgenommene App hat die interne Aufnahme per ALLOW_CAPTURE_BY_NONE blockiert. Android verhindert dies selbst mit aktivem Shizuku oder Root.</string>
+    <string name="EnhancedAudio_warn_by_system">Die aufgenommene App erlaubt nur systemprivilegierte Wiedergabeaufnahme (ALLOW_CAPTURE_BY_SYSTEM), die Android für diese Sitzung nicht gewährt hat.</string>
+    <string name="EnhancedAudio_warn_non_media">Die Wiedergabe lief über einen Nicht-Medien-Stream (z. B. Anruf oder Wecker), den Android von der internen Aufnahme ausschließt.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">Für erweiterte Audioaufnahme wird auf diesem Gerät aktive Shizuku- oder Root-Unterstützung für privilegierte Aufnahme benötigt.</string>
 </resources>

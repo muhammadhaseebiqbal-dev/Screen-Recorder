@@ -316,4 +316,9 @@
     <string name="LocaleHelper_language_system">Язык системы</string>
     <string name="AboutActivity_dialog_update_notes_header">Что нового</string>
     <string name="AboutActivity_dialog_update_no_notes">Примечания к выпуску для этой версии не предоставлены.</string>
+    <string name="EnhancedAudio_warn_title">Уведомление расширенной записи звука</string>
+    <string name="EnhancedAudio_warn_by_none">Записываемое приложение запретило внутреннюю запись политикой ALLOW_CAPTURE_BY_NONE. Android блокирует её даже при Shizuku или Root.</string>
+    <string name="EnhancedAudio_warn_by_system">Приложение разрешает только системный привилегированный захват (ALLOW_CAPTURE_BY_SYSTEM), который Android не предоставил в этой сессии.</string>
+    <string name="EnhancedAudio_warn_non_media">Звук шёл через немедийный поток (например, звонок или будильник), исключённый Android из внутреннего захвата.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">Для расширенной записи звука требуется активная привилегированная поддержка Shizuku или Root на этом устройстве.</string>
 </resources>

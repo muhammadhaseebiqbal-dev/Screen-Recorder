@@ -316,4 +316,9 @@
     <string name="LocaleHelper_language_system">システム言語</string>
     <string name="AboutActivity_dialog_update_notes_header">新機能</string>
     <string name="AboutActivity_dialog_update_no_notes">このバージョンのリリースノートはありません。</string>
+    <string name="EnhancedAudio_warn_title">拡張音声録音の通知</string>
+    <string name="EnhancedAudio_warn_by_none">対象アプリが ALLOW_CAPTURE_BY_NONE で内部音声の録音をブロックしています。Shizuku や Root が有効でも Android により制限されます。</string>
+    <string name="EnhancedAudio_warn_by_system">対象アプリはシステム権限での録音（ALLOW_CAPTURE_BY_SYSTEM）のみを許可しており、このセッションでは許可されませんでした。</string>
+    <string name="EnhancedAudio_warn_non_media">通話やアラームなど、Android が内部音声録音から除外している非メディアストリームで再生されていました。</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">拡張音声録音には、この端末で有効な Shizuku または Root による特権キャプチャ対応が必要です。</string>
 </resources>

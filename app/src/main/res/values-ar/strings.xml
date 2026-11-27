@@ -316,4 +316,9 @@
     <string name="LocaleHelper_language_system">لغة النظام</string>
     <string name="AboutActivity_dialog_update_notes_header">ما الجديد</string>
     <string name="AboutActivity_dialog_update_no_notes">لا توجد ملاحظات إصدار لهذا الإصدار.</string>
+    <string name="EnhancedAudio_warn_title">تنبيه التقاط الصوت المحسّن</string>
+    <string name="EnhancedAudio_warn_by_none">حظر التطبيق المسجَّل التقاط الصوت الداخلي باستخدام سياسة ALLOW_CAPTURE_BY_NONE. يمنع Android التقاط هذا الصوت حتى مع تفعيل Shizuku أو Root.</string>
+    <string name="EnhancedAudio_warn_by_system">يسمح التطبيق فقط بالالتقاط المميّز للنظام (ALLOW_CAPTURE_BY_SYSTEM)، ولم يمنح Android هذا الإذن لهذه الجلسة.</string>
+    <string name="EnhancedAudio_warn_non_media">تم تشغيل الصوت على مسار غير وسائطي (مثل المكالمات أو التنبيهات) يستثنيه Android من الالتقاط الداخلي.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">يتطلب التقاط الصوت المحسّن دعم Shizuku أو Root المميّز لالتقاط التشغيل على هذا الجهاز.</string>
 </resources>

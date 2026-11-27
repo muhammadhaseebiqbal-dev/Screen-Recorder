@@ -314,4 +314,9 @@
     <string name="ConfigManager_storage_default">Padrão (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">Personalizado: %1$s</string>
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
+    <string name="EnhancedAudio_warn_title">Aviso de captura de áudio avançada</string>
+    <string name="EnhancedAudio_warn_by_none">O app gravado bloqueou a captura interna usando ALLOW_CAPTURE_BY_NONE. O Android bloqueia esse áudio mesmo com Shizuku ou Root ativos.</string>
+    <string name="EnhancedAudio_warn_by_system">O app gravado permite apenas captura com privilégio de sistema (ALLOW_CAPTURE_BY_SYSTEM), não concedida pelo Android nesta sessão.</string>
+    <string name="EnhancedAudio_warn_non_media">O áudio tocou em um fluxo que não é de mídia (como chamada ou alarme), excluído pelo Android da captura interna.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">A captura de áudio avançada exige suporte privilegiado ativo de Shizuku ou Root neste dispositivo.</string>
 </resources>

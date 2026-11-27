@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import com.haseeb.recorder.data.ConfigManager
+import com.haseeb.recorder.recording.EnhancedAudioDiagnostics
 import com.haseeb.recorder.shizuku.ShizukuManager
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
@@ -87,12 +88,32 @@ object PrivilegedAccessManager {
         if (enabled) "settings put global policy_control immersive.full=*" else "settings delete global policy_control"
     )
 
+    internal fun getEnhancedAudioCapabilities(
+        context: Context,
+        rootSelected: Boolean = taskBackend.get() ?: usesRoot
+    ): EnhancedAudioDiagnostics.CapabilitySummary {
+        val pm = android.content.pm.PackageManager.PERMISSION_GRANTED
+        val appAudioOutput = context.checkSelfPermission("android.permission.CAPTURE_AUDIO_OUTPUT") == pm
+        val appMediaOutput = context.checkSelfPermission("android.permission.CAPTURE_MEDIA_OUTPUT") == pm
+        val remoteMedia = !rootSelected && ShizukuManager.hasRemotePermission("android.permission.CAPTURE_MEDIA_OUTPUT")
+        val remoteAudio = !rootSelected && ShizukuManager.hasRemotePermission("android.permission.CAPTURE_AUDIO_OUTPUT")
+        return EnhancedAudioDiagnostics.CapabilitySummary(
+            appHasCaptureAudioOutput = appAudioOutput,
+            appHasCaptureMediaOutput = appMediaOutput,
+            shizukuRemoteHasCaptureMedia = remoteMedia,
+            shizukuRemoteHasCaptureAudio = remoteAudio
+        )
+    }
+
     fun grantEnhancedAudioPermission(context: Context): Boolean {
         val app = context.packageName
-        val permission = executeShell("pm grant $app android.permission.CAPTURE_AUDIO_OUTPUT")
-        val capture = executeShell("cmd appops set $app CAPTURE_AUDIO_OUTPUT allow")
-        val record = executeShell("cmd appops set $app RECORD_AUDIO allow")
-        return permission || capture || record
+        executeShell("pm grant $app android.permission.CAPTURE_AUDIO_OUTPUT")
+        executeShell("pm grant $app android.permission.CAPTURE_MEDIA_OUTPUT")
+        executeShell("cmd appops set $app CAPTURE_AUDIO_OUTPUT allow")
+        executeShell("cmd appops set $app CAPTURE_MEDIA_OUTPUT allow")
+        executeShell("cmd appops set $app PROJECT_MEDIA allow")
+        executeShell("cmd appops set $app RECORD_AUDIO allow")
+        return getEnhancedAudioCapabilities(context).hasAnyPrivilegedCapture
     }
 
     fun grantProjectMediaPermission(context: Context): Boolean {

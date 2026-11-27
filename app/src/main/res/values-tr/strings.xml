@@ -316,4 +316,9 @@
     <string name="LocaleHelper_language_system">Sistem Dili</string>
     <string name="AboutActivity_dialog_update_notes_header">Yenilikler</string>
     <string name="AboutActivity_dialog_update_no_notes">Bu sürüm için sürüm notu sağlanmadı.</string>
+    <string name="EnhancedAudio_warn_title">Gelişmiş Ses Yakalama Bildirimi</string>
+    <string name="EnhancedAudio_warn_by_none">Kaydedilen uygulama ALLOW_CAPTURE_BY_NONE ilkesiyle dahili yakalamayı engelledi. Shizuku veya Root açık olsa bile Android buna izin vermez.</string>
+    <string name="EnhancedAudio_warn_by_system">Kaydedilen uygulama yalnızca sistem ayrıcalıklı yakalamaya (ALLOW_CAPTURE_BY_SYSTEM) izin veriyor ve Android bu oturumda bunu onaylamadı.</string>
+    <string name="EnhancedAudio_warn_non_media">Ses, Android’in dahili ses yakalamadan hariç tuttuğu medya dışı bir akışta (örneğin arama veya alarm) çalınıyordu.</string>
+    <string name="EnhancedAudio_warn_backend_unavailable">Gelişmiş ses yakalama için bu cihazda etkin Shizuku veya Root ayrıcalıklı yakalama desteği gerekir.</string>
 </resources>
