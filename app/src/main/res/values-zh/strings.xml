@@ -326,4 +326,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">錄製時隱藏懸浮球</string>
     <string name="sheet_settings_hide_floating_ball_summary">在全螢幕或單一應用程式錄製期間將懸浮控制項從影片中隱藏；通知列仍可控制，暫停或停止後會自動重新顯示。</string>
+    <string name="RecordingSessionStore_title">录屏已中断</string>
+    <string name="RecordingSessionStore_recovered">录屏保存完成前，应用已关闭。现在视频已保存。</string>
+    <string name="RecordingSessionStore_removed">录屏无法完成。未完成的视频无法恢复，已被删除。</string>
+    <string name="RecordingSessionStore_retry">保存或清理未能完成。录屏已保留，应用将在下次打开时重试。请检查可用存储空间和文件夹访问权限。</string>
+    <string name="RecordingSessionStore_memory_saved">设备内存不足。录屏已停止，视频已保存。</string>
+    <string name="RecordingSessionStore_busy">正在完成上一次录屏，请稍后重试。</string>
 </resources>

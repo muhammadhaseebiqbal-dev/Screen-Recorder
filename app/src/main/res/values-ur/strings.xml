@@ -319,4 +319,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">ریکارڈنگ کے دوران فلوٹنگ بال چھپائیں</string>
     <string name="sheet_settings_hide_floating_ball_summary">فعال ریکارڈنگ کے دوران فلوٹنگ کنٹرولز کو فل اسکرین اور سنگل ایپ ویڈیو سے باہر رکھیں؛ کنٹرولز نوٹیفکیشن میں دستیاب رہتے ہیں اور وقفے یا رکنے پر واپس آ جاتے ہیں۔</string>
+    <string name="RecordingSessionStore_title">ریکارڈنگ میں خلل</string>
+    <string name="RecordingSessionStore_recovered">ریکارڈنگ محفوظ ہونے سے پہلے ایپ بند ہو گئی تھی۔ آپ کی ویڈیو اب محفوظ ہو گئی ہے۔</string>
+    <string name="RecordingSessionStore_removed">ریکارڈنگ مکمل نہیں ہو سکی۔ نامکمل ویڈیو بحال نہیں ہو سکی، اس لیے اسے حذف کر دیا گیا۔</string>
+    <string name="RecordingSessionStore_retry">محفوظ کرنے یا صفائی کا عمل مکمل نہیں ہو سکا۔ ریکارڈنگ برقرار ہے اور ایپ اگلی بار کھلنے پر دوبارہ کوشش کرے گی۔ خالی جگہ اور فولڈر تک رسائی چیک کریں۔</string>
+    <string name="RecordingSessionStore_memory_saved">ڈیوائس کی میموری کم ہو گئی تھی۔ ریکارڈنگ روک کر ویڈیو محفوظ کر دی گئی ہے۔</string>
+    <string name="RecordingSessionStore_busy">پچھلی ریکارڈنگ مکمل کی جا رہی ہے۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔</string>
 </resources>

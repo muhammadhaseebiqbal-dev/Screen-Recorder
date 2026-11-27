@@ -366,4 +366,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">Hide Floating Ball While Recording</string>
     <string name="sheet_settings_hide_floating_ball_summary">Exclude the floating controls from full-screen and single-app recordings while active; controls remain in the notification bar and reappear when paused or stopped.</string>
+    <string name="RecordingSessionStore_title">Recording interrupted</string>
+    <string name="RecordingSessionStore_recovered">The app closed before your recording finished saving. Your video has now been saved.</string>
+    <string name="RecordingSessionStore_removed">The recording could not be finalized. The unfinished video could not be recovered and was removed.</string>
+    <string name="RecordingSessionStore_retry">Saving or cleanup could not finish. The recording has been kept and the app will retry next time you open it. Check available storage and folder access.</string>
+    <string name="RecordingSessionStore_memory_saved">The device ran low on memory. Recording stopped and your video was saved.</string>
+    <string name="RecordingSessionStore_busy">Finishing the previous recording. Please try again shortly.</string>
 </resources>

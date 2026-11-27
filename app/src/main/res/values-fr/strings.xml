@@ -319,4 +319,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">Masquer la bulle flottante pendant l’enregistrement</string>
     <string name="sheet_settings_hide_floating_ball_summary">Exclut les contrôles flottants de la vidéo pendant l’enregistrement plein écran ou d’une seule application ; les commandes restent accessibles dans la notification et réapparaissent à la pause ou à l’arrêt.</string>
+    <string name="RecordingSessionStore_title">Enregistrement interrompu</string>
+    <string name="RecordingSessionStore_recovered">L’application a été fermée avant la fin de la sauvegarde. Votre vidéo est maintenant enregistrée.</string>
+    <string name="RecordingSessionStore_removed">L’enregistrement n’a pas pu être finalisé. La vidéo incomplète n’a pas pu être récupérée et a été supprimée.</string>
+    <string name="RecordingSessionStore_retry">La sauvegarde ou le nettoyage n’a pas pu se terminer. L’enregistrement est conservé. L’application réessaiera à sa prochaine ouverture. Vérifiez l’espace libre et l’accès au dossier.</string>
+    <string name="RecordingSessionStore_memory_saved">La mémoire de l’appareil était insuffisante. L’enregistrement a été arrêté et la vidéo sauvegardée.</string>
+    <string name="RecordingSessionStore_busy">Finalisation de l’enregistrement précédent. Veuillez réessayer dans un instant.</string>
 </resources>

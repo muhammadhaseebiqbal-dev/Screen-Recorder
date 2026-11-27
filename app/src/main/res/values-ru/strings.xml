@@ -319,4 +319,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">Скрывать плавающую кнопку во время записи</string>
     <string name="sheet_settings_hide_floating_ball_summary">Исключает плавающие элементы управления из видео при записи всего экрана или одного приложения; управление остаётся в уведомлении и возвращается при паузе или остановке.</string>
+    <string name="RecordingSessionStore_title">Запись прервана</string>
+    <string name="RecordingSessionStore_recovered">Приложение закрылось до завершения сохранения записи. Теперь видео сохранено.</string>
+    <string name="RecordingSessionStore_removed">Не удалось завершить запись. Незавершённое видео не удалось восстановить, поэтому оно было удалено.</string>
+    <string name="RecordingSessionStore_retry">Не удалось завершить сохранение или очистку. Запись сохранена для повторной попытки при следующем открытии приложения. Проверьте свободное место и доступ к папке.</string>
+    <string name="RecordingSessionStore_memory_saved">На устройстве осталось мало оперативной памяти. Запись остановлена, видео сохранено.</string>
+    <string name="RecordingSessionStore_busy">Завершается предыдущая запись. Повторите попытку чуть позже.</string>
 </resources>

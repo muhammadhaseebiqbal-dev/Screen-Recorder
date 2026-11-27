@@ -319,4 +319,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">録画中はフローティングボールを非表示</string>
     <string name="sheet_settings_hide_floating_ball_summary">録画中は全画面・単一アプリの両方でフローティング操作を映像から除外し、一時停止または停止時に再表示します。</string>
+    <string name="RecordingSessionStore_title">録画が中断されました</string>
+    <string name="RecordingSessionStore_recovered">録画の保存が完了する前にアプリが終了しました。動画は現在保存されています。</string>
+    <string name="RecordingSessionStore_removed">録画を正常に完了できませんでした。未完成の動画は復元できなかったため削除されました。</string>
+    <string name="RecordingSessionStore_retry">保存または後処理を完了できませんでした。録画は保持されており、次回アプリを開いたときに再試行します。空き容量とフォルダへのアクセスを確認してください。</string>
+    <string name="RecordingSessionStore_memory_saved">端末のメモリが不足しました。録画を停止し、動画を保存しました。</string>
+    <string name="RecordingSessionStore_busy">前の録画を処理しています。少し待ってから再試行してください。</string>
 </resources>

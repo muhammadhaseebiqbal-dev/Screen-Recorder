@@ -319,4 +319,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">रिकॉर्डिंग के दौरान फ़्लोटिंग बॉल छिपाएँ</string>
     <string name="sheet_settings_hide_floating_ball_summary">सक्रिय रिकॉर्डिंग के दौरान फ़्लोटिंग नियंत्रणों को वीडियो से बाहर रखें; नियंत्रण नोटिफिकेशन में उपलब्ध रहते हैं और पॉज़ या स्टॉप करने पर फिर दिखाई देते हैं।</string>
+    <string name="RecordingSessionStore_title">रिकॉर्डिंग बाधित हुई</string>
+    <string name="RecordingSessionStore_recovered">रिकॉर्डिंग सहेजना पूरा होने से पहले ऐप बंद हो गया था। आपकी वीडियो अब सहेज दी गई है।</string>
+    <string name="RecordingSessionStore_removed">रिकॉर्डिंग पूरी नहीं हो सकी। अधूरी वीडियो को वापस नहीं पाया जा सका, इसलिए उसे हटा दिया गया।</string>
+    <string name="RecordingSessionStore_retry">सहेजने या सफाई का काम पूरा नहीं हो सका। रिकॉर्डिंग रखी गई है और ऐप अगली बार खुलने पर फिर कोशिश करेगा। खाली जगह और फ़ोल्डर की पहुँच जाँचें।</string>
+    <string name="RecordingSessionStore_memory_saved">डिवाइस की मेमोरी कम हो गई थी। रिकॉर्डिंग रोककर वीडियो सहेज दी गई है।</string>
+    <string name="RecordingSessionStore_busy">पिछली रिकॉर्डिंग पूरी की जा रही है। कृपया थोड़ी देर बाद फिर कोशिश करें।</string>
 </resources>

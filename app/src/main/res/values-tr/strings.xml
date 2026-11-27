@@ -319,4 +319,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">Kayıt Sırasında Kayan Topu Gizle</string>
     <string name="sheet_settings_hide_floating_ball_summary">Aktif kayıt sırasında kayan kontrolleri tam ekran ve tek uygulama kayıtlarından hariç tutar; kontroller bildirimde kalır ve duraklatıldığında veya durdurulduğunda yeniden görünür.</string>
+    <string name="RecordingSessionStore_title">Kayıt kesintiye uğradı</string>
+    <string name="RecordingSessionStore_recovered">Kayıt kaydedilmeden önce uygulama kapandı. Videonuz artık kaydedildi.</string>
+    <string name="RecordingSessionStore_removed">Kayıt tamamlanamadı. Tamamlanmamış video kurtarılamadığı için silindi.</string>
+    <string name="RecordingSessionStore_retry">Kaydetme veya temizleme tamamlanamadı. Kayıt korundu ve uygulama tekrar açıldığında yeniden denenecek. Boş depolama alanını ve klasör erişimini kontrol edin.</string>
+    <string name="RecordingSessionStore_memory_saved">Cihazın belleği azaldı. Kayıt durduruldu ve videonuz kaydedildi.</string>
+    <string name="RecordingSessionStore_busy">Önceki kayıt tamamlanıyor. Lütfen kısa süre sonra tekrar deneyin.</string>
 </resources>

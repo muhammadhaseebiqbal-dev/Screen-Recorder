@@ -7,6 +7,7 @@ import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.privileged.PrivilegedAccessManager
+import com.haseeb.recorder.recording.RecordingSessionStore
 import com.haseeb.recorder.util.LocaleHelper
 
 /*
@@ -27,6 +28,7 @@ class HaseebApplication : Application() {
      */
     override fun onCreate() {
         super.onCreate()
+        RecordingSessionStore.recoverInterruptedSession(this)
         val config = ConfigManager(this)
         config.applyDefaults()
 

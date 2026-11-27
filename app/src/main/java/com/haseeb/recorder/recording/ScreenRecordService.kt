@@ -14,7 +14,6 @@ import android.hardware.display.VirtualDisplay
 import android.media.*
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.util.DisplayMetrics
@@ -30,7 +29,6 @@ import com.haseeb.recorder.overlay.RecordingOverlayService
 import com.haseeb.recorder.privileged.PrivilegedAccessManager
 import com.haseeb.recorder.ui.activity.MainActivity
 import com.haseeb.recorder.ui.activity.CameraPermissionActivity
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -108,8 +106,7 @@ class ScreenRecordService : Service() {
     private var wakeLock: PowerManager.WakeLock? = null
 
     private var outputFilePath: String = ""
-    private var outputFileDescriptor: ParcelFileDescriptor? = null
-    private var outputMediaStoreUri: Uri? = null
+    private var stoppedForLowMemory = false
 
     private var videoEncoder: MediaCodec? = null
     private var audioEncoder: MediaCodec? = null
@@ -173,6 +170,7 @@ class ScreenRecordService : Service() {
         }
 
         override fun onStop() {
+            Log.i(TAG, "MediaProjection stopped by system")
             mainHandler.post {
                 stopRecording()
                 stopForeground(STOP_FOREGROUND_REMOVE)
@@ -223,7 +221,12 @@ class ScreenRecordService : Service() {
                     @Suppress("DEPRECATION")
                     intent.getParcelableExtra(EXTRA_DATA)
                 }
-                if (data != null) startRecordingSession(resultCode, data)
+                if (data != null) {
+                    startRecordingSession(resultCode, data)
+                } else if (!isRecording && !isStarting) {
+                    promoteForegroundForImmediateStop()
+                    stopSelf()
+                }
             }
             ACTION_PAUSE -> pauseRecording()
             ACTION_RESUME -> resumeRecording()
@@ -272,6 +275,14 @@ class ScreenRecordService : Service() {
      */
     private fun startRecordingSession(resultCode: Int, data: Intent) {
         if (isRecording || isStarting) return
+        if (RecordingSessionStore.isBusy(this)) {
+            RecordingSessionStore.recoverInterruptedSession(this)
+            android.widget.Toast.makeText(this, R.string.RecordingSessionStore_busy, android.widget.Toast.LENGTH_LONG).show()
+            promoteForegroundForImmediateStop()
+            stopSelf()
+            return
+        }
+        stoppedForLowMemory = false
         isStarting = true
         startupPending = true
         sessionUsesRoot = PrivilegedAccessManager.usesRoot
@@ -314,6 +325,23 @@ class ScreenRecordService : Service() {
                 }
                 RecordingStateManager.notifyListeners()
             }
+        }
+    }
+
+    private fun promoteForegroundForImmediateStop() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(
+                    NOTIFICATION_ID,
+                    buildRecordingNotification(),
+                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION
+                )
+            } else {
+                startForeground(NOTIFICATION_ID, buildRecordingNotification())
+            }
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        } catch (e: SecurityException) {
+            Log.w(TAG, "Cannot promote service before stopping", e)
         }
     }
 
@@ -362,47 +390,8 @@ class ScreenRecordService : Service() {
         val widthRatio = screenWidth.toFloat() / physicalMaxRes.first.toFloat()
         scaledDensity = (screenDensity * widthRatio).toInt().coerceAtLeast(120)
 
-        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss_SSS", Locale.US).format(Date())
         val fileName = "ScreenRecord_$timestamp.mp4"
-
-        val customUriString = configManager.customStorageUri
-        var customSaved = false
-
-        if (!customUriString.isNullOrEmpty()) {
-            try {
-                val treeUri = Uri.parse(customUriString)
-                val pickedDir = androidx.documentfile.provider.DocumentFile.fromTreeUri(this, treeUri)
-                if (pickedDir != null && pickedDir.canWrite()) {
-                    val newFile = pickedDir.createFile("video/mp4", fileName)
-                    if (newFile != null) {
-                        outputMediaStoreUri = newFile.uri
-                        outputFileDescriptor = contentResolver.openFileDescriptor(newFile.uri, "rw")
-                        customSaved = true
-                    }
-                }
-            } catch (e: Exception) {
-                customSaved = false
-            }
-        }
-
-        if (!customSaved) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val contentValues = android.content.ContentValues().apply {
-                    put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                    put(android.provider.MediaStore.MediaColumns.MIME_TYPE, "video/mp4")
-                    put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, "DCIM/ScreenRecorder")
-                }
-                val uri = contentResolver.insert(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues)
-                uri?.let {
-                    outputMediaStoreUri = it
-                    outputFileDescriptor = contentResolver.openFileDescriptor(it, "rw")
-                }
-            } else {
-                val moviesDir = getExternalFilesDir(Environment.DIRECTORY_MOVIES) ?: filesDir
-                val recorderDir = File(moviesDir, "ScreenRecorder").apply { if (!exists()) mkdirs() }
-                outputFilePath = File(recorderDir, fileName).absolutePath
-            }
-        }
 
         val hasMicPerm = checkSelfPermission(android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
         val wantMic = configManager.isMicEnabled && hasMicPerm
@@ -411,6 +400,8 @@ class ScreenRecordService : Service() {
         stopRequested = false
 
         try {
+            outputFilePath = RecordingSessionStore.begin(this, fileName,
+                configManager.customStorageUri?.takeIf { it.isNotEmpty() }).absolutePath
             val targetFps = configManager.videoFps
             val encoderCandidates = VideoEncoderCatalog.fallbackCandidates(
                 configManager.videoEncoder,
@@ -467,11 +458,7 @@ class ScreenRecordService : Service() {
 
             if (hasAnyAudio) setupAudioEncoders(wantMic, wantSysAudio)
 
-            mediaMuxer = if (outputFileDescriptor != null) {
-                MediaMuxer(outputFileDescriptor!!.fileDescriptor, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
-            } else {
-                MediaMuxer(outputFilePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
-            }
+            mediaMuxer = MediaMuxer(outputFilePath, MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4)
 
             virtualDisplay = mediaProjection?.createVirtualDisplay(
                 getString(R.string.ScreenRecordService_virtual_display_name),
@@ -487,9 +474,9 @@ class ScreenRecordService : Service() {
             if (hasAnyAudio) {
                 micRecord?.startRecording()
                 sysRecord?.startRecording()
-                audioRecordingThread = Thread({ drainAudioEncoder() }, "AudioThread").apply { start() }
+                audioRecordingThread = Thread({ drainSafely { drainAudioEncoder() } }, "AudioThread").apply { start() }
             }
-            videoEncoderThread = Thread({ drainVideoEncoder() }, "VideoThread").apply { start() }
+            videoEncoderThread = Thread({ drainSafely { drainVideoEncoder() } }, "VideoThread").apply { start() }
 
             isRecording = true
             isPaused = false
@@ -502,8 +489,12 @@ class ScreenRecordService : Service() {
 
         } catch (e: Exception) {
             Log.e(TAG, "Start failed: ${e.message}")
+            stopRequested = true
+            try { audioRecordingThread?.join(1000) } catch (_: Exception) {}
+            try { videoEncoderThread?.join(1000) } catch (_: Exception) {}
             PrivilegedAccessManager.runAsync(sessionUsesRoot) { restorePrivilegedFeaturesOnStop() }
             cleanup()
+            RecordingSessionStore.finishAsync(this)
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
@@ -754,6 +745,21 @@ class ScreenRecordService : Service() {
         drainEncoderOutput(encoder, bufferInfo, isAudio = false, untilEos = true)
     }
 
+    private fun drainSafely(drain: () -> Unit) {
+        try {
+            drain()
+        } catch (e: Exception) {
+            if (!stopRequested) {
+                Log.e(TAG, "Encoding failed", e)
+                mainHandler.post {
+                    stopRecording()
+                    stopForeground(STOP_FOREGROUND_REMOVE)
+                    stopSelf()
+                }
+            }
+        }
+    }
+
     /*
      * Dispatches processed audio and video streams efficiently to the final MP4 file.
      */
@@ -807,12 +813,12 @@ class ScreenRecordService : Service() {
     /*
      * Ensures proper shutdown process by terminating operations seamlessly.
      */
-     private fun stopRecording() {
+    private fun stopRecording() {
         if (!isRecording) return
-        virtualDisplay?.setSurface(null)
-        rotationRenderer?.close()
-        rotationRenderer = null
         stopRequested = true
+        try { virtualDisplay?.setSurface(null) } catch (_: Exception) {}
+        try { rotationRenderer?.close() } catch (_: Exception) {}
+        rotationRenderer = null
         isPaused = false
         isMuted = false
         RecordingStateManager.onRecordingStopped()
@@ -829,10 +835,16 @@ class ScreenRecordService : Service() {
         try { sysRecord?.stop() } catch (_: Exception) {}
         try { audioRecordingThread?.join(1000) } catch (_: Exception) {}
         try { videoEncoderThread?.join(1000) } catch (_: Exception) {}
-        try { if (muxerStarted) mediaMuxer?.stop() } catch (_: Exception) {}
+        synchronized(this) {
+            try { if (muxerStarted) mediaMuxer?.stop() } catch (e: Exception) {
+                Log.w(TAG, "Recording could not be finalized", e)
+            }
+            muxerStarted = false
+        }
 
         cleanup()
         isRecording = false
+        RecordingSessionStore.finishAsync(this, lowMemory = stoppedForLowMemory)
         sendStateBroadcast(STATE_STOP)
     }
 
@@ -845,18 +857,48 @@ class ScreenRecordService : Service() {
             getSystemService(DisplayManager::class.java).unregisterDisplayListener(displayListener)
             displayListenerRegistered = false
         }
-        virtualDisplay?.release(); virtualDisplay = null
-        rotationRenderer?.close(); rotationRenderer = null
-        micRecord?.release(); micRecord = null
-        sysRecord?.release(); sysRecord = null
-        try { audioEncoder?.stop() } catch (_: Exception) {}; audioEncoder?.release(); audioEncoder = null
-        try { videoEncoder?.stop() } catch (_: Exception) {}; videoEncoder?.release(); videoEncoder = null
-        inputSurface?.release(); inputSurface = null
-        try { mediaMuxer?.release() } catch (_: Exception) {}; mediaMuxer = null
-        muxerStarted = false
-        try { outputFileDescriptor?.close() } catch (_: Exception) {}; outputFileDescriptor = null
-        mediaProjection?.stop(); mediaProjection = null
+        try { virtualDisplay?.release() } catch (_: Exception) {}; virtualDisplay = null
+        try { rotationRenderer?.close() } catch (_: Exception) {}; rotationRenderer = null
+        try { micRecord?.release() } catch (_: Exception) {}; micRecord = null
+        try { sysRecord?.release() } catch (_: Exception) {}; sysRecord = null
+        try { audioEncoder?.stop() } catch (_: Exception) {}
+        try { audioEncoder?.release() } catch (_: Exception) {}; audioEncoder = null
+        try { videoEncoder?.stop() } catch (_: Exception) {}
+        try { videoEncoder?.release() } catch (_: Exception) {}; videoEncoder = null
+        try { inputSurface?.release() } catch (_: Exception) {}; inputSurface = null
+        synchronized(this) {
+            try { mediaMuxer?.release() } catch (_: Exception) {}; mediaMuxer = null
+            muxerStarted = false
+        }
+        try { mediaProjection?.stop() } catch (_: Exception) {}; mediaProjection = null
         releaseWakeLock()
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        Log.d(TAG, "onTrimMemory level=$level")
+        // Background and UI_HIDDEN trims occur routinely on lock screen / app switching; only stop on critical pressure.
+        if (level == TRIM_MEMORY_RUNNING_CRITICAL || level == TRIM_MEMORY_COMPLETE) {
+            stopForMemoryPressure()
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onLowMemory() {
+        super.onLowMemory()
+        stopForMemoryPressure()
+    }
+
+    private fun stopForMemoryPressure() {
+        if (!isRecording && !isStarting) return
+        val stop = {
+            stoppedForLowMemory = true
+            stopRecording()
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            stopSelf()
+        }
+        if (Looper.myLooper() == Looper.getMainLooper()) stop() else mainHandler.post { stop() }
     }
 
     /*

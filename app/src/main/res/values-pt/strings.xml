@@ -319,4 +319,10 @@
     <string name="sheet_settings_encoder_av1">AV1</string>
     <string name="sheet_settings_hide_floating_ball_title">Ocultar bola flutuante ao gravar</string>
     <string name="sheet_settings_hide_floating_ball_summary">Exclui os controles flutuantes da gravação em tela cheia ou aplicativo único; os controles continuam na notificação e reaparecem ao pausar ou parar.</string>
+    <string name="RecordingSessionStore_title">Gravação interrompida</string>
+    <string name="RecordingSessionStore_recovered">A aplicação fechou antes de terminar de guardar a gravação. O vídeo já foi guardado.</string>
+    <string name="RecordingSessionStore_removed">Não foi possível finalizar a gravação. O vídeo incompleto não pôde ser recuperado e foi removido.</string>
+    <string name="RecordingSessionStore_retry">Não foi possível concluir a gravação ou a limpeza. A gravação foi mantida. A aplicação tentará novamente quando a abrir. Verifique o espaço livre e o acesso à pasta.</string>
+    <string name="RecordingSessionStore_memory_saved">O dispositivo ficou com pouca memória. A gravação foi interrompida e o vídeo foi guardado.</string>
+    <string name="RecordingSessionStore_busy">A finalizar a gravação anterior. Tente novamente dentro de instantes.</string>
 </resources>
