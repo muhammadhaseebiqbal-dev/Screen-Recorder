@@ -576,6 +576,13 @@
                                     android:layout_height="wrap_content"
                                     android:text="@string/sheet_settings_encoder_hevc" />
 
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/btnEncoderAv1"
+                                    style="@style/MaterialButtonSecondaryOutline"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/sheet_settings_encoder_av1" />
+
                             </com.google.android.material.button.MaterialButtonToggleGroup>
                         </HorizontalScrollView>
                     </LinearLayout>

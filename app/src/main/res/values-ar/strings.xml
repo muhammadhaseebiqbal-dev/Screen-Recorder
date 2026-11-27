@@ -316,4 +316,5 @@
     <string name="LocaleHelper_language_system">لغة النظام</string>
     <string name="AboutActivity_dialog_update_notes_header">ما الجديد</string>
     <string name="AboutActivity_dialog_update_no_notes">لا توجد ملاحظات إصدار لهذا الإصدار.</string>
+    <string name="sheet_settings_encoder_av1">AV1</string>
 </resources>

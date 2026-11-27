@@ -323,4 +323,5 @@
     <string name="LocaleHelper_language_system">系统语言</string>
     <string name="AboutActivity_dialog_update_notes_header">更新日志</string>
     <string name="AboutActivity_dialog_update_no_notes">此版本未提供发行说明。</string>
+    <string name="sheet_settings_encoder_av1">AV1</string>
 </resources>

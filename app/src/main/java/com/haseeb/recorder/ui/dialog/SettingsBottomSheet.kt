@@ -184,15 +184,25 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         }
         binding.buttonGroupBitrate.check(bitrateButtonId)
 
-        val encoderButtonId = when (configManager.videoEncoder) {
-            ConfigManager.ENCODER_HEVC -> R.id.btnEncoderHevc
-            else -> R.id.btnEncoderH264
-        }
-        binding.buttonGroupEncoder.check(encoderButtonId)
-        if (!configManager.isHevcSupported()) {
+        val hevcSupported = configManager.isHevcSupported()
+        val av1Supported = configManager.isAv1Supported()
+        if (!hevcSupported) {
             binding.btnEncoderHevc.isEnabled = false
             binding.btnEncoderHevc.alpha = 0.5f
         }
+        if (!av1Supported) {
+            binding.btnEncoderAv1.isEnabled = false
+            binding.btnEncoderAv1.alpha = 0.5f
+        }
+        val encoderButtonId = when (configManager.videoEncoder) {
+            ConfigManager.ENCODER_HEVC -> if (hevcSupported) R.id.btnEncoderHevc else R.id.btnEncoderH264
+            ConfigManager.ENCODER_AV1 -> if (av1Supported) R.id.btnEncoderAv1 else R.id.btnEncoderH264
+            else -> R.id.btnEncoderH264
+        }
+        if (encoderButtonId == R.id.btnEncoderH264 && configManager.videoEncoder != ConfigManager.ENCODER_H264) {
+            configManager.videoEncoder = ConfigManager.ENCODER_H264
+        }
+        binding.buttonGroupEncoder.check(encoderButtonId)
 
         val orientationButtonId = when (configManager.videoOrientation) {
             ConfigManager.ORIENTATION_PORTRAIT -> R.id.btnOrientationPortrait
@@ -430,6 +440,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
             if (isChecked) {
                 configManager.videoEncoder = when (checkedId) {
                     R.id.btnEncoderHevc -> ConfigManager.ENCODER_HEVC
+                    R.id.btnEncoderAv1 -> ConfigManager.ENCODER_AV1
                     else -> ConfigManager.ENCODER_H264
                 }
             }
