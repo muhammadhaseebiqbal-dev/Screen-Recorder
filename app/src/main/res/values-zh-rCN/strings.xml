@@ -321,4 +321,6 @@
     <string name="ConfigManager_storage_default">默认路径 (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">自定义: %1$s</string>
     <string name="LocaleHelper_language_system">系统语言</string>
+    <string name="sheet_settings_hide_floating_ball_title">录制时隐藏悬浮球</string>
+    <string name="sheet_settings_hide_floating_ball_summary">在全屏或单个应用录制期间将悬浮控制项从视频中隐藏；通知栏仍可控制，暂停或停止后会自动重新显示。</string>
 </resources>

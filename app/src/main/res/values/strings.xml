@@ -362,4 +362,6 @@
 
     <string name="LocaleHelper_language_system">System Language</string>
 
+    <string name="sheet_settings_hide_floating_ball_title">Hide Floating Ball While Recording</string>
+    <string name="sheet_settings_hide_floating_ball_summary">Exclude the floating controls from full-screen and single-app recordings while active; controls remain in the notification bar and reappear when paused or stopped.</string>
 </resources>

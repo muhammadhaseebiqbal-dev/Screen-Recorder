@@ -46,6 +46,7 @@ class ConfigManager(private val context: Context) {
         const val KEY_OVERLAY_SHOW_MUTE = "overlay_show_mute"
         const val KEY_OVERLAY_SHOW_CAMERA = "overlay_show_camera"
         const val KEY_OVERLAY_SHOW_DRAW = "overlay_show_draw"
+        const val KEY_HIDE_FLOATING_BALL_WHILE_RECORDING = "hide_floating_ball_while_recording"
         const val KEY_PAUSE_ON_SCREEN_OFF = "pause_on_screen_off"
         const val KEY_SHIZUKU_SHOW_TOUCHES = "shizuku_show_touches"
         const val KEY_SHIZUKU_DIRECT_RECORDING = "shizuku_direct_recording"
@@ -78,6 +79,7 @@ class ConfigManager(private val context: Context) {
         const val DEFAULT_OVERLAY_SHOW_MUTE = true
         const val DEFAULT_OVERLAY_SHOW_CAMERA = true
         const val DEFAULT_OVERLAY_SHOW_DRAW = true
+        const val DEFAULT_HIDE_FLOATING_BALL_WHILE_RECORDING = false
         const val DEFAULT_PAUSE_ON_SCREEN_OFF = false
         const val DEFAULT_SHIZUKU_SHOW_TOUCHES = true
         const val DEFAULT_SHIZUKU_DIRECT_RECORDING = true
@@ -199,6 +201,10 @@ class ConfigManager(private val context: Context) {
         get() = prefs.getBoolean(KEY_OVERLAY_SHOW_DRAW, DEFAULT_OVERLAY_SHOW_DRAW)
         set(value) = prefs.edit().putBoolean(KEY_OVERLAY_SHOW_DRAW, value).apply()
 
+    var isHideFloatingBallWhileRecording: Boolean
+        get() = prefs.getBoolean(KEY_HIDE_FLOATING_BALL_WHILE_RECORDING, DEFAULT_HIDE_FLOATING_BALL_WHILE_RECORDING)
+        set(value) = prefs.edit().putBoolean(KEY_HIDE_FLOATING_BALL_WHILE_RECORDING, value).apply()
+
     var isPauseOnScreenOff: Boolean
         get() = prefs.getBoolean(KEY_PAUSE_ON_SCREEN_OFF, DEFAULT_PAUSE_ON_SCREEN_OFF)
         set(value) = prefs.edit().putBoolean(KEY_PAUSE_ON_SCREEN_OFF, value).apply()
@@ -246,6 +252,7 @@ class ConfigManager(private val context: Context) {
         if (!prefs.contains(KEY_OVERLAY_SHOW_MUTE)) { editor.putBoolean(KEY_OVERLAY_SHOW_MUTE, DEFAULT_OVERLAY_SHOW_MUTE); changed = true }
         if (!prefs.contains(KEY_OVERLAY_SHOW_CAMERA)) { editor.putBoolean(KEY_OVERLAY_SHOW_CAMERA, DEFAULT_OVERLAY_SHOW_CAMERA); changed = true }
         if (!prefs.contains(KEY_OVERLAY_SHOW_DRAW)) { editor.putBoolean(KEY_OVERLAY_SHOW_DRAW, DEFAULT_OVERLAY_SHOW_DRAW); changed = true }
+        if (!prefs.contains(KEY_HIDE_FLOATING_BALL_WHILE_RECORDING)) { editor.putBoolean(KEY_HIDE_FLOATING_BALL_WHILE_RECORDING, DEFAULT_HIDE_FLOATING_BALL_WHILE_RECORDING); changed = true }
         if (!prefs.contains(KEY_PAUSE_ON_SCREEN_OFF)) { editor.putBoolean(KEY_PAUSE_ON_SCREEN_OFF, DEFAULT_PAUSE_ON_SCREEN_OFF); changed = true }
         if (!prefs.contains(KEY_SHIZUKU_SHOW_TOUCHES)) { editor.putBoolean(KEY_SHIZUKU_SHOW_TOUCHES, DEFAULT_SHIZUKU_SHOW_TOUCHES); changed = true }
         if (!prefs.contains(KEY_SHIZUKU_DIRECT_RECORDING)) { editor.putBoolean(KEY_SHIZUKU_DIRECT_RECORDING, DEFAULT_SHIZUKU_DIRECT_RECORDING); changed = true }

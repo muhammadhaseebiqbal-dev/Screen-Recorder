@@ -111,6 +111,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         binding.switchOverlayShowMute.isChecked = configManager.isOverlayShowMuteEnabled
         binding.switchOverlayShowCamera.isChecked = configManager.isOverlayShowCameraEnabled
         binding.switchOverlayShowDraw.isChecked = configManager.isOverlayShowDrawEnabled
+        binding.switchHideFloatingBall.isChecked = configManager.isHideFloatingBallWhileRecording
         updateOverlaySubOptionsUI(configManager.isRecordingOverlayEnabled)
 
         val overlayStyleBtnId = if (configManager.overlayStyle == ConfigManager.OVERLAY_STYLE_RADIAL) {
@@ -348,6 +349,14 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         binding.switchOverlayShowDraw.setOnCheckedChangeListener { _, isChecked ->
             configManager.isOverlayShowDrawEnabled = isChecked
             validateRadialStyleAvailability()
+            notifyOverlayConfigChanged()
+        }
+
+        binding.cardHideFloatingBall.setOnClickListener {
+            if (configManager.isRecordingOverlayEnabled) binding.switchHideFloatingBall.toggle()
+        }
+        binding.switchHideFloatingBall.setOnCheckedChangeListener { _, isChecked ->
+            configManager.isHideFloatingBallWhileRecording = isChecked
             notifyOverlayConfigChanged()
         }
 
@@ -712,6 +721,10 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         binding.cardOverlayShowDraw.isEnabled = isEnabled
         binding.cardOverlayShowDraw.alpha = alphaVal
         binding.switchOverlayShowDraw.isEnabled = isEnabled
+
+        binding.cardHideFloatingBall.isEnabled = isEnabled
+        binding.cardHideFloatingBall.alpha = alphaVal
+        binding.switchHideFloatingBall.isEnabled = isEnabled
 
         validateRadialStyleAvailability()
     }

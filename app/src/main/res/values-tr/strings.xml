@@ -316,4 +316,6 @@
     <string name="LocaleHelper_language_system">Sistem Dili</string>
     <string name="AboutActivity_dialog_update_notes_header">Yenilikler</string>
     <string name="AboutActivity_dialog_update_no_notes">Bu sürüm için sürüm notu sağlanmadı.</string>
+    <string name="sheet_settings_hide_floating_ball_title">Kayıt Sırasında Kayan Topu Gizle</string>
+    <string name="sheet_settings_hide_floating_ball_summary">Aktif kayıt sırasında kayan kontrolleri tam ekran ve tek uygulama kayıtlarından hariç tutar; kontroller bildirimde kalır ve duraklatıldığında veya durdurulduğunda yeniden görünür.</string>
 </resources>

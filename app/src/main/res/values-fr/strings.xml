@@ -316,4 +316,6 @@
     <string name="LocaleHelper_language_system">Langue du système</string>
     <string name="AboutActivity_dialog_update_notes_header">Nouveautés</string>
     <string name="AboutActivity_dialog_update_no_notes">Aucune note de version fournie pour cette version.</string>
+    <string name="sheet_settings_hide_floating_ball_title">Masquer la bulle flottante pendant l’enregistrement</string>
+    <string name="sheet_settings_hide_floating_ball_summary">Exclut les contrôles flottants de la vidéo pendant l’enregistrement plein écran ou d’une seule application ; les commandes restent accessibles dans la notification et réapparaissent à la pause ou à l’arrêt.</string>
 </resources>

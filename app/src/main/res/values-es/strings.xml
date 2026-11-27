@@ -316,4 +316,6 @@
     <string name="LocaleHelper_language_system">Idioma del sistema</string>
     <string name="AboutActivity_dialog_update_notes_header">Novedades</string>
     <string name="AboutActivity_dialog_update_no_notes">No se proporcionaron notas de la versión para esta versión.</string>
+    <string name="sheet_settings_hide_floating_ball_title">Ocultar bola flotante al grabar</string>
+    <string name="sheet_settings_hide_floating_ball_summary">Excluye los controles flotantes del video en grabaciones de pantalla completa o de una sola app; los controles siguen disponibles en la notificación y reaparecen al pausar o detener.</string>
 </resources>
