@@ -325,4 +325,7 @@
     <string name="RecordingSessionStore_retry">保存または後処理を完了できませんでした。録画は保持されており、次回アプリを開いたときに再試行します。空き容量とフォルダへのアクセスを確認してください。</string>
     <string name="RecordingSessionStore_memory_saved">端末のメモリが不足しました。録画を停止し、動画を保存しました。</string>
     <string name="RecordingSessionStore_busy">前の録画を処理しています。少し待ってから再試行してください。</string>
+    <string name="ScreenRecordService_warn_video_title">映像フレームが停止しました</string>
+    <string name="ScreenRecordService_warn_video_gap">録画中に一部の映像フレームが途切れました。その区間では静止画のまま再生される場合があります。</string>
+    <string name="ScreenRecordService_warn_video_tail">音声終了前に映像フレームが停止しました。最後の映像フレーム以降の余分な音声はトリミングされました。</string>
 </resources>

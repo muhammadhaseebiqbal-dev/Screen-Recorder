@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.data.VideoFile
+import com.haseeb.recorder.recording.RecordingWarningStore
 import com.haseeb.recorder.recording.ScreenRecordService
 import com.haseeb.recorder.recording.RecordingSessionStore
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -45,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var configManager: ConfigManager
     private lateinit var adapter: VideoAdapter
     private var recoveryDialog: androidx.appcompat.app.AlertDialog? = null
+    private var warningDialog: androidx.appcompat.app.AlertDialog? = null
 
     private val recordingStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -52,6 +54,7 @@ class MainActivity : AppCompatActivity() {
                 syncRecordingUi()
                 loadVideos()
                 showRecoveryNotice()
+                showWarningNotice()
             }
         }
     }
@@ -377,6 +380,7 @@ class MainActivity : AppCompatActivity() {
             RecordingSessionStore.recoverInterruptedSession(this)
         }
         showRecoveryNotice()
+        showWarningNotice()
     }
 
     private fun showRecoveryNotice() {
@@ -389,6 +393,20 @@ class MainActivity : AppCompatActivity() {
             .setOnDismissListener {
                 recoveryDialog = null
                 if (RecordingSessionStore.notice(this) != message) showRecoveryNotice()
+            }
+            .show()
+    }
+
+    private fun showWarningNotice() {
+        if (!lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.RESUMED) || warningDialog != null) return
+        val message = RecordingWarningStore.pendingWarning(this) ?: return
+        warningDialog = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.ScreenRecordService_warn_video_title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok) { _, _ -> RecordingWarningStore.acknowledgeWarning(this, message) }
+            .setOnDismissListener {
+                warningDialog = null
+                if (RecordingWarningStore.pendingWarning(this) != message) showWarningNotice()
             }
             .show()
     }

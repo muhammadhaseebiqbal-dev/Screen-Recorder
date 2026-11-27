@@ -325,4 +325,7 @@
     <string name="RecordingSessionStore_retry">محفوظ کرنے یا صفائی کا عمل مکمل نہیں ہو سکا۔ ریکارڈنگ برقرار ہے اور ایپ اگلی بار کھلنے پر دوبارہ کوشش کرے گی۔ خالی جگہ اور فولڈر تک رسائی چیک کریں۔</string>
     <string name="RecordingSessionStore_memory_saved">ڈیوائس کی میموری کم ہو گئی تھی۔ ریکارڈنگ روک کر ویڈیو محفوظ کر دی گئی ہے۔</string>
     <string name="RecordingSessionStore_busy">پچھلی ریکارڈنگ مکمل کی جا رہی ہے۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔</string>
+    <string name="ScreenRecordService_warn_video_title">ویڈیو فریم رک گئے</string>
+    <string name="ScreenRecordService_warn_video_gap">ریکارڈنگ کے دوران کچھ ویڈیو فریم منقطع ہو گئے۔ اس حصے میں پلے بیک ایک ہی فریم پر رک سکتا ہے۔</string>
+    <string name="ScreenRecordService_warn_video_tail">آڈیو ختم ہونے سے پہلے ویڈیو فریم رک گئے۔ آخری ویڈیو فریم کے بعد کی اضافی آڈیو کاٹ دی گئی۔</string>
 </resources>

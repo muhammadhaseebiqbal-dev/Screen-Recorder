@@ -14,7 +14,7 @@ import java.nio.ByteOrder
 import java.util.concurrent.FutureTask
 import java.util.concurrent.TimeUnit
 
-/** Fits changing capture dimensions into a single encoder canvas without CPU pixel copies. */
+/** Fits changing capture dimensions into a single encoder canvas and maintains video keepalive frames. */
 internal class AutoRotationRenderer(
     encoderSurface: Surface,
     private val canvasWidth: Int,
@@ -24,6 +24,8 @@ internal class AutoRotationRenderer(
     private val thread = HandlerThread("AutoRotationRenderer").apply { start() }
     private val handler = Handler(thread.looper)
     @Volatile private var closed = false
+    private val keepalive = VideoKeepalivePolicy()
+    private val keepaliveTick = Runnable { runKeepaliveTick() }
     private var display = EGL14.EGL_NO_DISPLAY
     private var context = EGL14.EGL_NO_CONTEXT
     private var window = EGL14.EGL_NO_SURFACE
@@ -50,6 +52,43 @@ internal class AutoRotationRenderer(
             close()
             throw IllegalStateException("Cannot initialize rotation rendering", e)
         }
+        scheduleKeepalive()
+    }
+
+    fun setDisplayOff(displayOff: Boolean) {
+        handler.post {
+            if (closed || keepalive.isDisplayOff == displayOff) return@post
+            keepalive.setDisplayOff(displayOff)
+            if (displayOff && !keepalive.isPaused) {
+                runKeepaliveTick()
+            } else {
+                scheduleKeepalive()
+            }
+        }
+    }
+
+    fun setPaused(paused: Boolean) {
+        handler.post {
+            if (closed || keepalive.isPaused == paused) return@post
+            keepalive.setPaused(paused)
+            if (paused) {
+                handler.removeCallbacks(keepaliveTick)
+            } else {
+                scheduleKeepalive()
+            }
+        }
+    }
+
+    fun emitClosingFrame() {
+        if (closed) return
+        val emit = FutureTask {
+            if (!closed) {
+                val cmd = keepalive.closingFrameAction(System.nanoTime()) ?: return@FutureTask
+                renderCommand(cmd)
+            }
+        }
+        handler.post(emit)
+        try { emit.get(1, TimeUnit.SECONDS) } catch (_: Exception) {}
     }
 
     fun resize(width: Int, height: Int) {
@@ -130,33 +169,80 @@ internal class AutoRotationRenderer(
             val source = checkNotNull(surfaceTexture)
             source.updateTexImage()
             source.getTransformMatrix(transform)
-            GLES20.glViewport(0, 0, canvasWidth, canvasHeight)
-            GLES20.glClearColor(0f, 0f, 0f, 1f)
-            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
-            GLES20.glViewport(viewport.x, viewport.y, viewport.width, viewport.height)
-            GLES20.glUseProgram(program)
-            GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture)
-            GLES20.glUniformMatrix4fv(transformUniform, 1, false, transform, 0)
-            vertices.position(0)
-            GLES20.glVertexAttribPointer(positionAttribute, 2, GLES20.GL_FLOAT, false, 16, vertices)
-            vertices.position(2)
-            GLES20.glVertexAttribPointer(uvAttribute, 2, GLES20.GL_FLOAT, false, 16, vertices)
-            GLES20.glEnableVertexAttribArray(positionAttribute)
-            GLES20.glEnableVertexAttribArray(uvAttribute)
-            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
-            check(GLES20.glGetError() == GLES20.GL_NO_ERROR)
-            check(EGLExt.eglPresentationTimeANDROID(display, window, source.timestamp))
-            check(EGL14.eglSwapBuffers(display, window))
+            val ptsNs = keepalive.onScreenFrameArrived(source.timestamp, System.nanoTime())
+            if (ptsNs != null) {
+                renderTexture(ptsNs)
+            }
+            scheduleKeepalive()
         } catch (e: Exception) {
             close()
             onFailure(e)
         }
     }
 
+    private fun runKeepaliveTick() {
+        if (closed) return
+        try {
+            val cmd = keepalive.nextTickAction(System.nanoTime())
+            if (cmd != null) {
+                renderCommand(cmd)
+            }
+            scheduleKeepalive()
+        } catch (e: Exception) {
+            close()
+            onFailure(e)
+        }
+    }
+
+    private fun renderCommand(command: VideoKeepalivePolicy.FrameCommand) {
+        when (command.action) {
+            VideoKeepalivePolicy.FrameAction.DRAW_BLACK -> renderBlack(command.presentationTimeNs)
+            VideoKeepalivePolicy.FrameAction.REDRAW_LAST -> renderTexture(command.presentationTimeNs)
+            VideoKeepalivePolicy.FrameAction.NONE -> Unit
+        }
+    }
+
+    private fun renderBlack(presentationTimeNs: Long) {
+        GLES20.glViewport(0, 0, canvasWidth, canvasHeight)
+        GLES20.glClearColor(0f, 0f, 0f, 1f)
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        check(GLES20.glGetError() == GLES20.GL_NO_ERROR)
+        check(EGLExt.eglPresentationTimeANDROID(display, window, presentationTimeNs))
+        check(EGL14.eglSwapBuffers(display, window))
+    }
+
+    private fun renderTexture(presentationTimeNs: Long) {
+        GLES20.glViewport(0, 0, canvasWidth, canvasHeight)
+        GLES20.glClearColor(0f, 0f, 0f, 1f)
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+        GLES20.glViewport(viewport.x, viewport.y, viewport.width, viewport.height)
+        GLES20.glUseProgram(program)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture)
+        GLES20.glUniformMatrix4fv(transformUniform, 1, false, transform, 0)
+        vertices.position(0)
+        GLES20.glVertexAttribPointer(positionAttribute, 2, GLES20.GL_FLOAT, false, 16, vertices)
+        vertices.position(2)
+        GLES20.glVertexAttribPointer(uvAttribute, 2, GLES20.GL_FLOAT, false, 16, vertices)
+        GLES20.glEnableVertexAttribArray(positionAttribute)
+        GLES20.glEnableVertexAttribArray(uvAttribute)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
+        check(GLES20.glGetError() == GLES20.GL_NO_ERROR)
+        check(EGLExt.eglPresentationTimeANDROID(display, window, presentationTimeNs))
+        check(EGL14.eglSwapBuffers(display, window))
+    }
+
+    private fun scheduleKeepalive() {
+        handler.removeCallbacks(keepaliveTick)
+        if (!closed && !keepalive.isPaused) {
+            handler.postDelayed(keepaliveTick, keepalive.nextTickDelayMs(System.nanoTime()))
+        }
+    }
+
     override fun close() {
         if (closed) return
         closed = true
+        handler.removeCallbacks(keepaliveTick)
         // Release on the GL owner; the encoder surface itself belongs to the service.
         if (Looper.myLooper() == thread.looper) {
             releaseResources()

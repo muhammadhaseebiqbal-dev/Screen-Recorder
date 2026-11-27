@@ -325,4 +325,7 @@
     <string name="RecordingSessionStore_retry">La sauvegarde ou le nettoyage n’a pas pu se terminer. L’enregistrement est conservé. L’application réessaiera à sa prochaine ouverture. Vérifiez l’espace libre et l’accès au dossier.</string>
     <string name="RecordingSessionStore_memory_saved">La mémoire de l’appareil était insuffisante. L’enregistrement a été arrêté et la vidéo sauvegardée.</string>
     <string name="RecordingSessionStore_busy">Finalisation de l’enregistrement précédent. Veuillez réessayer dans un instant.</string>
+    <string name="ScreenRecordService_warn_video_title">Images vidéo arrêtées</string>
+    <string name="ScreenRecordService_warn_video_gap">Certaines images vidéo ont été interrompues pendant l’enregistrement. La lecture peut rester figée sur cette section.</string>
+    <string name="ScreenRecordService_warn_video_tail">Les images vidéo se sont arrêtées avant la fin de l’audio. L’audio excédentaire après la dernière image a été coupé.</string>
 </resources>

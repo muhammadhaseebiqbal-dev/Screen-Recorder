@@ -325,4 +325,7 @@
     <string name="RecordingSessionStore_retry">No se pudo completar el guardado o la limpieza. Se ha conservado la grabación. La app lo intentará de nuevo al abrirse. Comprueba el espacio libre y el acceso a la carpeta.</string>
     <string name="RecordingSessionStore_memory_saved">El dispositivo se quedó con poca memoria. La grabación se detuvo y el vídeo se guardó.</string>
     <string name="RecordingSessionStore_busy">Se está finalizando la grabación anterior. Inténtalo de nuevo en unos momentos.</string>
+    <string name="ScreenRecordService_warn_video_title">Fotogramas de video detenidos</string>
+    <string name="ScreenRecordService_warn_video_gap">Algunos fotogramas de video se interrumpieron durante la grabación. La reproducción puede quedar fija en ese tramo.</string>
+    <string name="ScreenRecordService_warn_video_tail">Los fotogramas de video se detuvieron antes de finalizar el audio. Se recortó el audio sobrante tras el último fotograma.</string>
 </resources>

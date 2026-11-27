@@ -325,4 +325,7 @@
     <string name="RecordingSessionStore_retry">Не удалось завершить сохранение или очистку. Запись сохранена для повторной попытки при следующем открытии приложения. Проверьте свободное место и доступ к папке.</string>
     <string name="RecordingSessionStore_memory_saved">На устройстве осталось мало оперативной памяти. Запись остановлена, видео сохранено.</string>
     <string name="RecordingSessionStore_busy">Завершается предыдущая запись. Повторите попытку чуть позже.</string>
+    <string name="ScreenRecordService_warn_video_title">Видеокадры остановлены</string>
+    <string name="ScreenRecordService_warn_video_gap">Во время записи часть видеокадров прервалась. На этом участке изображение может замирать.</string>
+    <string name="ScreenRecordService_warn_video_tail">Видеокадры остановились раньше звука. Лишний звук после последнего видеокадра был обрезан.</string>
 </resources>

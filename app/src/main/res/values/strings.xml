@@ -372,4 +372,7 @@
     <string name="RecordingSessionStore_retry">Saving or cleanup could not finish. The recording has been kept and the app will retry next time you open it. Check available storage and folder access.</string>
     <string name="RecordingSessionStore_memory_saved">The device ran low on memory. Recording stopped and your video was saved.</string>
     <string name="RecordingSessionStore_busy">Finishing the previous recording. Please try again shortly.</string>
+    <string name="ScreenRecordService_warn_video_title">Video frames stopped</string>
+    <string name="ScreenRecordService_warn_video_gap">Some video frames were interrupted during recording. Playback may hold on a still frame during that section.</string>
+    <string name="ScreenRecordService_warn_video_tail">Video frames stopped before audio ended. Trailing audio beyond the last video frame was trimmed.</string>
 </resources>

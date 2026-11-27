@@ -325,4 +325,7 @@
     <string name="RecordingSessionStore_retry">Speichern oder Aufräumen konnte nicht abgeschlossen werden. Die Aufnahme bleibt erhalten. Die App versucht es beim nächsten Öffnen erneut. Prüfe den freien Speicher und den Ordnerzugriff.</string>
     <string name="RecordingSessionStore_memory_saved">Der Arbeitsspeicher des Geräts wurde knapp. Die Aufnahme wurde beendet und das Video gespeichert.</string>
     <string name="RecordingSessionStore_busy">Die vorherige Aufnahme wird fertiggestellt. Bitte versuche es gleich noch einmal.</string>
+    <string name="ScreenRecordService_warn_video_title">Videobilder gestoppt</string>
+    <string name="ScreenRecordService_warn_video_gap">Einige Videobilder wurden während der Aufnahme unterbrochen. Die Wiedergabe kann dort bei einem Standbild stehen bleiben.</string>
+    <string name="ScreenRecordService_warn_video_tail">Videobilder stoppten vor dem Audioende. Überhängendes Audio nach dem letzten Videobild wurde gekürzt.</string>
 </resources>

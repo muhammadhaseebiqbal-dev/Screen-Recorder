@@ -325,4 +325,7 @@
     <string name="RecordingSessionStore_retry">تعذر إكمال الحفظ أو التنظيف. تم الاحتفاظ بالتسجيل وسيحاول التطبيق مجددًا عند فتحه. تحقق من مساحة التخزين وإمكانية الوصول إلى المجلد.</string>
     <string name="RecordingSessionStore_memory_saved">انخفضت ذاكرة الجهاز. توقف التسجيل وتم حفظ الفيديو.</string>
     <string name="RecordingSessionStore_busy">جارٍ إنهاء التسجيل السابق. يرجى المحاولة مجددًا بعد قليل.</string>
+    <string name="ScreenRecordService_warn_video_title">توقفت إطارات الفيديو</string>
+    <string name="ScreenRecordService_warn_video_gap">توقفت بعض إطارات الفيديو أثناء التسجيل. قد يتجمد التشغيل على إطار ثابت في ذلك الجزء.</string>
+    <string name="ScreenRecordService_warn_video_tail">توقفت إطارات الفيديو قبل انتهاء الصوت. تم قص الصوت الزائد بعد آخر إطار فيديو.</string>
 </resources>

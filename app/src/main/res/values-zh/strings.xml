@@ -332,4 +332,7 @@
     <string name="RecordingSessionStore_retry">保存或清理未能完成。录屏已保留，应用将在下次打开时重试。请检查可用存储空间和文件夹访问权限。</string>
     <string name="RecordingSessionStore_memory_saved">设备内存不足。录屏已停止，视频已保存。</string>
     <string name="RecordingSessionStore_busy">正在完成上一次录屏，请稍后重试。</string>
+    <string name="ScreenRecordService_warn_video_title">視訊影格已停止</string>
+    <string name="ScreenRecordService_warn_video_gap">錄製期間部分視訊影格中斷，播放時該片段可能會停留在靜止畫面。</string>
+    <string name="ScreenRecordService_warn_video_tail">視訊影格在音訊結束前停止，已裁切最後一個視訊影格之後的多餘音訊。</string>
 </resources>
