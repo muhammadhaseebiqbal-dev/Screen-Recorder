@@ -341,4 +341,7 @@
     <string name="EnhancedAudio_warn_by_system">対象アプリはシステム権限での録音（ALLOW_CAPTURE_BY_SYSTEM）のみを許可しており、このセッションでは許可されませんでした。</string>
     <string name="EnhancedAudio_warn_non_media">通話やアラームなど、Android が内部音声録音から除外している非メディアストリームで再生されていました。</string>
     <string name="EnhancedAudio_warn_backend_unavailable">拡張音声録音には、この端末で有効な Shizuku または Root による特権キャプチャ対応が必要です。</string>
+    <string name="VoipAudio_warn_title">通話・アプリ音声の制限</string>
+    <string name="VoipAudio_warn_voice_call">システムの CAPTURE_VOICE_COMMUNICATION_OUTPUT 権限がない限り、Android は WeChat 通話などの VoIP 音声を標準または Shizuku による内部録音から隔離します。通話を妨げないようマイクは自動的に標準 MIC を維持しました。</string>
+    <string name="VoipAudio_warn_app_blocked">対象アプリが ALLOW_CAPTURE_BY_NONE により内部音声の録音を拒否しているため、仮想環境外では Shizuku や Root があってもシステム側で遮断されます。</string>
 </resources>

@@ -18,6 +18,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.CAPTURE_MEDIA_OUTPUT" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.PROJECT_MEDIA" tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_ROUTING" tools:ignore="ProtectedPermissions" />
 

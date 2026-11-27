@@ -141,13 +141,17 @@ class ScreenRecordService : Service() {
     private var micRecord: AudioRecord? = null
     private var microphoneEffects: MicrophoneEffects? = null
     private var cancelMicrophoneEcho = false
+    private var micUsesVoiceCommunication = false
+    @Volatile private var forceStandardMic = false
     private var sysRecord: AudioRecord? = null
     @Volatile private var privilegedCapture: PrivilegedAudioCapture? = null
     @Volatile private var privilegedCaptureRequested = false
     @Volatile private var privilegedCaptureAttempted = false
     @Volatile private var systemAudioRequested = false
     @Volatile private var hasNonZeroSystemAudio = false
+    @Volatile private var observedCallMode = false
     private val observedPlaybackSnapshots = Collections.synchronizedList(mutableListOf<EnhancedAudioDiagnostics.PlaybackSnapshot>())
+    private val observedPlaybackEntries = Collections.synchronizedList(mutableListOf<VoipAudioDiagnostics.PlaybackEntry>())
     private var audioCaptureStartMs = 0L
     private var lastPlaybackPollMs = 0L
     private var lastEnhancedAudioCapabilities = EnhancedAudioDiagnostics.CapabilitySummary(false, false, false, false)
@@ -188,6 +192,7 @@ class ScreenRecordService : Service() {
         }
 
         override fun onStop() {
+            Log.i(TAG, "MediaProjection stopped by system")
             mainHandler.post {
                 stopRecording()
                 stopForeground(STOP_FOREGROUND_REMOVE)
@@ -423,6 +428,10 @@ class ScreenRecordService : Service() {
         systemAudioRequested = wantSysAudio
         hasNonZeroSystemAudio = false
         observedPlaybackSnapshots.clear()
+        observedPlaybackEntries.clear()
+        observedCallMode = VoipAudioDiagnostics.isCallAudioMode(currentAudioMode())
+        forceStandardMic = false
+        micUsesVoiceCommunication = false
         privilegedCaptureAttempted = false
         privilegedCaptureRequested = configManager.isShizukuEnhancedAudioEnabled
         lastEnhancedAudioCapabilities = PrivilegedAccessManager.getEnhancedAudioCapabilities(this, sessionUsesRoot)
@@ -668,6 +677,9 @@ class ScreenRecordService : Service() {
         }
     }
 
+    private fun currentAudioMode(): Int =
+        (getSystemService(Context.AUDIO_SERVICE) as? AudioManager)?.mode ?: AudioManager.MODE_NORMAL
+
     private fun createAudioRecord(isMic: Boolean): AudioRecord {
         val sampleRate = 48_000
         val minBuf = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
@@ -676,12 +688,25 @@ class ScreenRecordService : Service() {
             createMicrophoneRecord(sampleRate, minBuf * 4)
         } else {
             check(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-            val captureConfig = AudioPlaybackCaptureConfiguration.Builder(mediaProjection!!)
-                .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
-                .addMatchingUsage(AudioAttributes.USAGE_GAME)
-                .addMatchingUsage(AudioAttributes.USAGE_UNKNOWN)
+            val voipCaps = PrivilegedAccessManager.getVoipAudioCapability(this)
+            val configBuilder = AudioPlaybackCaptureConfiguration.Builder(mediaProjection!!)
                 .excludeUid(Process.myUid())
-                .build()
+            for (usage in VoipAudioDiagnostics.playbackUsagesForCapture(voipCaps)) {
+                configBuilder.addMatchingUsage(usage)
+            }
+            if (voipCaps.hasVoiceCommCapturePermission) {
+                try {
+                    val ruleField = AudioPlaybackCaptureConfiguration.Builder::class.java
+                        .getDeclaredField("mAudioMixingRuleBuilder").apply { isAccessible = true }
+                    val ruleBuilder = ruleField.get(configBuilder)
+                    ruleBuilder.javaClass
+                        .getMethod("voiceCommunicationCaptureAllowed", Boolean::class.javaPrimitiveType)
+                        .invoke(ruleBuilder, true)
+                } catch (t: Throwable) {
+                    Log.w(TAG, "Could not enable privileged VoIP capture rule: ${t.message}")
+                }
+            }
+            val captureConfig = configBuilder.build()
             AudioRecord.Builder()
                 .setAudioPlaybackCaptureConfig(captureConfig)
                 .setAudioFormat(AudioFormat.Builder().setEncoding(AudioFormat.ENCODING_PCM_16BIT).setSampleRate(sampleRate).setChannelMask(AudioFormat.CHANNEL_IN_MONO).build())
@@ -700,14 +725,21 @@ class ScreenRecordService : Service() {
     }
 
     private fun createMicrophoneRecord(sampleRate: Int, bufferSize: Int): AudioRecord {
-        val sources = if (cancelMicrophoneEcho) {
-            intArrayOf(MediaRecorder.AudioSource.VOICE_COMMUNICATION, MediaRecorder.AudioSource.MIC)
-        } else intArrayOf(MediaRecorder.AudioSource.MIC)
+        val sources = VoipAudioDiagnostics.selectMicrophoneSources(
+            simultaneousSystemAudio = cancelMicrophoneEcho,
+            audioMode = currentAudioMode(),
+            manufacturer = Build.MANUFACTURER ?: "",
+            brand = Build.BRAND ?: "",
+            forceStandardMic = forceStandardMic
+        )
         for (source in sources) {
             try {
                 val record = AudioRecord(source, sampleRate, AudioFormat.CHANNEL_IN_MONO,
                     AudioFormat.ENCODING_PCM_16BIT, bufferSize)
-                if (record.state == AudioRecord.STATE_INITIALIZED) return record
+                if (record.state == AudioRecord.STATE_INITIALIZED) {
+                    micUsesVoiceCommunication = (source == MediaRecorder.AudioSource.VOICE_COMMUNICATION)
+                    return record
+                }
                 record.release()
             } catch (e: RuntimeException) {
                 Log.w(TAG, "Microphone source $source unavailable", e)
@@ -778,7 +810,7 @@ class ScreenRecordService : Service() {
         if (samples > 0 && !isMic && !hasNonZeroSystemAudio && PcmResampler.containsNonZeroSamples(buffer, offset, samples)) {
             hasNonZeroSystemAudio = true
         }
-        if (!isMic && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && now - lastPlaybackPollMs >= 1_000L) {
+        if (!isMic && !stopRequested && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && now - lastPlaybackPollMs >= 1_000L) {
             lastPlaybackPollMs = now
             pollPlaybackSnapshots(now)
         }
@@ -788,6 +820,19 @@ class ScreenRecordService : Service() {
     private fun pollPlaybackSnapshots(nowMs: Long) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || stopRequested) return
         val audioManager = getSystemService(Context.AUDIO_SERVICE) as? AudioManager ?: return
+        if (VoipAudioDiagnostics.isCallAudioMode(audioManager.mode)) {
+            observedCallMode = true
+            if (micUsesVoiceCommunication) {
+                Log.w(TAG, "Active VoIP call detected; switching mic capture from VOICE_COMMUNICATION to MIC")
+                forceStandardMic = true
+                micUsesVoiceCommunication = false
+                microphoneEffects?.close(); microphoneEffects = null
+                try { micRecord?.stop() } catch (_: Exception) {}
+                try { micRecord?.release() } catch (_: Exception) {}
+                micRecord = null
+                micRetryAfterMs = 0L
+            }
+        }
         val snapshots = try {
             audioManager.activePlaybackConfigurations.map { config ->
                 EnhancedAudioDiagnostics.PlaybackSnapshot(
@@ -798,10 +843,34 @@ class ScreenRecordService : Service() {
         } catch (_: Exception) {
             emptyList()
         }
+        if (micUsesVoiceCommunication &&
+            !hasNonZeroSystemAudio &&
+            nowMs - audioCaptureStartMs >= 2_000L &&
+            snapshots.any {
+                EnhancedAudioDiagnostics.isStandardCapturableUsage(it.usage) &&
+                    it.allowedCapturePolicy == AudioAttributes.ALLOW_CAPTURE_BY_ALL
+            }
+        ) {
+            Log.w(TAG, "Switching microphone source from VOICE_COMMUNICATION to MIC to restore system audio capture")
+            forceStandardMic = true
+            micUsesVoiceCommunication = false
+            microphoneEffects?.close(); microphoneEffects = null
+            try { micRecord?.stop() } catch (_: Exception) {}
+            try { micRecord?.release() } catch (_: Exception) {}
+            micRecord = null
+            micRetryAfterMs = 0L
+        }
         if (snapshots.isNotEmpty()) {
             synchronized(observedPlaybackSnapshots) {
                 if (observedPlaybackSnapshots.size < 32) {
                     observedPlaybackSnapshots.addAll(snapshots)
+                }
+            }
+            synchronized(observedPlaybackEntries) {
+                if (observedPlaybackEntries.size < 32) {
+                    observedPlaybackEntries.addAll(snapshots.map {
+                        VoipAudioDiagnostics.PlaybackEntry(it.usage, it.allowedCapturePolicy)
+                    })
                 }
             }
         }
@@ -1016,6 +1085,12 @@ class ScreenRecordService : Service() {
         if (dropWarning != RecordingTrackHealth.Warning.NONE) {
             RecordingWarningStore.reportVideoDrop(this, dropWarning)
         }
+        val voipIssue = VoipAudioDiagnostics.evaluateIssue(
+            systemAudioRequested = systemAudioRequested,
+            hasNonZeroSystemAudio = hasNonZeroSystemAudio,
+            observedCallMode = observedCallMode,
+            snapshots = synchronized(observedPlaybackEntries) { observedPlaybackEntries.toList() }
+        )
         val blockReason = EnhancedAudioDiagnostics.evaluateBlockReason(
             systemAudioRequested = systemAudioRequested,
             enhancedAudioEnabled = privilegedCaptureRequested,
@@ -1024,8 +1099,12 @@ class ScreenRecordService : Service() {
             capabilities = caps,
             privilegedCaptureActive = hadPrivilegedCapture
         )
-        if (blockReason != EnhancedAudioDiagnostics.BlockReason.NONE) {
+        if (voipIssue == VoipAudioDiagnostics.CaptureIssue.VOICE_CALL_RESTRICTED) {
+            VoipAudioWarningStore.report(this, voipIssue)
+        } else if (blockReason != EnhancedAudioDiagnostics.BlockReason.NONE) {
             EnhancedAudioWarningStore.report(this, blockReason)
+        } else if (voipIssue != VoipAudioDiagnostics.CaptureIssue.NONE) {
+            VoipAudioWarningStore.report(this, voipIssue)
         }
         isRecording = false
         RecordingSessionStore.finishAsync(this, lowMemory = stoppedForLowMemory)
@@ -1062,9 +1141,9 @@ class ScreenRecordService : Service() {
     @Suppress("DEPRECATION")
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        // UI_HIDDEN is a routine background transition, not a low-memory signal.
-        if (level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL ||
-            level == TRIM_MEMORY_BACKGROUND || level == TRIM_MEMORY_MODERATE || level == TRIM_MEMORY_COMPLETE) {
+        Log.d(TAG, "onTrimMemory level=$level")
+        // Background and UI_HIDDEN trims occur routinely on lock screen / app switching; only stop on critical pressure.
+        if (level == TRIM_MEMORY_RUNNING_CRITICAL || level == TRIM_MEMORY_COMPLETE) {
             stopForMemoryPressure()
         }
     }

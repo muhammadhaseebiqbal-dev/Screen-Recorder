@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.recording.EnhancedAudioDiagnostics
+import com.haseeb.recorder.recording.VoipAudioDiagnostics
 import com.haseeb.recorder.shizuku.ShizukuManager
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.concurrent.Executors
@@ -105,15 +106,25 @@ object PrivilegedAccessManager {
         )
     }
 
+    internal fun getVoipAudioCapability(context: Context): VoipAudioDiagnostics.VoipCapability {
+        val pm = android.content.pm.PackageManager.PERMISSION_GRANTED
+        val voiceComm = context.checkSelfPermission("android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT") == pm
+        val privileged = context.checkSelfPermission("android.permission.CAPTURE_AUDIO_OUTPUT") == pm ||
+            context.checkSelfPermission("android.permission.CAPTURE_MEDIA_OUTPUT") == pm
+        return VoipAudioDiagnostics.VoipCapability(voiceComm, privileged)
+    }
+
     fun grantEnhancedAudioPermission(context: Context): Boolean {
         val app = context.packageName
         executeShell("pm grant $app android.permission.CAPTURE_AUDIO_OUTPUT")
         executeShell("pm grant $app android.permission.CAPTURE_MEDIA_OUTPUT")
+        executeShell("pm grant $app android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT")
         executeShell("cmd appops set $app CAPTURE_AUDIO_OUTPUT allow")
         executeShell("cmd appops set $app CAPTURE_MEDIA_OUTPUT allow")
         executeShell("cmd appops set $app PROJECT_MEDIA allow")
         executeShell("cmd appops set $app RECORD_AUDIO allow")
-        return getEnhancedAudioCapabilities(context).hasAnyPrivilegedCapture
+        return getEnhancedAudioCapabilities(context).hasAnyPrivilegedCapture ||
+            getVoipAudioCapability(context).hasVoiceCommCapturePermission
     }
 
     fun grantProjectMediaPermission(context: Context): Boolean {

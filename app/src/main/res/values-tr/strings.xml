@@ -341,4 +341,7 @@
     <string name="EnhancedAudio_warn_by_system">Kaydedilen uygulama yalnızca sistem ayrıcalıklı yakalamaya (ALLOW_CAPTURE_BY_SYSTEM) izin veriyor ve Android bu oturumda bunu onaylamadı.</string>
     <string name="EnhancedAudio_warn_non_media">Ses, Android’in dahili ses yakalamadan hariç tuttuğu medya dışı bir akışta (örneğin arama veya alarm) çalınıyordu.</string>
     <string name="EnhancedAudio_warn_backend_unavailable">Gelişmiş ses yakalama için bu cihazda etkin Shizuku veya Root ayrıcalıklı yakalama desteği gerekir.</string>
+    <string name="VoipAudio_warn_title">VoIP ve Uygulama Ses Kısıtlaması</string>
+    <string name="VoipAudio_warn_voice_call">Sistem ayrıcalıklı CAPTURE_VOICE_COMMUNICATION_OUTPUT izni verilmedikçe Android, WeChat aramaları gibi VoIP akışlarını standart veya Shizuku dahili kayıttan ayırır. Etkin aramanın bozulmaması için mikrofon standart MIC modunda tutuldu.</string>
+    <string name="VoipAudio_warn_app_blocked">Etkin uygulama ALLOW_CAPTURE_BY_NONE ile dahili ses yakalamayı engelledi; Android bunu Shizuku veya Root açıkken de uygular.</string>
 </resources>

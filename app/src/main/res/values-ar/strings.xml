@@ -341,4 +341,7 @@
     <string name="EnhancedAudio_warn_by_system">يسمح التطبيق فقط بالالتقاط المميّز للنظام (ALLOW_CAPTURE_BY_SYSTEM)، ولم يمنح Android هذا الإذن لهذه الجلسة.</string>
     <string name="EnhancedAudio_warn_non_media">تم تشغيل الصوت على مسار غير وسائطي (مثل المكالمات أو التنبيهات) يستثنيه Android من الالتقاط الداخلي.</string>
     <string name="EnhancedAudio_warn_backend_unavailable">يتطلب التقاط الصوت المحسّن دعم Shizuku أو Root المميّز لالتقاط التشغيل على هذا الجهاز.</string>
+    <string name="VoipAudio_warn_title">قيود صوت المكالمات والتطبيقات</string>
+    <string name="VoipAudio_warn_voice_call">يعزل نظام Android تدفقات صوت المكالمات الصوتية والمرئية عن الالتقاط الداخلي القياسي أو عبر Shizuku ما لم يُمنح إذن النظام المميز CAPTURE_VOICE_COMMUNICATION_OUTPUT. تم إبقاء الميكروفون على الوضع القياسي لتجنب تعطل المكالمة.</string>
+    <string name="VoipAudio_warn_app_blocked">قام التطبيق النشط بحظر التقاط الصوت الداخلي عبر ALLOW_CAPTURE_BY_NONE، وهو قيد يفرضه Android خارج البيئات الافتراضية حتى مع Shizuku أو Root.</string>
 </resources>

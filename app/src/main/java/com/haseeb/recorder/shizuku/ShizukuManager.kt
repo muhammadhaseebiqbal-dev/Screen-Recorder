@@ -201,13 +201,14 @@ object ShizukuManager {
     }
 
     /*
-     * Grants enhanced audio output capture privileges via Shizuku shell and checks whether
-     * app-level or Shizuku-remote privileged capture permissions are actually active.
+     * Grants enhanced audio, VoIP communication, and playback capture privileges via Shizuku
+     * shell and reports whether privileged app or remote capture permissions are active.
      */
     fun grantEnhancedAudioPermission(context: Context): Boolean {
         val pkg = context.packageName
         executeShell("pm grant $pkg android.permission.CAPTURE_AUDIO_OUTPUT")
         executeShell("pm grant $pkg android.permission.CAPTURE_MEDIA_OUTPUT")
+        executeShell("pm grant $pkg android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT")
         executeShell("cmd appops set $pkg CAPTURE_AUDIO_OUTPUT allow")
         executeShell("cmd appops set $pkg CAPTURE_MEDIA_OUTPUT allow")
         executeShell("cmd appops set $pkg PROJECT_MEDIA allow")
@@ -219,7 +220,8 @@ object ShizukuManager {
 
     fun hasLocalPrivilegedAudioPermission(context: Context): Boolean =
         context.checkSelfPermission("android.permission.CAPTURE_AUDIO_OUTPUT") == PackageManager.PERMISSION_GRANTED ||
-            context.checkSelfPermission("android.permission.CAPTURE_MEDIA_OUTPUT") == PackageManager.PERMISSION_GRANTED
+            context.checkSelfPermission("android.permission.CAPTURE_MEDIA_OUTPUT") == PackageManager.PERMISSION_GRANTED ||
+            context.checkSelfPermission("android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT") == PackageManager.PERMISSION_GRANTED
 
     fun hasRemotePermission(permission: String): Boolean {
         if (!isPermissionGranted()) return false

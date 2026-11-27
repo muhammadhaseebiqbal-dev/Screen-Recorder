@@ -341,4 +341,7 @@
     <string name="EnhancedAudio_warn_by_system">रिकॉर्ड किया गया ऐप केवल सिस्टम-विशेषाधिकार कैप्चर (ALLOW_CAPTURE_BY_SYSTEM) की अनुमति देता है, जो इस सत्र में नहीं मिला।</string>
     <string name="EnhancedAudio_warn_non_media">ऑडियो किसी गैर-मीडिया स्ट्रीम (जैसे कॉल या अलार्म) पर चल रहा था जिसे Android आंतरिक कैप्चर से बाहर रखता है।</string>
     <string name="EnhancedAudio_warn_backend_unavailable">उन्नत ऑडियो कैप्चर के लिए इस डिवाइस पर सक्रिय Shizuku या Root विशेषाधिकार सहायता आवश्यक है।</string>
+    <string name="VoipAudio_warn_title">VoIP और ऐप ऑडियो प्रतिबंध</string>
+    <string name="VoipAudio_warn_voice_call">जब तक सिस्टम द्वारा CAPTURE_VOICE_COMMUNICATION_OUTPUT अनुमति न मिले, Android वॉइस/वीडियो कॉल ऑडियो (जैसे WeChat कॉल) को सामान्य या Shizuku आंतरिक रिकॉर्डिंग से अलग रखता है। कॉल बाधित न हो इसलिए माइक्रोफ़ोन को मानक MIC पर रखा गया।</string>
+    <string name="VoipAudio_warn_app_blocked">सक्रिय ऐप ने ALLOW_CAPTURE_BY_NONE से आंतरिक ऑडियो रिकॉर्डिंग ब्लॉक की है, जिसे Android Shizuku या Root के बावजूद लागू करता है।</string>
 </resources>

@@ -348,4 +348,7 @@
     <string name="EnhancedAudio_warn_by_system">目標應用程式僅允許系統特權擷取（ALLOW_CAPTURE_BY_SYSTEM），但系統未授予此工作階段該權限。</string>
     <string name="EnhancedAudio_warn_non_media">音訊正於通話或鬧鐘等非媒體串流播放，Android 已將其排除於內部錄音之外。</string>
     <string name="EnhancedAudio_warn_backend_unavailable">進階音訊擷取需要此裝置啟用 Shizuku 或 Root 的特權播放擷取支援。</string>
+    <string name="VoipAudio_warn_title">通話與應用程式音訊限制</string>
+    <string name="VoipAudio_warn_voice_call">除非系統授予特權權限 CAPTURE_VOICE_COMMUNICATION_OUTPUT，否則 Android 會將微信通話等 VoIP 語音串流與一般或 Shizuku 內部錄音隔離（虛擬機因位於獨立沙盒音訊層而可錄製）。系統已自動切換為標準 MIC 避免影響通話。</string>
+    <string name="VoipAudio_warn_app_blocked">目前應用程式透過 ALLOW_CAPTURE_BY_NONE 停用了內部錄音擷取，即使啟用 Shizuku 或 Root，Android 系統仍會於原生環境限制擷取。</string>
 </resources>

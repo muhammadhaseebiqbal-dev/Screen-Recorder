@@ -341,4 +341,7 @@
     <string name="EnhancedAudio_warn_by_system">La app grabada solo permite captura con privilegios del sistema (ALLOW_CAPTURE_BY_SYSTEM), la cual Android no concedió en esta sesión.</string>
     <string name="EnhancedAudio_warn_non_media">El audio se reprodujo en un flujo ajeno a medios (como llamada o alarma) excluido por Android de la captura interna.</string>
     <string name="EnhancedAudio_warn_backend_unavailable">La captura de audio mejorada requiere soporte privilegiado activo de Shizuku o Root en este dispositivo.</string>
+    <string name="VoipAudio_warn_title">Restricción de audio VoIP y de apps</string>
+    <string name="VoipAudio_warn_voice_call">Android aísla el audio de llamadas VoIP (como llamadas de WeChat) de la captura interna estándar o con Shizuku salvo con el permiso de sistema CAPTURE_VOICE_COMMUNICATION_OUTPUT. El micrófono se mantuvo en MIC estándar para no interrumpir la llamada.</string>
+    <string name="VoipAudio_warn_app_blocked">La app activa bloqueó la captura de audio interno con ALLOW_CAPTURE_BY_NONE, una restricción que Android aplica incluso con Shizuku o Root.</string>
 </resources>
