@@ -1,7 +1,6 @@
 package com.haseeb.recorder.ui.activity
 
 import android.app.Activity
-import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,17 +8,20 @@ import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
 import android.provider.Settings
 import android.util.Log
-import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.Manifest
 import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.recording.ScreenRecordService
+import com.haseeb.recorder.recording.RecordingCountdown
 import com.haseeb.recorder.privileged.PrivilegedAccessManager
 import com.haseeb.recorder.util.LocaleHelper
 
@@ -40,8 +42,31 @@ open class MediaProjectionPermissionActivity : Activity() {
     private var pendingResultCode: Int = -1
     private var pendingData: Intent? = null
     private var isProjectionRequestPending = false
+    private var isPreparingProjection = false
     private var isActivityResumed = false
-    private var pendingServiceStart = false
+    private var isRuntimePermissionRequestPending = false
+    private var countdown: RecordingCountdown? = null
+    private var countdownView: TextView? = null
+    private var serviceStarted = false
+    private val countdownHandler = Handler(Looper.getMainLooper())
+    private val countdownTick = object : Runnable {
+        override fun run() {
+            if (!isActivityResumed || isFinishing || isDestroyed || pendingData == null || serviceStarted) return
+            val seconds = countdown?.seconds(SystemClock.elapsedRealtime()) ?: return
+            if (seconds > 0) {
+                countdownView?.text = seconds.toString()
+                countdownHandler.postDelayed(this, 100)
+            } else {
+                window.decorView.alpha = 0f
+                countdownHandler.postDelayed(startServiceAfterCountdown, 100)
+            }
+        }
+    }
+    private val startServiceAfterCountdown = Runnable {
+        if (isActivityResumed && !isFinishing && !isDestroyed && !serviceStarted) {
+            pendingData?.let { startRecordingService(pendingResultCode, it) }
+        }
+    }
 
     private lateinit var configManager: ConfigManager
 
@@ -59,7 +84,16 @@ open class MediaProjectionPermissionActivity : Activity() {
         super.onCreate(savedInstanceState)
         configManager = ConfigManager(this)
         handleIntentExtras(intent)
-        validateAndProceed()
+        if (savedInstanceState != null) {
+            pendingResultCode = savedInstanceState.getInt("projection_result", RESULT_CANCELED)
+            @Suppress("DEPRECATION")
+            pendingData = savedInstanceState.getParcelable("projection_data")
+            isProjectionRequestPending = savedInstanceState.getBoolean("projection_pending")
+            isRuntimePermissionRequestPending = savedInstanceState.getBoolean("runtime_pending")
+            if (pendingData != null) {
+                countdown = RecordingCountdown(savedInstanceState.getLong("countdown_remaining"))
+            }
+        }
     }
 
     /*
@@ -79,15 +113,16 @@ open class MediaProjectionPermissionActivity : Activity() {
      * Stops and waits if any permission is missing.
      */
     private fun validateAndProceed() {
-        if (isProjectionRequestPending) return
+        if (isFinishing || isDestroyed) return
+        if (isProjectionRequestPending || isPreparingProjection || isRuntimePermissionRequestPending || pendingData != null || serviceStarted) return
         if (!checkRuntimePermissions()) return
         if (!checkOverlayPermission()) return
         if (PrivilegedAccessManager.isPermissionGranted() && configManager.isShizukuDirectRecordingEnabled) {
-            isProjectionRequestPending = true
+            isPreparingProjection = true
             PrivilegedAccessManager.runAsync {
                 PrivilegedAccessManager.grantProjectMediaPermission(applicationContext)
                 runOnUiThread {
-                    isProjectionRequestPending = false
+                    isPreparingProjection = false
                     if (!isFinishing && !isDestroyed) requestMediaProjection()
                 }
             }
@@ -108,6 +143,7 @@ open class MediaProjectionPermissionActivity : Activity() {
             ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
         }
         return if (missing.isNotEmpty()) {
+            isRuntimePermissionRequestPending = true
             ActivityCompat.requestPermissions(this, missing.toTypedArray(), REQUEST_RUNTIME_PERMISSIONS)
             false
         } else {
@@ -140,26 +176,14 @@ open class MediaProjectionPermissionActivity : Activity() {
         } ?: finish()
     }
 
-    /*
-     * Tracks that the activity is now in the foreground.
-     * If a service start was deferred because the activity was in the background,
-     * the window is hidden immediately to prevent showing a stale countdown number,
-     * and the service is started safely from the foreground state.
-     */
+    /* Begin the countdown only after the system permission screen has returned. */
     override fun onResume() {
         super.onResume()
         isActivityResumed = true
 
-        if (pendingServiceStart && pendingData != null) {
-            pendingServiceStart = false
-            val data = pendingData!!
-            pendingData = null
-            window?.decorView?.alpha = 0f
-            startRecordingService(pendingResultCode, data)
-            return
-        }
-
-        if (pendingData == null && !isProjectionRequestPending) {
+        if (pendingData != null) {
+            startCountdown()
+        } else {
             validateAndProceed()
         }
     }
@@ -170,6 +194,22 @@ open class MediaProjectionPermissionActivity : Activity() {
     override fun onPause() {
         super.onPause()
         isActivityResumed = false
+        countdown?.pause(SystemClock.elapsedRealtime())
+        countdownHandler.removeCallbacksAndMessages(null)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("projection_result", pendingResultCode)
+        outState.putParcelable("projection_data", pendingData)
+        outState.putBoolean("projection_pending", isProjectionRequestPending)
+        outState.putBoolean("runtime_pending", isRuntimePermissionRequestPending)
+        outState.putLong("countdown_remaining", countdown?.remainingMillis(SystemClock.elapsedRealtime()) ?: 0)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroy() {
+        countdownHandler.removeCallbacksAndMessages(null)
+        super.onDestroy()
     }
 
     /*
@@ -190,7 +230,12 @@ open class MediaProjectionPermissionActivity : Activity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_RUNTIME_PERMISSIONS) {
-            validateAndProceed()
+            isRuntimePermissionRequestPending = false
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                if (isActivityResumed) validateAndProceed()
+            } else {
+                finish()
+            }
         }
     }
 
@@ -205,7 +250,8 @@ open class MediaProjectionPermissionActivity : Activity() {
             if (resultCode == RESULT_OK && data != null) {
                 pendingResultCode = resultCode
                 pendingData = data
-                startCountdown()
+                countdown = RecordingCountdown(configManager.countdownSeconds.coerceAtLeast(0) * 1000L)
+                if (isActivityResumed) startCountdown()
             } else {
                 finish()
             }
@@ -217,82 +263,37 @@ open class MediaProjectionPermissionActivity : Activity() {
      * Maintains transparent activity lifecycle to guarantee safe foreground service start.
      */
     private fun startCountdown() {
-        val countdownSec = configManager.countdownSeconds
-        if (countdownSec <= 0) {
-            window?.decorView?.alpha = 0f
-            window?.decorView?.postDelayed({
-                if (isFinishing || pendingData == null) return@postDelayed
-                if (isActivityResumed) {
-                    startRecordingService(pendingResultCode, pendingData!!)
-                } else {
-                    pendingServiceStart = true
-                    bringActivityToForeground()
-                }
-            }, 100)
-            return
-        }
-
-        try {
-            setContentView(R.layout.activity_countdown)
-            val tvCountdown = findViewById<TextView>(R.id.tvCountdown)
-            tvCountdown?.text = countdownSec.toString()
-
-            val totalMillis = (countdownSec * 1000L) + 500L
-            object : CountDownTimer(totalMillis, 1000L) {
-                override fun onTick(millisUntilFinished: Long) {
-                    val sec = (millisUntilFinished / 1000L).toInt()
-                    if (sec in 1..countdownSec) {
-                        tvCountdown?.text = sec.toString()
-                    }
-                }
-
-                override fun onFinish() {
-                    if (isFinishing) return
-                    tvCountdown?.visibility = View.GONE
-                    window?.decorView?.alpha = 0f
-
-                    window?.decorView?.postDelayed({
-                        if (isFinishing || pendingData == null) return@postDelayed
-
-                        if (isActivityResumed) {
-                            startRecordingService(pendingResultCode, pendingData!!)
-                        } else {
-                            pendingServiceStart = true
-                            bringActivityToForeground()
-                        }
-                    }, 200)
-                }
-            }.start()
-        } catch (e: Exception) {
-            pendingData?.let { startRecordingService(pendingResultCode, it) }
-        }
-    }
-
-    /*
-     * Brings this activity back to the foreground using moveTaskToFront.
-     * Falls back to FLAG_ACTIVITY_REORDER_TO_FRONT if the primary method fails.
-     */
-    private fun bringActivityToForeground() {
-        try {
-            val am = getSystemService(ActivityManager::class.java)
-            am.moveTaskToFront(taskId, ActivityManager.MOVE_TASK_WITH_HOME)
-        } catch (e: Exception) {
-            Log.w(TAG, "moveTaskToFront failed, using fallback: ${e.message}")
+        if (!isActivityResumed || serviceStarted || isFinishing || isDestroyed) return
+        val timer = countdown ?: return
+        countdownHandler.removeCallbacksAndMessages(null)
+        if (timer.remainingMillis(SystemClock.elapsedRealtime()) > 0) {
             try {
-                val intent = Intent(this, javaClass).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                if (countdownView == null) {
+                    setContentView(R.layout.activity_countdown)
+                    countdownView = checkNotNull(findViewById<TextView>(R.id.tvCountdown))
                 }
-                startActivity(intent)
-            } catch (ex: Exception) {
-                Log.e(TAG, "Failed to bring activity to foreground: ${ex.message}")
+                window.decorView.alpha = 1f
+            } catch (e: Exception) {
+                // Do not silently bypass the user's countdown if its UI cannot be shown.
+                Log.e(TAG, "Unable to show recording countdown", e)
+                Toast.makeText(this, R.string.recording_countdown_failed, Toast.LENGTH_LONG).show()
+                pendingData = null
+                finish()
+                return
             }
         }
+        timer.resume(SystemClock.elapsedRealtime())
+        countdownTick.run()
     }
 
     /*
      * Starts the ScreenRecordService as a foreground service with the projection data.
      */
     private fun startRecordingService(resultCode: Int, data: Intent) {
+        if (serviceStarted) return
+        serviceStarted = true
+        pendingData = null
+        countdownHandler.removeCallbacksAndMessages(null)
         val serviceIntent = Intent(this, ScreenRecordService::class.java).apply {
             action = ScreenRecordService.ACTION_START
             putExtra(ScreenRecordService.EXTRA_RESULT_CODE, resultCode)
