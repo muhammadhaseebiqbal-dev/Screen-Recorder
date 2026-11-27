@@ -170,6 +170,7 @@ class ScreenRecordService : Service() {
         }
 
         override fun onStop() {
+            Log.i(TAG, "MediaProjection stopped by system")
             mainHandler.post {
                 stopRecording()
                 stopForeground(STOP_FOREGROUND_REMOVE)
@@ -860,9 +861,9 @@ class ScreenRecordService : Service() {
     @Suppress("DEPRECATION")
     override fun onTrimMemory(level: Int) {
         super.onTrimMemory(level)
-        // UI_HIDDEN is a routine background transition, not a low-memory signal.
-        if (level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL ||
-            level == TRIM_MEMORY_BACKGROUND || level == TRIM_MEMORY_MODERATE || level == TRIM_MEMORY_COMPLETE) {
+        Log.d(TAG, "onTrimMemory level=$level")
+        // Background and UI_HIDDEN trims occur routinely on lock screen / app switching; only stop on critical pressure.
+        if (level == TRIM_MEMORY_RUNNING_CRITICAL || level == TRIM_MEMORY_COMPLETE) {
             stopForMemoryPressure()
         }
     }
