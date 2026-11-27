@@ -18,6 +18,7 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.databinding.SheetSettingsBinding
+import com.haseeb.recorder.overlay.FloatingBarPolicy
 import com.haseeb.recorder.overlay.RecordingOverlayService
 import com.haseeb.recorder.recording.ScreenRecordService
 import com.haseeb.recorder.shizuku.ShizukuManager
@@ -37,6 +38,21 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
 
     private lateinit var configManager: ConfigManager
     private var isProgrammaticShizukuUpdate = false
+    private var isProgrammaticAlwaysBarUpdate = false
+
+    private val overlayPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        val ctx = context ?: return@registerForActivityResult
+        if (Settings.canDrawOverlays(ctx)) {
+            configManager.isAlwaysShowFloatingBarEnabled = true
+            isProgrammaticAlwaysBarUpdate = true
+            binding.switchAlwaysShowFloatingBar.isChecked = true
+            isProgrammaticAlwaysBarUpdate = false
+            updateOverlaySubOptionsUI(isAnyOverlayModeEnabled())
+            notifyOverlayConfigChanged()
+        }
+    }
 
     private val privilegedPermissionListener: (Boolean) -> Unit = {
         if (_binding != null) {
@@ -106,13 +122,17 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         binding.switchMic.isChecked = configManager.isMicEnabled
         binding.switchSystemAudio.isChecked = configManager.isSystemAudioEnabled
         binding.switchRecordingOverlay.isChecked = configManager.isRecordingOverlayEnabled
+        isProgrammaticAlwaysBarUpdate = true
+        binding.switchAlwaysShowFloatingBar.isChecked =
+            configManager.isAlwaysShowFloatingBarEnabled && Settings.canDrawOverlays(requireContext())
+        isProgrammaticAlwaysBarUpdate = false
         binding.switchOverlayShowPause.isChecked = configManager.isOverlayShowPauseEnabled
         binding.switchOverlayShowStop.isChecked = configManager.isOverlayShowStopEnabled
         binding.switchOverlayShowMute.isChecked = configManager.isOverlayShowMuteEnabled
         binding.switchOverlayShowCamera.isChecked = configManager.isOverlayShowCameraEnabled
         binding.switchOverlayShowDraw.isChecked = configManager.isOverlayShowDrawEnabled
         binding.switchHideFloatingBall.isChecked = configManager.isHideFloatingBallWhileRecording
-        updateOverlaySubOptionsUI(configManager.isRecordingOverlayEnabled)
+        updateOverlaySubOptionsUI(isAnyOverlayModeEnabled())
 
         val overlayStyleBtnId = if (configManager.overlayStyle == ConfigManager.OVERLAY_STYLE_RADIAL) {
             R.id.btnStyleRadial
@@ -313,12 +333,30 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         binding.cardRecordingOverlay.setOnClickListener { binding.switchRecordingOverlay.toggle() }
         binding.switchRecordingOverlay.setOnCheckedChangeListener { _, isChecked ->
             configManager.isRecordingOverlayEnabled = isChecked
-            updateOverlaySubOptionsUI(isChecked)
+            updateOverlaySubOptionsUI(isAnyOverlayModeEnabled())
+            notifyOverlayConfigChanged()
+        }
+
+        binding.cardAlwaysShowFloatingBar.setOnClickListener { binding.switchAlwaysShowFloatingBar.toggle() }
+        binding.switchAlwaysShowFloatingBar.setOnCheckedChangeListener { _, isChecked ->
+            if (isProgrammaticAlwaysBarUpdate) return@setOnCheckedChangeListener
+            val ctx = context ?: return@setOnCheckedChangeListener
+            if (isChecked && !Settings.canDrawOverlays(ctx)) {
+                isProgrammaticAlwaysBarUpdate = true
+                binding.switchAlwaysShowFloatingBar.isChecked = false
+                isProgrammaticAlwaysBarUpdate = false
+                overlayPermissionLauncher.launch(
+                    Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:${ctx.packageName}"))
+                )
+                return@setOnCheckedChangeListener
+            }
+            configManager.isAlwaysShowFloatingBarEnabled = isChecked
+            updateOverlaySubOptionsUI(isAnyOverlayModeEnabled())
             notifyOverlayConfigChanged()
         }
 
         binding.cardOverlayShowPause.setOnClickListener {
-            if (configManager.isRecordingOverlayEnabled) binding.switchOverlayShowPause.toggle()
+            if (isAnyOverlayModeEnabled()) binding.switchOverlayShowPause.toggle()
         }
         binding.switchOverlayShowPause.setOnCheckedChangeListener { _, isChecked ->
             configManager.isOverlayShowPauseEnabled = isChecked
@@ -327,7 +365,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         }
 
         binding.cardOverlayShowStop.setOnClickListener {
-            if (configManager.isRecordingOverlayEnabled) binding.switchOverlayShowStop.toggle()
+            if (isAnyOverlayModeEnabled()) binding.switchOverlayShowStop.toggle()
         }
         binding.switchOverlayShowStop.setOnCheckedChangeListener { _, isChecked ->
             configManager.isOverlayShowStopEnabled = isChecked
@@ -336,7 +374,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         }
 
         binding.cardOverlayShowMute.setOnClickListener {
-            if (configManager.isRecordingOverlayEnabled) binding.switchOverlayShowMute.toggle()
+            if (isAnyOverlayModeEnabled()) binding.switchOverlayShowMute.toggle()
         }
         binding.switchOverlayShowMute.setOnCheckedChangeListener { _, isChecked ->
             configManager.isOverlayShowMuteEnabled = isChecked
@@ -345,7 +383,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         }
 
         binding.cardOverlayShowCamera.setOnClickListener {
-            if (configManager.isRecordingOverlayEnabled) binding.switchOverlayShowCamera.toggle()
+            if (isAnyOverlayModeEnabled()) binding.switchOverlayShowCamera.toggle()
         }
         binding.switchOverlayShowCamera.setOnCheckedChangeListener { _, isChecked ->
             configManager.isOverlayShowCameraEnabled = isChecked
@@ -354,7 +392,7 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
         }
 
         binding.cardOverlayShowDraw.setOnClickListener {
-            if (configManager.isRecordingOverlayEnabled) binding.switchOverlayShowDraw.toggle()
+            if (isAnyOverlayModeEnabled()) binding.switchOverlayShowDraw.toggle()
         }
         binding.switchOverlayShowDraw.setOnCheckedChangeListener { _, isChecked ->
             configManager.isOverlayShowDrawEnabled = isChecked
@@ -682,10 +720,13 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
     /*
      * Validates if radial style has sufficient buttons enabled and manages fallback.
      */
+    private fun isAnyOverlayModeEnabled(): Boolean =
+        configManager.isRecordingOverlayEnabled || configManager.isAlwaysShowFloatingBarEnabled
+
     private fun validateRadialStyleAvailability() {
         val count = getEnabledOverlaySubOptionsCount()
         val isRadialAllowed = count >= 3
-        val isOverlayOn = configManager.isRecordingOverlayEnabled
+        val isOverlayOn = isAnyOverlayModeEnabled()
 
         binding.btnStyleRadial.isEnabled = isRadialAllowed && isOverlayOn
         binding.btnStyleRadial.alpha = if (isRadialAllowed && isOverlayOn) 1.0f else 0.4f
@@ -745,12 +786,17 @@ class SettingsBottomSheet : BottomSheetDialogFragment(), RecordingStateManager.S
      */
     private fun notifyOverlayConfigChanged() {
         val ctx = context ?: return
-        if (ScreenRecordService.isRecording) {
-            if (configManager.isRecordingOverlayEnabled) {
-                ctx.startService(Intent(ctx, RecordingOverlayService::class.java))
-            } else {
-                ctx.stopService(Intent(ctx, RecordingOverlayService::class.java))
-            }
+        val shouldRun = FloatingBarPolicy.shouldRunOverlayService(
+            isRecording = ScreenRecordService.isRecording,
+            isStarting = ScreenRecordService.isStarting,
+            isOverlayEnabledDuringRecording = configManager.isRecordingOverlayEnabled,
+            isAlwaysShowEnabled = configManager.isAlwaysShowFloatingBarEnabled,
+            hasOverlayPermission = Settings.canDrawOverlays(ctx)
+        )
+        if (shouldRun) {
+            ctx.startService(Intent(ctx, RecordingOverlayService::class.java))
+        } else {
+            ctx.stopService(Intent(ctx, RecordingOverlayService::class.java))
         }
         ctx.sendBroadcast(Intent(RecordingOverlayService.ACTION_OVERLAY_CONFIG_CHANGED))
     }

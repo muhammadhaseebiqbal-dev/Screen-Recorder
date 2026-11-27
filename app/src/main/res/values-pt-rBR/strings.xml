@@ -326,4 +326,8 @@
     <string name="ScreenRecordService_warn_video_title">Quadros de vídeo interrompidos</string>
     <string name="ScreenRecordService_warn_video_gap">Alguns quadros de vídeo foram interrompidos durante a gravação. A reprodução pode travar nesse trecho.</string>
     <string name="ScreenRecordService_warn_video_tail">Os quadros de vídeo pararam antes do áudio terminar. O áudio excedente após o último quadro foi cortado.</string>
+    <string name="sheet_settings_always_floating_title">Mostrar barra flutuante sempre</string>
+    <string name="sheet_settings_always_floating_summary">Manter a barra flutuante na tela quando parada para iniciar a gravação sem abrir o app</string>
+    <string name="overlay_floating_desc_start">Iniciar gravação</string>
+    <string name="overlay_floating_desc_close">Fechar barra flutuante</string>
 </resources>

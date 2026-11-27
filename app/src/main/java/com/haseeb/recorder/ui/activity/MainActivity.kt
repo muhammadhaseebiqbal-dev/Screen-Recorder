@@ -22,6 +22,8 @@ import com.haseeb.recorder.R
 import com.haseeb.recorder.data.ConfigManager
 import com.haseeb.recorder.data.VideoFile
 import com.haseeb.recorder.recording.RecordingWarningStore
+import com.haseeb.recorder.overlay.FloatingBarPolicy
+import com.haseeb.recorder.overlay.RecordingOverlayService
 import com.haseeb.recorder.recording.ScreenRecordService
 import com.haseeb.recorder.recording.RecordingSessionStore
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -156,6 +158,7 @@ class MainActivity : AppCompatActivity() {
     private fun performFullPermissionCheck() {
         if (!checkAndRequestRuntimePermissions()) return
         if (!checkOverlayPermission()) return
+        syncAlwaysOnFloatingBar()
         loadVideos()
     }
 
@@ -371,6 +374,20 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         syncRecordingUi()
+        syncAlwaysOnFloatingBar()
+    }
+
+    private fun syncAlwaysOnFloatingBar() {
+        val shouldRun = FloatingBarPolicy.shouldRunOverlayService(
+            isRecording = ScreenRecordService.isRecording,
+            isStarting = ScreenRecordService.isStarting,
+            isOverlayEnabledDuringRecording = configManager.isRecordingOverlayEnabled,
+            isAlwaysShowEnabled = configManager.isAlwaysShowFloatingBarEnabled,
+            hasOverlayPermission = Settings.canDrawOverlays(this)
+        )
+        if (shouldRun) {
+            startService(Intent(this, RecordingOverlayService::class.java))
+        }
     }
 
     override fun onPostResume() {

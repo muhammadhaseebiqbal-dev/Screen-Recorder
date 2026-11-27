@@ -328,4 +328,8 @@
     <string name="ScreenRecordService_warn_video_title">Fotogramas de video detenidos</string>
     <string name="ScreenRecordService_warn_video_gap">Algunos fotogramas de video se interrumpieron durante la grabación. La reproducción puede quedar fija en ese tramo.</string>
     <string name="ScreenRecordService_warn_video_tail">Los fotogramas de video se detuvieron antes de finalizar el audio. Se recortó el audio sobrante tras el último fotograma.</string>
+    <string name="sheet_settings_always_floating_title">Mostrar barra flotante siempre</string>
+    <string name="sheet_settings_always_floating_summary">Mantén la barra flotante en pantalla para iniciar la grabación en cualquier momento sin abrir la app</string>
+    <string name="overlay_floating_desc_start">Iniciar grabación</string>
+    <string name="overlay_floating_desc_close">Cerrar barra flotante</string>
 </resources>

@@ -71,7 +71,10 @@
         <activity
             android:name=".ui.activity.CameraPermissionActivity"
             android:exported="false"
+            android:taskAffinity="${applicationId}.camera_permission"
+            android:launchMode="singleTask"
             android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
             android:theme="@style/Theme.ScreenRecorder.Transparent" />
 
         <activity

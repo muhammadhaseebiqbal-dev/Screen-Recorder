@@ -328,4 +328,8 @@
     <string name="ScreenRecordService_warn_video_title">توقفت إطارات الفيديو</string>
     <string name="ScreenRecordService_warn_video_gap">توقفت بعض إطارات الفيديو أثناء التسجيل. قد يتجمد التشغيل على إطار ثابت في ذلك الجزء.</string>
     <string name="ScreenRecordService_warn_video_tail">توقفت إطارات الفيديو قبل انتهاء الصوت. تم قص الصوت الزائد بعد آخر إطار فيديو.</string>
+    <string name="sheet_settings_always_floating_title">إظهار الشريط العائم دائماً</string>
+    <string name="sheet_settings_always_floating_summary">إبقاء الشريط العائم ظاهراً على الشاشة لبدء التسجيل في أي وقت دون فتح التطبيق</string>
+    <string name="overlay_floating_desc_start">بدء التسجيل</string>
+    <string name="overlay_floating_desc_close">إغلاق الشريط العائم</string>
 </resources>

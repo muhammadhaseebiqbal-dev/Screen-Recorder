@@ -328,4 +328,8 @@
     <string name="ScreenRecordService_warn_video_title">Images vidéo arrêtées</string>
     <string name="ScreenRecordService_warn_video_gap">Certaines images vidéo ont été interrompues pendant l’enregistrement. La lecture peut rester figée sur cette section.</string>
     <string name="ScreenRecordService_warn_video_tail">Les images vidéo se sont arrêtées avant la fin de l’audio. L’audio excédentaire après la dernière image a été coupé.</string>
+    <string name="sheet_settings_always_floating_title">Toujours afficher la barre flottante</string>
+    <string name="sheet_settings_always_floating_summary">Garder la barre flottante visible à l’écran pour démarrer l’enregistrement sans ouvrir l’application</string>
+    <string name="overlay_floating_desc_start">Démarrer l’enregistrement</string>
+    <string name="overlay_floating_desc_close">Fermer la barre flottante</string>
 </resources>

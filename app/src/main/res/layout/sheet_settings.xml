@@ -909,6 +909,56 @@
 
                 <com.google.android.material.card.MaterialCardView
                     style="?attr/materialCardViewFilledStyle"
+                    android:id="@+id/cardAlwaysShowFloatingBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginTop="2dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.ListItem.Middle">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp">
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/switchAlwaysShowFloatingBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:clickable="false"
+                            android:focusable="false"
+                            app:thumbIcon="@drawable/ic_overlay_horizontal" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toStartOf="@id/switchAlwaysShowFloatingBar"
+                            android:layout_centerVertical="true"
+                            android:layout_marginEnd="16dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sheet_settings_always_floating_title"
+                                android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/sheet_settings_always_floating_summary"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:textColor="?attr/colorOnSurfaceVariant" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
                     android:id="@+id/cardOverlayStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

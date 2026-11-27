@@ -328,4 +328,8 @@
     <string name="ScreenRecordService_warn_video_title">Videobilder gestoppt</string>
     <string name="ScreenRecordService_warn_video_gap">Einige Videobilder wurden während der Aufnahme unterbrochen. Die Wiedergabe kann dort bei einem Standbild stehen bleiben.</string>
     <string name="ScreenRecordService_warn_video_tail">Videobilder stoppten vor dem Audioende. Überhängendes Audio nach dem letzten Videobild wurde gekürzt.</string>
+    <string name="sheet_settings_always_floating_title">Schwebende Leiste immer anzeigen</string>
+    <string name="sheet_settings_always_floating_summary">Schwebende Leiste im Leerlauf sichtbar halten, um jederzeit ohne Öffnen der App aufzunehmen</string>
+    <string name="overlay_floating_desc_start">Aufnahme starten</string>
+    <string name="overlay_floating_desc_close">Schwebende Leiste schließen</string>
 </resources>

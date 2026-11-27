@@ -23,8 +23,16 @@ class CameraPermissionActivity : Activity() {
     companion object {
         fun launch(context: Context) {
             context.startActivity(Intent(context, CameraPermissionActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             })
+        }
+    }
+
+    override fun finish() {
+        if (isTaskRoot) {
+            finishAndRemoveTask()
+        } else {
+            super.finish()
         }
     }
 

@@ -328,4 +328,8 @@
     <string name="ScreenRecordService_warn_video_title">Видеокадры остановлены</string>
     <string name="ScreenRecordService_warn_video_gap">Во время записи часть видеокадров прервалась. На этом участке изображение может замирать.</string>
     <string name="ScreenRecordService_warn_video_tail">Видеокадры остановились раньше звука. Лишний звук после последнего видеокадра был обрезан.</string>
+    <string name="sheet_settings_always_floating_title">Всегда показывать плавающую панель</string>
+    <string name="sheet_settings_always_floating_summary">Оставлять плавающую панель на экране в режиме ожидания для быстрого запуска записи без открытия приложения</string>
+    <string name="overlay_floating_desc_start">Начать запись</string>
+    <string name="overlay_floating_desc_close">Закрыть плавающую панель</string>
 </resources>

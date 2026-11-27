@@ -328,4 +328,8 @@
     <string name="ScreenRecordService_warn_video_title">वीडियो फ़्रेम रुक गए</string>
     <string name="ScreenRecordService_warn_video_gap">रिकॉर्डिंग के दौरान कुछ वीडियो फ़्रेम बाधित हुए। उस हिस्से में प्लेबैक एक स्थिर फ़्रेम पर रुक सकता है।</string>
     <string name="ScreenRecordService_warn_video_tail">ऑडियो समाप्त होने से पहले वीडियो फ़्रेम रुक गए। अंतिम वीडियो फ़्रेम के बाद का अतिरिक्त ऑडियो काट दिया गया।</string>
+    <string name="sheet_settings_always_floating_title">फ़्लोटिंग बार हमेशा दिखाएँ</string>
+    <string name="sheet_settings_always_floating_summary">ऐप खोले बिना कभी भी रिकॉर्डिंग शुरू करने के लिए फ़्लोटिंग बार को स्क्रीन पर रखें</string>
+    <string name="overlay_floating_desc_start">रिकॉर्डिंग शुरू करें</string>
+    <string name="overlay_floating_desc_close">फ़्लोटिंग बार बंद करें</string>
 </resources>

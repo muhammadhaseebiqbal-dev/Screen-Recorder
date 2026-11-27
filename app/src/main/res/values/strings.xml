@@ -375,4 +375,8 @@
     <string name="ScreenRecordService_warn_video_title">Video frames stopped</string>
     <string name="ScreenRecordService_warn_video_gap">Some video frames were interrupted during recording. Playback may hold on a still frame during that section.</string>
     <string name="ScreenRecordService_warn_video_tail">Video frames stopped before audio ended. Trailing audio beyond the last video frame was trimmed.</string>
+    <string name="sheet_settings_always_floating_title">Always Show Floating Bar</string>
+    <string name="sheet_settings_always_floating_summary">Keep the floating bar on screen when idle to start recording anytime without opening the app</string>
+    <string name="overlay_floating_desc_start">Start recording</string>
+    <string name="overlay_floating_desc_close">Close floating bar</string>
 </resources>

@@ -39,6 +39,7 @@ class ConfigManager(private val context: Context) {
         const val KEY_USE_FRONT_CAMERA = "use_front_camera"
         const val KEY_COUNTDOWN_SECONDS = "countdown_seconds"
         const val KEY_RECORDING_OVERLAY_ENABLED = "recording_overlay_enabled"
+        const val KEY_ALWAYS_SHOW_FLOATING_BAR = "always_show_floating_bar"
         const val KEY_OVERLAY_STYLE = "overlay_style"
         const val KEY_OVERLAY_SHOW_PAUSE = "overlay_show_pause"
         const val KEY_OVERLAY_SHOW_STOP = "overlay_show_stop"
@@ -70,6 +71,7 @@ class ConfigManager(private val context: Context) {
         const val DEFAULT_USE_FRONT_CAMERA = true
         const val DEFAULT_COUNTDOWN_SECONDS = 3
         const val DEFAULT_RECORDING_OVERLAY_ENABLED = true
+        const val DEFAULT_ALWAYS_SHOW_FLOATING_BAR = false
         const val OVERLAY_STYLE_HORIZONTAL = "horizontal"
         const val OVERLAY_STYLE_RADIAL = "radial"
         const val DEFAULT_OVERLAY_STYLE = OVERLAY_STYLE_HORIZONTAL
@@ -177,6 +179,10 @@ class ConfigManager(private val context: Context) {
         get() = prefs.getBoolean(KEY_RECORDING_OVERLAY_ENABLED, DEFAULT_RECORDING_OVERLAY_ENABLED)
         set(value) = prefs.edit().putBoolean(KEY_RECORDING_OVERLAY_ENABLED, value).apply()
 
+    var isAlwaysShowFloatingBarEnabled: Boolean
+        get() = prefs.getBoolean(KEY_ALWAYS_SHOW_FLOATING_BAR, DEFAULT_ALWAYS_SHOW_FLOATING_BAR)
+        set(value) = prefs.edit().putBoolean(KEY_ALWAYS_SHOW_FLOATING_BAR, value).apply()
+
     var overlayStyle: String
         get() = prefs.getString(KEY_OVERLAY_STYLE, DEFAULT_OVERLAY_STYLE) ?: DEFAULT_OVERLAY_STYLE
         set(value) = prefs.edit().putString(KEY_OVERLAY_STYLE, value).apply()
@@ -246,6 +252,7 @@ class ConfigManager(private val context: Context) {
         if (!prefs.contains(KEY_USE_FRONT_CAMERA)) { editor.putBoolean(KEY_USE_FRONT_CAMERA, DEFAULT_USE_FRONT_CAMERA); changed = true }
         if (!prefs.contains(KEY_COUNTDOWN_SECONDS)) { editor.putInt(KEY_COUNTDOWN_SECONDS, DEFAULT_COUNTDOWN_SECONDS); changed = true }
         if (!prefs.contains(KEY_RECORDING_OVERLAY_ENABLED)) { editor.putBoolean(KEY_RECORDING_OVERLAY_ENABLED, DEFAULT_RECORDING_OVERLAY_ENABLED); changed = true }
+        if (!prefs.contains(KEY_ALWAYS_SHOW_FLOATING_BAR)) { editor.putBoolean(KEY_ALWAYS_SHOW_FLOATING_BAR, DEFAULT_ALWAYS_SHOW_FLOATING_BAR); changed = true }
         if (!prefs.contains(KEY_OVERLAY_STYLE)) { editor.putString(KEY_OVERLAY_STYLE, DEFAULT_OVERLAY_STYLE); changed = true }
         if (!prefs.contains(KEY_OVERLAY_SHOW_PAUSE)) { editor.putBoolean(KEY_OVERLAY_SHOW_PAUSE, DEFAULT_OVERLAY_SHOW_PAUSE); changed = true }
         if (!prefs.contains(KEY_OVERLAY_SHOW_STOP)) { editor.putBoolean(KEY_OVERLAY_SHOW_STOP, DEFAULT_OVERLAY_SHOW_STOP); changed = true }

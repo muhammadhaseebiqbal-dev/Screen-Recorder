@@ -333,4 +333,8 @@
     <string name="ScreenRecordService_warn_video_title">视频帧已停止</string>
     <string name="ScreenRecordService_warn_video_gap">录制期间部分视频帧中断，播放时该片段可能会停留在静止画面。</string>
     <string name="ScreenRecordService_warn_video_tail">视频帧在音频结束前停止，已裁剪最后一个视频帧之后的多余音频。</string>
+    <string name="sheet_settings_always_floating_title">始终显示悬浮栏</string>
+    <string name="sheet_settings_always_floating_summary">空闲时在屏幕上保留悬浮栏，无需打开应用即可随时开始录制</string>
+    <string name="overlay_floating_desc_start">开始录制</string>
+    <string name="overlay_floating_desc_close">关闭悬浮栏</string>
 </resources>

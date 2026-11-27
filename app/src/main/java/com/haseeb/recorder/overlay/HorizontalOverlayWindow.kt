@@ -13,9 +13,11 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.button.MaterialButton
 import com.haseeb.recorder.R
 import com.haseeb.recorder.databinding.OverlayRecordingBinding
@@ -36,6 +38,10 @@ class HorizontalOverlayWindow(
 
     private var screenWidth = 1080
     private var screenHeight = 1920
+    private var topInsetPx = 0
+    private var bottomInsetPx = 0
+    private var leftInsetPx = 0
+    private var rightInsetPx = 0
     private var isExpanded = false
 
     private var redDotAnimator: ValueAnimator? = null
@@ -68,14 +74,23 @@ class HorizontalOverlayWindow(
         setupLayoutParams()
         setupButtons(b)
         applyTouchHandling(b.timerContainer)
+        applyIdleTouchHandling(b.idleDragHandle)
+        applyIdleTouchHandling(b.btnIdleRecord) {
+            if (controller.getOverlayMode() == FloatingBarPolicy.OverlayMode.IDLE_READY) {
+                controller.onStartRecordingClicked()
+            }
+        }
+        applyIdleTouchHandling(b.btnIdleDismiss) {
+            controller.onDismissIdleOverlayClicked()
+        }
 
         try {
             windowManager.addView(rootView, params)
         } catch (_: Exception) {}
 
+        updateControlsState()
         synchronizeTimer()
         synchronizeDotAnimation()
-        updateControlsState()
         applyCaptureVisibility()
         startDockInactivityTimer()
     }
@@ -166,14 +181,28 @@ class HorizontalOverlayWindow(
      * Queries display metrics to determine physical screen width and height.
      */
     private fun updateScreenBounds() {
+        val density = context.resources.displayMetrics.density
+        val minPad = (8 * density).toInt()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val metrics = windowManager.currentWindowMetrics
             screenWidth = metrics.bounds.width()
             screenHeight = metrics.bounds.height()
+            val insets = metrics.windowInsets.getInsetsIgnoringVisibility(
+                WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()
+            )
+            topInsetPx = insets.top.coerceAtLeast(minPad)
+            bottomInsetPx = insets.bottom.coerceAtLeast(minPad)
+            leftInsetPx = insets.left.coerceAtLeast(minPad)
+            rightInsetPx = insets.right.coerceAtLeast(minPad)
         } else {
             val displayMetrics = context.resources.displayMetrics
             screenWidth = displayMetrics.widthPixels
             screenHeight = displayMetrics.heightPixels
+            val fallbackVert = (24 * density).toInt()
+            topInsetPx = fallbackVert
+            bottomInsetPx = fallbackVert
+            leftInsetPx = minPad
+            rightInsetPx = minPad
         }
     }
 
@@ -206,13 +235,17 @@ class HorizontalOverlayWindow(
      * Synchronizes chronometer widget directly from controller base timestamp.
      */
     private fun synchronizeTimer() {
-        binding?.timer?.apply {
-            base = controller.getChronometerBase()
-            if (controller.isPaused()) {
-                stop()
-            } else {
-                start()
+        val timer = binding?.timer ?: return
+        when (controller.getOverlayMode()) {
+            FloatingBarPolicy.OverlayMode.RECORDING -> {
+                timer.base = controller.getChronometerBase()
+                timer.start()
             }
+            FloatingBarPolicy.OverlayMode.PAUSED -> {
+                timer.base = controller.getChronometerBase()
+                timer.stop()
+            }
+            else -> timer.stop()
         }
     }
 
@@ -221,7 +254,8 @@ class HorizontalOverlayWindow(
      */
     private fun synchronizeDotAnimation() {
         val dot = binding?.redDot ?: return
-        if (controller.isPaused()) {
+        val mode = controller.getOverlayMode()
+        if (mode != FloatingBarPolicy.OverlayMode.RECORDING) {
             redDotAnimator?.cancel()
             dot.alpha = 1f
         } else {
@@ -246,6 +280,26 @@ class HorizontalOverlayWindow(
      */
     private fun updateControlsState() {
         val b = binding ?: return
+        val mode = controller.getOverlayMode()
+        val isIdleOrStarting = mode == FloatingBarPolicy.OverlayMode.IDLE_READY ||
+            mode == FloatingBarPolicy.OverlayMode.STARTING
+        if (isIdleOrStarting) {
+            autoCollapseHandler.removeCallbacks(autoCollapseRunnable)
+            moveAnimator?.cancel()
+            isExpanded = false
+            b.scrollControls.visibility = View.GONE
+            b.dividerControls.visibility = View.GONE
+            b.timerContainer.visibility = View.GONE
+            b.idleContainer.visibility = View.VISIBLE
+            val ready = mode == FloatingBarPolicy.OverlayMode.IDLE_READY
+            b.btnIdleRecord.isEnabled = ready
+            b.btnIdleRecord.alpha = if (ready) 1.0f else 0.5f
+            updateViewLayoutSafe()
+            return
+        }
+
+        b.idleContainer.visibility = View.GONE
+        b.timerContainer.visibility = View.VISIBLE
         val showPause = controller.isShowPauseEnabled()
         val showStop = controller.isShowStopEnabled()
         val showMute = controller.isShowMuteEnabled()
@@ -295,51 +349,104 @@ class HorizontalOverlayWindow(
         b.btnDraw.isChecked = isDrawOn
     }
 
+    private fun edgeMarginPx(): Int {
+        val density = context.resources.displayMetrics.density
+        return maxOf((8 * density).toInt(), leftInsetPx, rightInsetPx)
+    }
+
+    private fun edgeMagnetPx(): Int {
+        val density = context.resources.displayMetrics.density
+        return minOf((72 * density).toInt(), screenWidth / 4)
+    }
+
+    private fun currentMeasuredSize(): Pair<Int, Int> {
+        val w = if (params.width > 0) params.width else (rootView?.width?.takeIf { it > 0 } ?: 100)
+        val h = if (params.height > 0) params.height else (rootView?.height?.takeIf { it > 0 } ?: 50)
+        return w to h
+    }
+
+    private fun applyIdleTouchHandling(targetView: View, onTap: (() -> Unit)? = null) {
+        attachDragAndTapTouchListener(targetView) {
+            onTap?.invoke()
+        }
+    }
+
     /*
      * Attaches touch listeners for drag movement, tap expansion, and activity reset.
      */
     private fun applyTouchHandling(targetView: View) {
+        attachDragAndTapTouchListener(targetView) {
+            if (!isExpanded) expandOverlay() else collapseOverlay()
+        }
+    }
+
+    private fun attachDragAndTapTouchListener(targetView: View, onTap: () -> Unit) {
         val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
         var initialX = 0
         var initialY = 0
-        var touchX = 0f
-        var touchY = 0f
+        var touchDownRawX = 0f
+        var touchDownRawY = 0f
+        var dragOriginRawX = 0f
+        var dragOriginRawY = 0f
         var isDragging = false
 
         targetView.setOnTouchListener { v, event ->
-            wakeUpOverlay()
-            when (event.action) {
+            when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
+                    wakeUpOverlay()
+                    updateScreenBounds()
                     initialX = params.x
                     initialY = params.y
-                    touchX = event.rawX
-                    touchY = event.rawY
+                    touchDownRawX = event.rawX
+                    touchDownRawY = event.rawY
+                    dragOriginRawX = event.rawX
+                    dragOriginRawY = event.rawY
                     isDragging = false
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    val dx = (event.rawX - touchX).toInt()
-                    val dy = (event.rawY - touchY).toInt()
-                    if (abs(dx) > touchSlop || abs(dy) > touchSlop || isDragging) {
+                    val slopDx = event.rawX - touchDownRawX
+                    val slopDy = event.rawY - touchDownRawY
+                    if (!isDragging && (abs(slopDx) > touchSlop || abs(slopDy) > touchSlop)) {
                         isDragging = true
-                        val currentWidth = if (params.width > 0) params.width else (rootView?.width ?: 100)
-                        val currentHeight = if (params.height > 0) params.height else (rootView?.height ?: 50)
-                        params.x = (initialX + dx).coerceIn(0, (screenWidth - currentWidth).coerceAtLeast(0))
-                        params.y = (initialY + dy).coerceIn(24, (screenHeight - currentHeight - 24).coerceAtLeast(24))
+                        dragOriginRawX = event.rawX
+                        dragOriginRawY = event.rawY
+                    }
+                    if (isDragging) {
+                        val (currentWidth, currentHeight) = currentMeasuredSize()
+                        val dx = kotlin.math.round(event.rawX - dragOriginRawX).toInt()
+                        val dy = kotlin.math.round(event.rawY - dragOriginRawY).toInt()
+                        params.x = OverlayMath.clampX(initialX + dx, currentWidth, screenWidth, 0)
+                        params.y = OverlayMath.clampY(initialY + dy, currentHeight, screenHeight, topInsetPx, bottomInsetPx)
                         updateViewLayoutSafe()
                     }
                     true
                 }
-                MotionEvent.ACTION_UP -> {
-                    if (!isDragging) {
-                        if (!isExpanded) expandOverlay() else collapseOverlay()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    if (!isDragging && event.actionMasked == MotionEvent.ACTION_UP) {
+                        onTap()
                         v.performClick()
-                    } else {
+                    } else if (isDragging) {
                         if (isExpanded) {
+                            val (w, _) = currentMeasuredSize()
+                            val clampedX = OverlayMath.clampX(params.x, w, screenWidth, edgeMarginPx())
+                            animateWindowPositionX(params.x, clampedX)
                             startAutoCollapseTimer()
                         } else {
-                            startDockInactivityTimer()
+                            val (w, _) = currentMeasuredSize()
+                            val targetX = OverlayMath.calculateReleaseSnapX(
+                                currentX = params.x,
+                                viewWidth = w,
+                                screenWidth = screenWidth,
+                                edgeMarginPx = edgeMarginPx(),
+                                edgeMagnetPx = edgeMagnetPx()
+                            )
+                            animateWindowPositionX(params.x, targetX) {
+                                startDockInactivityTimer()
+                            }
                         }
+                    } else {
+                        startDockInactivityTimer()
                     }
                     true
                 }
@@ -423,15 +530,24 @@ class HorizontalOverlayWindow(
             .setInterpolator(DecelerateInterpolator(2f))
             .withEndAction {
                 b.scrollControls.visibility = View.GONE
-                val compactWidth = b.rootCard.width.takeIf { it > 0 } ?: (90 * context.resources.displayMetrics.density).toInt()
-                params.x = params.x.coerceIn(0, (screenWidth - compactWidth).coerceAtLeast(0))
+                b.dividerControls.visibility = View.GONE
+                b.rootCard.measure(
+                    View.MeasureSpec.makeMeasureSpec(screenWidth, View.MeasureSpec.AT_MOST),
+                    View.MeasureSpec.makeMeasureSpec(screenHeight, View.MeasureSpec.AT_MOST)
+                )
+                val compactWidth = b.rootCard.measuredWidth.takeIf { it > 0 }
+                    ?: (90 * context.resources.displayMetrics.density).toInt()
+                val margin = edgeMarginPx()
+                params.x = OverlayMath.clampX(params.x, compactWidth, screenWidth, margin)
                 updateViewLayoutSafe()
 
-                val targetDockX = if (params.x + compactWidth / 2 < screenWidth / 2) {
-                    0
-                } else {
-                    (screenWidth - compactWidth).coerceAtLeast(0)
-                }
+                val targetDockX = OverlayMath.calculateReleaseSnapX(
+                    currentX = params.x,
+                    viewWidth = compactWidth,
+                    screenWidth = screenWidth,
+                    edgeMarginPx = margin,
+                    edgeMagnetPx = edgeMagnetPx()
+                )
                 animateWindowPositionX(params.x, targetDockX) {
                     startDockInactivityTimer()
                 }
@@ -456,26 +572,20 @@ class HorizontalOverlayWindow(
     }
 
     /*
-     * Docks the collapsed bar against the closest screen edge and lowers transparency.
+     * Gently lowers transparency after inactivity while preserving the user's chosen screen position.
      */
     private fun performInactivityDocking() {
         if (isExpanded) return
-        val view = rootView ?: return
-        val density = context.resources.displayMetrics.density
-        val peekInsetPx = (10 * density).toInt()
-
-        val currentWidth = if (params.width > 0) params.width else view.width
-        val targetX = OverlayMath.calculateDockedX(params.x, currentWidth, screenWidth, peekInsetPx)
-
-        animateWindowPositionX(params.x, targetX)
-        animateOverlayAlpha(0.45f)
+        animateOverlayAlpha(0.55f)
     }
 
     /*
-     * Restores full opacity and cancels pending docking timers upon user interaction.
+     * Restores full opacity and cancels pending animations and timers upon user interaction.
      */
     private fun wakeUpOverlay() {
         dockInactivityHandler.removeCallbacks(dockInactivityRunnable)
+        windowXAnimator?.cancel()
+        moveAnimator?.cancel()
         alphaAnimator?.cancel()
         rootView?.alpha = 1.0f
     }
@@ -488,7 +598,7 @@ class HorizontalOverlayWindow(
         val currentAlpha = rootView?.alpha ?: 1f
         alphaAnimator = ValueAnimator.ofFloat(currentAlpha, targetAlpha).apply {
             duration = 240
-            interpolator = DecelerateInterpolator()
+            interpolator = FastOutSlowInInterpolator()
             addUpdateListener {
                 rootView?.alpha = it.animatedValue as Float
             }
@@ -497,7 +607,7 @@ class HorizontalOverlayWindow(
     }
 
     /*
-     * Animates window horizontal position during edge docking.
+     * Animates window horizontal position smoothly during edge snapping.
      */
     private fun animateWindowPositionX(startX: Int, endX: Int, onEnd: (() -> Unit)? = null) {
         if (startX == endX) {
@@ -506,8 +616,8 @@ class HorizontalOverlayWindow(
         }
         windowXAnimator?.cancel()
         windowXAnimator = ValueAnimator.ofInt(startX, endX).apply {
-            duration = 240
-            interpolator = DecelerateInterpolator(2f)
+            duration = 260
+            interpolator = FastOutSlowInInterpolator()
             addUpdateListener { animation ->
                 params.x = animation.animatedValue as Int
                 updateViewLayoutSafe()
