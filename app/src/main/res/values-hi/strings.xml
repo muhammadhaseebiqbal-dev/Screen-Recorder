@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">सिस्टम भाषा</string>
     <string name="AboutActivity_dialog_update_notes_header">नया क्या है</string>
     <string name="AboutActivity_dialog_update_no_notes">इस संस्करण के लिए कोई रिलीज़ नोट प्रदान नहीं किया गया है।</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">सिस्टम ऑडियो कैप्चर सूचना</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">इस डिवाइस पर सिस्टम ऑडियो कैप्चर शुरू नहीं हो सका। रिकॉर्डिंग केवल वीडियो और माइक्रोफ़ोन ऑडियो के साथ जारी रही।</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">सक्रिय ऐप Android की प्लेबैक कैप्चर नीति के तहत आंतरिक ऑडियो कैप्चर को प्रतिबंधित करता है, इसलिए आंतरिक ऑडियो मौन रहा।</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">ऑडियो कॉल या गैर-मीडिया स्ट्रीम पर चल रहा था, जिसे Android मानक आंतरिक ऑडियो कैप्चर से बाहर रखता है।</string>
 </resources>

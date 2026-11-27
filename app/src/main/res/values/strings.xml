@@ -362,4 +362,8 @@
 
     <string name="LocaleHelper_language_system">System Language</string>
 
+    <string name="ScreenRecordService_warn_sys_audio_title">System Audio Capture Notice</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">System audio capture could not start on this device. Recording continued with video and microphone audio only.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">The active app restricts internal audio capture through Android playback capture policy, so internal audio was silent.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">Audio was playing on a call or non-media stream that Android excludes from standard internal audio capture.</string>
 </resources>

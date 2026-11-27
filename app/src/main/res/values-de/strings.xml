@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">Systemsprache</string>
     <string name="AboutActivity_dialog_update_notes_header">Was gibt\'s Neues</string>
     <string name="AboutActivity_dialog_update_no_notes">Keine Versionshinweise für diese Version bereitgestellt.</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">Hinweis zur Systemaudio-Aufnahme</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">Die Systemaudio-Aufnahme konnte auf diesem Gerät nicht gestartet werden. Es wurde nur mit Video und Mikrofon weiter aufgenommen.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">Die aktive App schränkt die interne Audioaufnahme über die Android-Wiedergaberichtlinie ein, sodass kein interner Ton aufgenommen wurde.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">Audio lief über einen Anruf- oder Nicht-Medien-Stream, den Android von der standardmäßigen internen Aufnahme ausschließt.</string>
 </resources>

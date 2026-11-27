@@ -316,4 +316,8 @@
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
     <string name="AboutActivity_dialog_update_notes_header">O que há de novo</string>
     <string name="AboutActivity_dialog_update_no_notes">Nenhuma nota de versão fornecida para esta versão.</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">Aviso de captura de áudio do sistema</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">Não foi possível iniciar a captura de áudio do sistema neste dispositivo. A gravação continuou apenas com vídeo e microfone.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">A aplicação ativa restringe a captura de áudio interno pela política do Android, por isso o som interno ficou mudo.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">O áudio estava a tocar numa chamada ou fluxo não multimédia que o Android exclui da captura interna padrão.</string>
 </resources>

@@ -323,4 +323,8 @@
     <string name="LocaleHelper_language_system">系统语言</string>
     <string name="AboutActivity_dialog_update_notes_header">更新日志</string>
     <string name="AboutActivity_dialog_update_no_notes">此版本未提供发行说明。</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">系統音訊擷取提示</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">無法在此裝置上啟動系統音訊擷取，錄製已僅保留視訊與麥克風音訊繼續進行。</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">目前應用程式透過 Android 播放擷取原則限制了內部音訊擷取，因此系統音訊為靜音。</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">音訊正在通話或非媒體串流中播放，Android 會將此類串流排除於標準內部音訊擷取之外。</string>
 </resources>

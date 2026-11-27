@@ -314,4 +314,8 @@
     <string name="ConfigManager_storage_default">Padrão (DCIM/ScreenRecorder)</string>
     <string name="ConfigManager_storage_custom">Personalizado: %1$s</string>
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">Aviso de captura de áudio do sistema</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">Não foi possível iniciar a captura de áudio do sistema neste dispositivo. A gravação continuou apenas com vídeo e microfone.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">O app ativo restringe a captura de áudio interno pela política de reprodução do Android, então o som interno ficou mudo.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">O áudio estava tocando em uma chamada ou fluxo não de mídia que o Android exclui da captura interna padrão.</string>
 </resources>
