@@ -364,4 +364,6 @@
 
     <string name="recording_countdown_failed">Could not show the countdown. Recording was not started. Please try again.</string>
     <string name="sheet_settings_encoder_av1">AV1</string>
+    <string name="sheet_settings_hide_floating_ball_title">Hide Floating Ball While Recording</string>
+    <string name="sheet_settings_hide_floating_ball_summary">Exclude the floating controls from full-screen and single-app recordings while active; controls remain in the notification bar and reappear when paused or stopped.</string>
 </resources>

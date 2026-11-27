@@ -317,4 +317,6 @@
     <string name="AboutActivity_dialog_update_notes_header">新機能</string>
     <string name="AboutActivity_dialog_update_no_notes">このバージョンのリリースノートはありません。</string>
     <string name="sheet_settings_encoder_av1">AV1</string>
+    <string name="sheet_settings_hide_floating_ball_title">録画中はフローティングボールを非表示</string>
+    <string name="sheet_settings_hide_floating_ball_summary">録画中は全画面・単一アプリの両方でフローティング操作を映像から除外し、一時停止または停止時に再表示します。</string>
 </resources>

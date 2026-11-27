@@ -317,4 +317,6 @@
     <string name="AboutActivity_dialog_update_notes_header">Что нового</string>
     <string name="AboutActivity_dialog_update_no_notes">Примечания к выпуску для этой версии не предоставлены.</string>
     <string name="sheet_settings_encoder_av1">AV1</string>
+    <string name="sheet_settings_hide_floating_ball_title">Скрывать плавающую кнопку во время записи</string>
+    <string name="sheet_settings_hide_floating_ball_summary">Исключает плавающие элементы управления из видео при записи всего экрана или одного приложения; управление остаётся в уведомлении и возвращается при паузе или остановке.</string>
 </resources>

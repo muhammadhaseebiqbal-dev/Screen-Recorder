@@ -129,6 +129,21 @@ class RecordingOverlayService : Service(), RecordingOverlayController, Recording
     override fun isPaused(): Boolean = RecordingStateManager.isPaused
 
     /*
+     * Returns whether a recording session is actively running.
+     */
+    override fun isRecording(): Boolean = RecordingStateManager.isRecording
+
+    /*
+     * Returns whether the floating ball should be excluded from captured video while recording.
+     */
+    override fun isHideFloatingBallEnabled(): Boolean = configManager.isHideFloatingBallWhileRecording
+
+    /*
+     * Returns whether OS surface screenshot-skip permission is available on this device.
+     */
+    override fun canSkipScreenshot(): Boolean = OverlayCaptureExclusion.canUseSkipScreenshot(this)
+
+    /*
      * Returns whether microphone audio recording is currently muted.
      */
     override fun isMuted(): Boolean = RecordingStateManager.isMuted

@@ -16,6 +16,21 @@ interface RecordingOverlayController {
     fun isPaused(): Boolean
 
     /*
+     * Returns whether a recording session is actively running.
+     */
+    fun isRecording(): Boolean
+
+    /*
+     * Returns whether the floating ball should be excluded from captured video while recording.
+     */
+    fun isHideFloatingBallEnabled(): Boolean
+
+    /*
+     * Returns whether OS surface screenshot-skip permission is available on this device.
+     */
+    fun canSkipScreenshot(): Boolean
+
+    /*
      * Returns whether microphone audio recording is currently muted.
      */
     fun isMuted(): Boolean

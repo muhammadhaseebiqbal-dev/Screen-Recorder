@@ -315,4 +315,6 @@
     <string name="ConfigManager_storage_custom">Personalizado: %1$s</string>
     <string name="LocaleHelper_language_system">Idioma do sistema</string>
     <string name="sheet_settings_encoder_av1">AV1</string>
+    <string name="sheet_settings_hide_floating_ball_title">Ocultar bola flutuante ao gravar</string>
+    <string name="sheet_settings_hide_floating_ball_summary">Exclui os controles flutuantes da gravação de tela inteira ou app único; os controles continuam na notificação e reaparecem ao pausar ou parar.</string>
 </resources>

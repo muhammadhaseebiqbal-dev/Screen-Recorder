@@ -90,6 +90,7 @@ class RadialOverlayWindow(
         synchronizeTimer()
         synchronizeDotAnimation()
         updateControlsState()
+        applyCaptureVisibility()
         startDockInactivityTimer()
     }
 
@@ -119,6 +120,7 @@ class RadialOverlayWindow(
         updateControlsState()
         synchronizeTimer()
         synchronizeDotAnimation()
+        applyCaptureVisibility()
     }
 
     /*
@@ -126,6 +128,29 @@ class RadialOverlayWindow(
      */
     override fun onConfigurationChanged() {
         updateControlsState()
+        applyCaptureVisibility()
+    }
+
+    private fun applyCaptureVisibility() {
+        val mode = OverlayCaptureExclusion.resolveMode(
+            hideEnabled = controller.isHideFloatingBallEnabled(),
+            isRecording = controller.isRecording(),
+            isPaused = controller.isPaused(),
+            canSkipScreenshot = controller.canSkipScreenshot()
+        )
+        OverlayCaptureExclusion.applyWindowExclusion(rootView, windowManager, params, mode) {
+            if (isExpanded) {
+                isExpanded = false
+                isAnimating = false
+                autoCollapseHandler.removeCallbacks(autoCollapseRunnable)
+                binding?.let { b -> getActiveButtons(b).forEach { it.visibility = View.GONE } }
+                params.width = bubbleSizePx
+                params.height = bubbleSizePx
+            }
+            dockInactivityHandler.removeCallbacks(dockInactivityRunnable)
+            alphaAnimator?.cancel()
+            windowXAnimator?.cancel()
+        }
     }
 
     /*

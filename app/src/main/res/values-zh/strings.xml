@@ -324,4 +324,6 @@
     <string name="AboutActivity_dialog_update_notes_header">更新日志</string>
     <string name="AboutActivity_dialog_update_no_notes">此版本未提供发行说明。</string>
     <string name="sheet_settings_encoder_av1">AV1</string>
+    <string name="sheet_settings_hide_floating_ball_title">錄製時隱藏懸浮球</string>
+    <string name="sheet_settings_hide_floating_ball_summary">在全螢幕或單一應用程式錄製期間將懸浮控制項從影片中隱藏；通知列仍可控制，暫停或停止後會自動重新顯示。</string>
 </resources>

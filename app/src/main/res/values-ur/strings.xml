@@ -317,4 +317,6 @@
     <string name="AboutActivity_dialog_update_notes_header">نیا کیا ہے</string>
     <string name="AboutActivity_dialog_update_no_notes">اس ورژن کے لیے ریلیز نوٹس دستیاب نہیں ہیں۔</string>
     <string name="sheet_settings_encoder_av1">AV1</string>
+    <string name="sheet_settings_hide_floating_ball_title">ریکارڈنگ کے دوران فلوٹنگ بال چھپائیں</string>
+    <string name="sheet_settings_hide_floating_ball_summary">فعال ریکارڈنگ کے دوران فلوٹنگ کنٹرولز کو فل اسکرین اور سنگل ایپ ویڈیو سے باہر رکھیں؛ کنٹرولز نوٹیفکیشن میں دستیاب رہتے ہیں اور وقفے یا رکنے پر واپس آ جاتے ہیں۔</string>
 </resources>

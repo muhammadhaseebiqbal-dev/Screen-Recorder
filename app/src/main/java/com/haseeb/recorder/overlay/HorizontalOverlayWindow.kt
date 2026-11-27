@@ -76,6 +76,7 @@ class HorizontalOverlayWindow(
         synchronizeTimer()
         synchronizeDotAnimation()
         updateControlsState()
+        applyCaptureVisibility()
         startDockInactivityTimer()
     }
 
@@ -106,6 +107,7 @@ class HorizontalOverlayWindow(
         updateControlsState()
         synchronizeTimer()
         synchronizeDotAnimation()
+        applyCaptureVisibility()
     }
 
     /*
@@ -113,6 +115,26 @@ class HorizontalOverlayWindow(
      */
     override fun onConfigurationChanged() {
         updateControlsState()
+        applyCaptureVisibility()
+    }
+
+    private fun applyCaptureVisibility() {
+        val mode = OverlayCaptureExclusion.resolveMode(
+            hideEnabled = controller.isHideFloatingBallEnabled(),
+            isRecording = controller.isRecording(),
+            isPaused = controller.isPaused(),
+            canSkipScreenshot = controller.canSkipScreenshot()
+        )
+        OverlayCaptureExclusion.applyWindowExclusion(rootView, windowManager, params, mode) {
+            if (isExpanded) {
+                isExpanded = false
+                autoCollapseHandler.removeCallbacks(autoCollapseRunnable)
+                binding?.scrollControls?.visibility = View.GONE
+            }
+            dockInactivityHandler.removeCallbacks(dockInactivityRunnable)
+            alphaAnimator?.cancel()
+            windowXAnimator?.cancel()
+        }
     }
 
     /*

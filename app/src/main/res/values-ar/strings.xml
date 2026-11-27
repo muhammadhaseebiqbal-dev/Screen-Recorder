@@ -317,4 +317,6 @@
     <string name="AboutActivity_dialog_update_notes_header">ما الجديد</string>
     <string name="AboutActivity_dialog_update_no_notes">لا توجد ملاحظات إصدار لهذا الإصدار.</string>
     <string name="sheet_settings_encoder_av1">AV1</string>
+    <string name="sheet_settings_hide_floating_ball_title">إخفاء الكرة العائمة أثناء التسجيل</string>
+    <string name="sheet_settings_hide_floating_ball_summary">استبعاد عناصر التحكم العائمة من تسجيل الشاشة الكاملة والتطبيق الفردي أثناء النشاط؛ تبقى الأزرار متاحة في الإشعار وتعود عند الإيقاف المؤقت أو الإيقاف.</string>
 </resources>

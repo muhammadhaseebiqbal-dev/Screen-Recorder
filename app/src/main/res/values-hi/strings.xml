@@ -317,4 +317,6 @@
     <string name="AboutActivity_dialog_update_notes_header">नया क्या है</string>
     <string name="AboutActivity_dialog_update_no_notes">इस संस्करण के लिए कोई रिलीज़ नोट प्रदान नहीं किया गया है।</string>
     <string name="sheet_settings_encoder_av1">AV1</string>
+    <string name="sheet_settings_hide_floating_ball_title">रिकॉर्डिंग के दौरान फ़्लोटिंग बॉल छिपाएँ</string>
+    <string name="sheet_settings_hide_floating_ball_summary">सक्रिय रिकॉर्डिंग के दौरान फ़्लोटिंग नियंत्रणों को वीडियो से बाहर रखें; नियंत्रण नोटिफिकेशन में उपलब्ध रहते हैं और पॉज़ या स्टॉप करने पर फिर दिखाई देते हैं।</string>
 </resources>
