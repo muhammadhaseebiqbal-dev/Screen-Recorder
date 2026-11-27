@@ -332,4 +332,8 @@
     <string name="sheet_settings_always_floating_summary">Uygulamayı açmadan istediğiniz zaman kayıt başlatmak için boşta dururken de kayan çubuğu ekranda tutun</string>
     <string name="overlay_floating_desc_start">Kaydı başlat</string>
     <string name="overlay_floating_desc_close">Kayan çubuğu kapat</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">Sistem Sesi Yakalama Bildirimi</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">Bu cihazda sistem sesi yakalama başlatılamadı. Kayıt yalnızca video ve mikrofon sesiyle devam etti.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">Etkin uygulama Android kayıttan yürütme yakalama ilkesiyle dahili ses yakalamayı kısıtlıyor; bu nedenle iç ses sessiz kaldı.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">Ses, Android’in standart dahili ses yakalamadan hariç tuttuğu bir arama veya medya dışı akışta çalıyordu.</string>
 </resources>

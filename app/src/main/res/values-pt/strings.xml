@@ -332,4 +332,8 @@
     <string name="sheet_settings_always_floating_summary">Manter a barra flutuante no ecrã quando inativa para iniciar a gravação sem abrir a aplicação</string>
     <string name="overlay_floating_desc_start">Iniciar gravação</string>
     <string name="overlay_floating_desc_close">Fechar barra flutuante</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">Aviso de captura de áudio do sistema</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">Não foi possível iniciar a captura de áudio do sistema neste dispositivo. A gravação continuou apenas com vídeo e microfone.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">A aplicação ativa restringe a captura de áudio interno pela política do Android, por isso o som interno ficou mudo.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">O áudio estava a tocar numa chamada ou fluxo não multimédia que o Android exclui da captura interna padrão.</string>
 </resources>

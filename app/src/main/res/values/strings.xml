@@ -379,4 +379,8 @@
     <string name="sheet_settings_always_floating_summary">Keep the floating bar on screen when idle to start recording anytime without opening the app</string>
     <string name="overlay_floating_desc_start">Start recording</string>
     <string name="overlay_floating_desc_close">Close floating bar</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">System Audio Capture Notice</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">System audio capture could not start on this device. Recording continued with video and microphone audio only.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">The active app restricts internal audio capture through Android playback capture policy, so internal audio was silent.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">Audio was playing on a call or non-media stream that Android excludes from standard internal audio capture.</string>
 </resources>

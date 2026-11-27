@@ -339,4 +339,8 @@
     <string name="sheet_settings_always_floating_summary">待機時將懸浮控制列保持在畫面上，無需開啟應用程式即可隨時開始錄製</string>
     <string name="overlay_floating_desc_start">開始錄製</string>
     <string name="overlay_floating_desc_close">關閉懸浮工具列</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">系統音訊擷取提示</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">無法在此裝置上啟動系統音訊擷取，錄製已僅保留視訊與麥克風音訊繼續進行。</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">目前應用程式透過 Android 播放擷取原則限制了內部音訊擷取，因此系統音訊為靜音。</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">音訊正在通話或非媒體串流中播放，Android 會將此類串流排除於標準內部音訊擷取之外。</string>
 </resources>

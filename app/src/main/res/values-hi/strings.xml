@@ -332,4 +332,8 @@
     <string name="sheet_settings_always_floating_summary">ऐप खोले बिना कभी भी रिकॉर्डिंग शुरू करने के लिए फ़्लोटिंग बार को स्क्रीन पर रखें</string>
     <string name="overlay_floating_desc_start">रिकॉर्डिंग शुरू करें</string>
     <string name="overlay_floating_desc_close">फ़्लोटिंग बार बंद करें</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">सिस्टम ऑडियो कैप्चर सूचना</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">इस डिवाइस पर सिस्टम ऑडियो कैप्चर शुरू नहीं हो सका। रिकॉर्डिंग केवल वीडियो और माइक्रोफ़ोन ऑडियो के साथ जारी रही।</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">सक्रिय ऐप Android की प्लेबैक कैप्चर नीति के तहत आंतरिक ऑडियो कैप्चर को प्रतिबंधित करता है, इसलिए आंतरिक ऑडियो मौन रहा।</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">ऑडियो कॉल या गैर-मीडिया स्ट्रीम पर चल रहा था, जिसे Android मानक आंतरिक ऑडियो कैप्चर से बाहर रखता है।</string>
 </resources>

@@ -332,4 +332,8 @@
     <string name="sheet_settings_always_floating_summary">Schwebende Leiste im Leerlauf sichtbar halten, um jederzeit ohne Öffnen der App aufzunehmen</string>
     <string name="overlay_floating_desc_start">Aufnahme starten</string>
     <string name="overlay_floating_desc_close">Schwebende Leiste schließen</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">Hinweis zur Systemaudio-Aufnahme</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">Die Systemaudio-Aufnahme konnte auf diesem Gerät nicht gestartet werden. Es wurde nur mit Video und Mikrofon weiter aufgenommen.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">Die aktive App schränkt die interne Audioaufnahme über die Android-Wiedergaberichtlinie ein, sodass kein interner Ton aufgenommen wurde.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">Audio lief über einen Anruf- oder Nicht-Medien-Stream, den Android von der standardmäßigen internen Aufnahme ausschließt.</string>
 </resources>

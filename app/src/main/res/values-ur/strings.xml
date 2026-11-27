@@ -332,4 +332,8 @@
     <string name="sheet_settings_always_floating_summary">ایپ کھولے بغیر کسی بھی وقت ریکارڈنگ شروع کرنے کے لیے فلوٹنگ بار کو اسکرین پر رکھیں</string>
     <string name="overlay_floating_desc_start">ریکارڈنگ شروع کریں</string>
     <string name="overlay_floating_desc_close">فلوٹنگ بار بند کریں</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">سسٹم آڈیو ریکارڈنگ کی اطلاع</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">اس ڈیوائس پر سسٹم آڈیو ریکارڈنگ شروع نہ ہو سکی۔ ریکارڈنگ صرف ویڈیو اور مائیکروفون آڈیو کے ساتھ جاری رہی۔</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">فعال ایپ نے Android کی پلے بیک کیپچر پالیسی کے تحت اندرونی آڈیو ریکارڈنگ پر پابندی لگائی ہے، اس لیے اندرونی آواز خاموش رہی۔</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">آڈیو کسی کال یا غیر میڈیا اسٹریم پر چل رہی تھی جسے Android معیاری اندرونی آڈیو کیپچر سے خارج کرتا ہے۔</string>
 </resources>

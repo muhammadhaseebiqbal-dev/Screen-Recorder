@@ -332,4 +332,8 @@
     <string name="sheet_settings_always_floating_summary">Garder la barre flottante visible à l’écran pour démarrer l’enregistrement sans ouvrir l’application</string>
     <string name="overlay_floating_desc_start">Démarrer l’enregistrement</string>
     <string name="overlay_floating_desc_close">Fermer la barre flottante</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">Avis de capture audio système</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">La capture audio système n’a pas pu démarrer sur cet appareil. L’enregistrement s’est poursuivi avec la vidéo et le micro uniquement.</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">L’application active restreint la capture audio interne via la politique Android ; le son interne est donc resté silencieux.</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">L’audio était diffusé sur un canal d’appel ou hors média qu’Android exclut de la capture interne standard.</string>
 </resources>

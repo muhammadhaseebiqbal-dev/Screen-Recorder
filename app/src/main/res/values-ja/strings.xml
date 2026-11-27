@@ -332,4 +332,8 @@
     <string name="sheet_settings_always_floating_summary">アプリを開かずにいつでも録画を開始できるよう、待機中もフローティングバーを表示したままにします</string>
     <string name="overlay_floating_desc_start">録画を開始</string>
     <string name="overlay_floating_desc_close">フローティングバーを閉じる</string>
+    <string name="ScreenRecordService_warn_sys_audio_title">システム音声録音の通知</string>
+    <string name="ScreenRecordService_warn_sys_audio_unavailable">この端末でシステム音声の録音を開始できませんでした。映像とマイク音声のみで録画を続行しました。</string>
+    <string name="ScreenRecordService_warn_sys_audio_restricted">使用中のアプリが Android の再生キャプチャポリシーにより内部音声の録音を制限しているため、無音になりました。</string>
+    <string name="ScreenRecordService_warn_sys_audio_usage">通話または標準の内部音声キャプチャ対象外の非メディアストリームで音声が再生されていました。</string>
 </resources>
